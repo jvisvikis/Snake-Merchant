@@ -244,10 +244,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a26ff62ff1be904fa37ef8758787b2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  height: 10
-  cellSize: 0.5
+  width: 20
+  height: 20
+  cellSize: 0.25
   orig: {x: -2.5, y: -2.5, z: 0}
+  snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0
