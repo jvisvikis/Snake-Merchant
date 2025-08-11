@@ -31,6 +31,8 @@ public class Snake : MonoBehaviour
 
     public void SetDirection(Vector2 dir)
     {
+        if (head.next.transform.localPosition == head.transform.localPosition + (Vector3)dir)
+            return;
         this.dir = dir;
     }
 

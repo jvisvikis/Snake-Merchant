@@ -9,6 +9,7 @@ public class Game : MonoBehaviour
     public int width = 10;
     public int height = 10;
     public float cellSize = 1;
+    public float timeToMove = 0.5f;
     public Vector3 orig;
     public Snake snakePrefab;
     private Snake snake;
@@ -26,7 +27,7 @@ public class Game : MonoBehaviour
         snake = Instantiate(snakePrefab, orig, Quaternion.identity, null);
         snake.SetSize(cellSize);
         snake.SetInitialPos(new Vector2(width/2,height/2));
-        StartCoroutine(MoveSnake(0.5f));
+        StartCoroutine(MoveSnake(timeToMove));
     }
 
     private void OnEnable()
@@ -44,6 +45,8 @@ public class Game : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(timeToMove);
+            Vector2 newPos = snake.Pos + snake.Dir;
+            if(grid.InGrid((int)newPos.x, (int)newPos.y))
             snake.Move();
         }
     }

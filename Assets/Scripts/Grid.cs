@@ -34,5 +34,9 @@ public class Grid
     {
         return new Vector3(x * cellSize, y * cellSize) + orig;
     }
-
+    
+    public bool InGrid(int x,int y)
+    {
+        return x < width && x >= 0 && y < height && y >= 0;
+    }
 }
