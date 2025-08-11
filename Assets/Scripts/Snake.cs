@@ -29,6 +29,11 @@ public class Snake : MonoBehaviour
         }
     }
 
+    public void SetDirection(Vector2 dir)
+    {
+        this.dir = dir;
+    }
+
     public void Move()
     {
         pos += dir;
