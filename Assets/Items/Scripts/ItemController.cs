@@ -29,15 +29,16 @@ public class ItemController : MonoBehaviour
 
     public bool ContainsCell(Vector2Int checkCell, bool checkItemStructure = false)
     {
-        var containsItem =
+        // TODO I've seen an apple spawn over a boot, is that because this logic is broken?
+        var containsItemBounds =
             checkCell.x >= cell.x && checkCell.x < cell.x + itemData.Width && checkCell.y >= cell.y && checkCell.y < cell.y + itemData.Height;
 
-        if (!containsItem)
+        if (!containsItemBounds)
             return false;
 
         if (checkItemStructure)
         {
-            // TODO implement for things like boots and irregularly shaped objects
+            // TODO implement for things like boots and irregularly shaped objects if needed
         }
 
         return false;
@@ -48,9 +49,19 @@ public class ItemController : MonoBehaviour
         if (!itemData)
             return;
 
-        var cellSize = game.Grid.CellSize;
-
         Gizmos.color = itemData.debugColor;
-        Gizmos.DrawCube(transform.position + new Vector3(cellSize / 2, cellSize / 2), cellSize * Vector3.one);
+
+        var cellSize = game.Grid.CellSize;
+        var itemCells = itemData.GetCells();
+
+        for (int x = 0; x < itemData.Width; x++)
+        {
+            for (int y = 0; y < itemData.Height; y++)
+            {
+                var cellPosition = transform.position + new Vector3(x * cellSize, y * cellSize);
+                if (itemCells[x][y])
+                    Gizmos.DrawCube(cellPosition + new Vector3(cellSize / 2, cellSize / 2), cellSize * Vector3.one);
+            }
+        }
     }
 }

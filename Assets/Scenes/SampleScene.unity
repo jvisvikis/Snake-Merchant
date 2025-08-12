@@ -246,10 +246,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a26ff62ff1be904fa37ef8758787b2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 20
-  height: 20
+  width: 15
+  height: 15
   cellSize: 0.25
-  timeToMove: 0.5
+  timeToMove: 0.1
   orig: {x: -2.5, y: -2.5, z: 0}
   snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
 --- !u!4 &1915158410
@@ -320,7 +320,9 @@ MonoBehaviour:
   itemData:
   - {fileID: 11400000, guid: 7493c34985a4d496999cf45b44aaf219, type: 2}
   - {fileID: 11400000, guid: 005d311c830104fa3aa78a43943ea554, type: 2}
+  - {fileID: 11400000, guid: 8f453e0d809e440e6af71db1792f8114, type: 2}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
+  randomSpawnItemTries: 30
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -52,24 +52,24 @@ public class ItemData : ScriptableObject
             if (lines.Length != Height)
                 Debug.LogWarning($"Item {type} has height {Height}, but its structure has {lines.Length}");
 
-            for (int row = 0; row < Height; row++)
+            for (int y = 0; y < Height; y++)
             {
-                if (row >= lines.Length)
+                if (y >= lines.Length)
                     break;
 
-                var cells = lines[row].Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
+                var cells = lines[y].Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
                 if (cells.Length != Width)
-                    Debug.LogWarning($"Item {type} has width {Width}, but its structure has {cells.Length} entries on row {row}");
+                    Debug.LogWarning($"Item {type} has width {Width}, but its structure has {cells.Length} entries on row {y}");
 
-                for (int column = 0; column < Width; column++)
+                for (int x = 0; x < Width; x++)
                 {
-                    if (column >= cells.Length)
+                    if (x >= cells.Length)
                         break;
 
-                    if (cells[column] != "#" && cells[column] != "_")
-                        Debug.LogWarning($"Item {type} has invalid character {cells[column]}");
+                    if (cells[x] != "#" && cells[x] != "_")
+                        Debug.LogWarning($"Item {type} has invalid character {cells[x]}");
 
-                    cachedCells[row][column] = cells[column] == "#";
+                    cachedCells[x][y] = cells[x] == "#";
                 }
             }
         }

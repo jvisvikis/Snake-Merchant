@@ -46,6 +46,25 @@ public class Snake : MonoBehaviour
         return false;
     }
 
+    public bool ExactlyContainsItem(ItemController item)
+    {
+        if (parts.Count != item.ItemData.CellCount && !item.ItemData.IsApple && !item.ItemData.IsMushroom)
+            return false;
+
+        var itemCells = item.ItemData.GetCells();
+
+        for (int x = 0; x < item.ItemData.Width; x++)
+        {
+            for (int y = 0; y < item.ItemData.Height; y++)
+            {
+                if (itemCells[x][y] && !ContainsCell(item.Cell + new Vector2Int(x, y)))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
     public void SetDirection(Vector2Int dir)
     {
         newDirOnNextMove = dir;

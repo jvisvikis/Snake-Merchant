@@ -33,10 +33,14 @@ public class ItemsManager : MonoBehaviour
 
     private void Start()
     {
-        if (appleItemData)
-            SpawnItem(appleItemData);
-        if (mushroomItemData)
-            SpawnItem(mushroomItemData);
+        foreach (var id in itemData)
+            SpawnItem(id);
+
+        // TODO: only spawn apple/mushroom, the other items spawn on a timer?
+        // if (appleItemData)
+        //     SpawnItem(appleItemData);
+        // if (mushroomItemData)
+        //     SpawnItem(mushroomItemData);
     }
 
     private void SpawnItem(ItemData itemData)
@@ -56,6 +60,9 @@ public class ItemsManager : MonoBehaviour
             Debug.LogWarning("Couldn't find anywhere random to spawn!");
             return;
         }
+
+        // TODO also a random orientation if it's not a 1-by-1 item, but note, not using unity
+        // transform rotation but by using tricky maths and stuff.
 
         var item = GameObject.Instantiate(itemControllerPrefab, transform);
         item.transform.position = game.Grid.GetWorldPos(cell);
@@ -80,10 +87,13 @@ public class ItemsManager : MonoBehaviour
         for (int i = 0; i < items.Count; i++)
         {
             var item = items[i];
-            if (game.Snake.Head == item.Cell)
+            if (game.Snake.ExactlyContainsItem(item))
             {
                 game.Snake.Consume(item.ItemData);
+
+                // TODO only spawn if an apple or a mushroom?
                 SpawnItem(item.ItemData);
+
                 Destroy(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
