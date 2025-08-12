@@ -14,19 +14,26 @@ public class Game : MonoBehaviour
     public Snake snakePrefab;
     private Snake snake;
     private Grid grid;
+    private ItemsManager itemsManager;
+
+    public Grid Grid => grid;
+    public Snake Snake => snake;
+
     // Start is called before the first frame update
     private void Awake()
     {
         controls = new InputActions();
         controls.PlayerInput.MoveVertical.performed += ctx => MoveVertical(ctx);
         controls.PlayerInput.MoveHorizontal.performed += ctx => MoveHorizontal(ctx);
+        itemsManager = GetComponent<ItemsManager>();
     }
+
     void Start()
     {
-        grid = new Grid(width,height,cellSize,orig);
+        grid = new Grid(width, height, cellSize, orig);
         snake = Instantiate(snakePrefab, orig, Quaternion.identity, null);
         snake.SetSize(cellSize);
-        snake.SetInitialPos(new Vector2(width/2,height/2));
+        snake.SetInitialPos(new Vector2Int(width / 2, height / 2));
         StartCoroutine(MoveSnake(timeToMove));
     }
 
@@ -45,20 +52,23 @@ public class Game : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(timeToMove);
-            Vector2 newPos = snake.Pos + snake.Dir;
-            if(grid.InGrid((int)newPos.x, (int)newPos.y))
-            snake.Move();
+            if (snake.Move())
+                itemsManager.SnakeMoved();
         }
     }
 
     public void MoveVertical(InputAction.CallbackContext callbackContext)
     {
-        
-        snake.SetDirection(new Vector2(0, callbackContext.ReadValue<float>()));
+        snake.SetDirection(new Vector2Int(0, RoundIntValue(callbackContext)));
     }
 
     public void MoveHorizontal(InputAction.CallbackContext callbackContext)
     {
-        snake.SetDirection(new Vector2(callbackContext.ReadValue<float>(),0));
+        snake.SetDirection(new Vector2Int(RoundIntValue(callbackContext), 0));
+    }
+
+    private int RoundIntValue(InputAction.CallbackContext callbackContext)
+    {
+        return (int)Mathf.Ceil(callbackContext.ReadValue<float>());
     }
 }
