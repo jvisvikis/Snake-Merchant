@@ -24,14 +24,14 @@ public class ItemsManager : MonoBehaviour
     {
         game = GetComponent<Game>();
 
-        foreach (var i in itemData)
+        foreach (var id in itemData)
         {
-            if (i.type == ItemData.ItemType.Apple)
-                appleItemData = i;
-            else if (i.type == ItemData.ItemType.Mushroom)
-                mushroomItemData = i;
+            if (id.IsApple)
+                appleItemData = id;
+            else if (id.IsMushroom)
+                mushroomItemData = id;
             else
-                collectibleItemData.Add(i);
+                collectibleItemData.Add(id);
         }
     }
 
@@ -62,7 +62,7 @@ public class ItemsManager : MonoBehaviour
 
             foreach (var item in items)
             {
-                if (item.ItemData.type == itemData.type)
+                if (item.ItemData == itemData)
                 {
                     spawnItem = null;
                     break;
@@ -186,7 +186,7 @@ public class ItemsManager : MonoBehaviour
             var item = items[i];
             var itemData = item.ItemData;
 
-            var canConsumeItem = itemData.IsConsumable || specificItem == null || itemData.type == specificItem.type;
+            var canConsumeItem = itemData.IsConsumable || specificItem == null || itemData == specificItem;
 
             if (canConsumeItem && game.Snake.ExactlyContainsItem(item))
             {

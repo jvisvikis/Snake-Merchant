@@ -21,15 +21,16 @@ public class Game : MonoBehaviour
 
     [Header("Game options")]
     public int numItems = 1;
-    public float initTimeToMove = 0.5f;
-    public float minTimeToMove = 0.1f;
-    public float timeToMoveReduction = 0.01f;
     public bool spawnNewSnakeOnCollection = false;
     public bool collectionWalksOffScreen = false;
     public int collectionWalkDelay = 3;
     public bool onlyCollectSpecificItem = false;
 
-    // [Header("Game feel")]
+    [Header("Game feel")]
+    public float initTimeToMove = 0.5f;
+    public float minTimeToMove = 0.1f;
+    public float timeToMoveReduction = 0.01f;
+    public float timeToDieGrace = 0.1f;
 
     public Grid Grid => grid;
     public Snake Snake => snake;
@@ -89,24 +90,30 @@ public class Game : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(timeToMove);
-            if (snake.Move())
+            bool didMove = snake.Move();
+
+            // allow grace time if snake is about to die for player to avoid death.
+            for (float t = 0; t < timeToDieGrace && !didMove; t += Time.deltaTime)
             {
-                if (itemsManager.SnakeMoved(specificItem?.ItemData))
-                {
-                    timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
-
-                    if (spawnNewSnakeOnCollection)
-                    {
-                        GameObject.Destroy(snake);
-                        SpawnSnake();
-                    }
-
-                    MaybeSpawnSpecificItem();
-                }
+                yield return null;
+                didMove = snake.Move();
             }
-            else
+
+            if (!didMove)
             {
                 Die();
+            }
+            else if (itemsManager.SnakeMoved(specificItem?.ItemData))
+            {
+                timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+
+                if (spawnNewSnakeOnCollection)
+                {
+                    GameObject.Destroy(snake);
+                    SpawnSnake();
+                }
+
+                MaybeSpawnSpecificItem();
             }
         }
     }

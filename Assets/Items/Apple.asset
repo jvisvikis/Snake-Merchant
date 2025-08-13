@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
   m_Name: Apple
   m_EditorClassIdentifier: 
-  type: 1
   Width: 1
   Height: 1
-  CellCount: 1
+  IsApple: 1
+  IsMushroom: 0
   cells: '#'
   debugColor: {r: 0.9339623, g: 0, b: 0.056550726, a: 1}

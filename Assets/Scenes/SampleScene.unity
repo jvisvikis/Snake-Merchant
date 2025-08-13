@@ -286,13 +286,14 @@ MonoBehaviour:
   orig: {x: -2.5, y: -2.5, z: 0}
   initialSnakePos: {x: 2, y: 0}
   numItems: 3
-  initTimeToMove: 0.3
-  minTimeToMove: 0.05
-  timeToMoveReduction: 0.025
   spawnNewSnakeOnCollection: 1
   collectionWalksOffScreen: 1
   collectionWalkDelay: 3
   onlyCollectSpecificItem: 1
+  initTimeToMove: 0.3
+  minTimeToMove: 0.05
+  timeToMoveReduction: 0.025
+  timeToDieGrace: 0.2
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0
@@ -369,6 +370,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 657d82b4c8f7049a9bad3e3d77d5936a, type: 2}
   - {fileID: 11400000, guid: 005d311c830104fa3aa78a43943ea554, type: 2}
   - {fileID: 11400000, guid: ccd661737fe2b4cd191d665e0fa98ddb, type: 2}
+  - {fileID: 11400000, guid: e191cbb59171d4392a83227a36dfb095, type: 2}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -4,24 +4,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemData", menuName = "Items/Item", order = 0)]
 public class ItemData : ScriptableObject
 {
-    public enum ItemType
-    {
-        None = 0,
-        Apple = 1,
-        Mushroom = 2,
-        Boot = 3,
-        Box = 4,
-        Elbow = 5,
-        Stick = 6,
-    }
-
-    public ItemType type;
-
     [Min(1)]
     public int Width = 1;
 
     [Min(1)]
     public int Height = 1;
+
+    public bool IsApple = false;
+
+    public bool IsMushroom = false;
 
     [TextArea(10, 10), SerializeField, Tooltip("Structure of the item, occupy-able bits use the '#' character and empty use '_'")]
     private string cells;
@@ -33,8 +24,6 @@ public class ItemData : ScriptableObject
     private int cellCount;
 
     public int CellCount => GetCellCount();
-    public bool IsApple => type == ItemType.Apple;
-    public bool IsMushroom => type == ItemType.Mushroom;
     public bool IsConsumable => IsApple || IsMushroom;
     public bool IsCollectible => !IsConsumable;
 
@@ -77,7 +66,7 @@ public class ItemData : ScriptableObject
 
             var lines = cells.Split("\n", System.StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length != Height)
-                Debug.LogWarning($"Item {type} has height {Height}, but its structure has {lines.Length}");
+                Debug.LogWarning($"Item {name} has height {Height}, but its structure has {lines.Length}");
 
             for (int y = 0; y < Height; y++)
             {
@@ -86,7 +75,7 @@ public class ItemData : ScriptableObject
 
                 var cells = lines[y].Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
                 if (cells.Length != Width)
-                    Debug.LogWarning($"Item {type} has width {Width}, but its structure has {cells.Length} entries on row {y}");
+                    Debug.LogWarning($"Item {name} has width {Width}, but its structure has {cells.Length} entries on row {y}");
 
                 for (int x = 0; x < Width; x++)
                 {
@@ -94,7 +83,7 @@ public class ItemData : ScriptableObject
                         break;
 
                     if (cells[x] != OccupiedCellChar && cells[x] != EmptyCellChar)
-                        Debug.LogWarning($"Item {type} has invalid character {cells[x]}");
+                        Debug.LogWarning($"Item {name} has invalid character {cells[x]}");
 
                     cachedCellStructure[x][y] = cells[x] == OccupiedCellChar;
                 }
