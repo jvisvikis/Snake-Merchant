@@ -9,6 +9,7 @@ public class Snake : MonoBehaviour
 
     public Vector2Int Head => ToVector2Int(parts[0].transform.localPosition);
     public Vector2Int Dir => dir;
+    public int Length => parts.Count;
 
     private Game game;
     private Vector2Int dir = Vector2Int.right;
@@ -20,6 +21,12 @@ public class Snake : MonoBehaviour
     {
         game = FindObjectOfType<Game>();
         parts = new(GetComponentsInChildren<SnakePart>());
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var part in parts)
+            Destroy(part.gameObject);
     }
 
     public void SetSize(float size)
@@ -51,7 +58,7 @@ public class Snake : MonoBehaviour
         if (parts.Count != item.ItemData.CellCount && !item.ItemData.IsApple && !item.ItemData.IsMushroom)
             return false;
 
-        var itemCells = item.ItemData.GetCells();
+        var itemCells = item.ItemData.GetCellStructure();
 
         for (int x = 0; x < item.ItemData.Width; x++)
         {
@@ -84,6 +91,9 @@ public class Snake : MonoBehaviour
         if (!game.Grid.InGrid(newPos.x, newPos.y))
             return false;
 
+        if (ContainsCell(newPos))
+            return false;
+
         var tailPosition = parts[^1].transform.localPosition;
 
         for (int i = parts.Count - 1; i > 0; i--)
@@ -114,16 +124,6 @@ public class Snake : MonoBehaviour
         return new Vector3(v.x, v.y, 0);
     }
 
-    public bool Occupies(Vector2Int coord)
-    {
-        foreach (var part in parts)
-        {
-            if (coord == ToVector2Int(part.transform.localPosition))
-                return true;
-        }
-        return false;
-    }
-
     public void Consume(ItemData itemData)
     {
         if (itemData.IsApple)
@@ -134,7 +134,7 @@ public class Snake : MonoBehaviour
         {
             if (parts.Count <= 2)
             {
-                // TODO die?
+                game.Die();
                 return;
             }
             GameObject.Destroy(parts[^1].gameObject);

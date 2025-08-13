@@ -16,5 +16,5 @@ MonoBehaviour:
   Width: 1
   Height: 1
   CellCount: 1
-  cells: 
+  cells: '#'
   debugColor: {r: 0.5566038, g: 0.3017453, b: 0.07088822, a: 1}

@@ -10,13 +10,15 @@ public class ItemsManager : MonoBehaviour
     [SerializeField]
     private ItemController itemControllerPrefab;
 
-    [SerializeField]
-    private int randomSpawnItemTries = 30;
-
     private Game game;
     private ItemData appleItemData;
     private ItemData mushroomItemData;
+    private List<ItemData> collectibleItemData = new();
+
     private List<ItemController> items = new();
+
+    // Maps item that is walking off screen => delay until start walking.
+    private Dictionary<ItemController, int> walkingItems = new();
 
     private void Awake()
     {
@@ -28,37 +30,91 @@ public class ItemsManager : MonoBehaviour
                 appleItemData = i;
             else if (i.type == ItemData.ItemType.Mushroom)
                 mushroomItemData = i;
+            else
+                collectibleItemData.Add(i);
         }
     }
 
     private void Start()
     {
-        foreach (var id in itemData)
-            SpawnItem(id);
+        SpawnItem(appleItemData);
+        SpawnItem(mushroomItemData);
 
-        // TODO: only spawn apple/mushroom, the other items spawn on a timer?
-        // if (appleItemData)
-        //     SpawnItem(appleItemData);
-        // if (mushroomItemData)
-        //     SpawnItem(mushroomItemData);
+        // weird copy/shuffle logic so that we (a) spawn random items and (b) don't spawn the same
+        // item more than once.
+        var ncid = new List<ItemData>(collectibleItemData);
+        ListUtil.Shuffle(ncid);
+
+        for (int i = 0; i < Mathf.Min(ncid.Count, game.numItems); i++)
+            SpawnItem(ncid[i]);
+    }
+
+    private void SpawnRandomNonExistentCollectibleItem()
+    {
+        var ncid = new List<ItemData>(collectibleItemData);
+        ListUtil.Shuffle(ncid);
+
+        ItemData spawnItem = null;
+
+        foreach (var itemData in ncid)
+        {
+            spawnItem = itemData;
+
+            foreach (var item in items)
+            {
+                if (item.ItemData.type == itemData.type)
+                {
+                    spawnItem = null;
+                    break;
+                }
+            }
+
+            if (spawnItem != null)
+                break;
+        }
+
+        SpawnItem(spawnItem);
+    }
+
+    public ItemController GetRandomExistingCollectibleItem()
+    {
+        var itemsCopy = new List<ItemController>(items);
+        ListUtil.Shuffle(itemsCopy);
+
+        foreach (var item in itemsCopy)
+        {
+            if (item.ItemData.IsCollectible)
+                return item;
+        }
+
+        return null;
     }
 
     private void SpawnItem(ItemData itemData)
     {
-        Vector2Int cell = Vector2Int.down; // arbitrary invalid value
+        var cell = game.Grid.RandomCell(itemData.Width, itemData.Height);
+        var startCell = cell;
 
-        for (int i = 0; i < randomSpawnItemTries; i++)
+        while (CellIsOccupied(cell, itemData.Width, itemData.Height))
         {
-            cell = game.Grid.RandomCell(itemData.Width, itemData.Height);
-            if (!CellIsOccupied(cell))
-                break;
-        }
+            // linearly search to find a spot that fits.
+            cell.x++;
 
-        if (cell == Vector2Int.down)
-        {
-            // TODO do a linear search to find a spot rather than giving up
-            Debug.LogWarning("Couldn't find anywhere random to spawn!");
-            return;
+            if (cell.x + itemData.Width >= game.Grid.Width)
+            {
+                cell.y++;
+                cell.x = 0;
+            }
+
+            if (cell.y + itemData.Height >= game.Grid.Height)
+                cell.y = 0;
+
+            if (cell == startCell)
+            {
+                Debug.LogWarning($"Can't find anywhere to spawn item: {itemData}");
+                game.Die();
+                return;
+            }
         }
 
         // TODO also a random orientation if it's not a 1-by-1 item, but note, not using unity
@@ -71,34 +127,96 @@ public class ItemsManager : MonoBehaviour
         items.Add(item);
     }
 
-    private bool CellIsOccupied(Vector2Int cell)
+    private bool CellIsOccupied(Vector2Int cell, int width, int height)
     {
-        foreach (var item in items)
+        for (int x = 0; x < width; x++)
         {
-            if (item.ContainsCell(cell))
-                return true;
+            for (int y = 0; y < height; y++)
+            {
+                var checkCell = cell + new Vector2Int(x, y);
+
+                foreach (var item in items)
+                {
+                    if (item.ContainsCell(checkCell))
+                        return true;
+                }
+
+                foreach (var walkingItem in walkingItems.Keys)
+                {
+                    if (walkingItem.ContainsCell(checkCell))
+                        return true;
+                }
+
+                if (game.Snake.ContainsCell(checkCell))
+                    return true;
+            }
         }
 
-        return game.Snake.ContainsCell(cell);
+        return false;
     }
 
-    public void SnakeMoved()
+    /// <summary>
+    /// Returns true if a collectible item was consumed.
+    /// </summary>
+    /// <returns></returns> <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    public bool SnakeMoved(ItemData specificItem)
     {
+        var walkingItemKeys = new List<ItemController>(walkingItems.Keys);
+
+        foreach (var walkingItem in walkingItemKeys)
+        {
+            if (walkingItems[walkingItem] == 0)
+            {
+                if (!walkingItem.MoveLeft())
+                    Destroy(walkingItem);
+            }
+            else
+            {
+                walkingItems[walkingItem]--;
+            }
+        }
+
+        ItemData didConsume = null;
+
         for (int i = 0; i < items.Count; i++)
         {
             var item = items[i];
-            if (game.Snake.ExactlyContainsItem(item))
+            var itemData = item.ItemData;
+
+            var canConsumeItem = itemData.IsConsumable || specificItem == null || itemData.type == specificItem.type;
+
+            if (canConsumeItem && game.Snake.ExactlyContainsItem(item))
             {
-                game.Snake.Consume(item.ItemData);
-
-                // TODO only spawn if an apple or a mushroom?
-                SpawnItem(item.ItemData);
-
-                Destroy(item.gameObject);
+                game.Snake.Consume(itemData);
+                didConsume = itemData;
+                if (itemData.IsCollectible && game.collectionWalksOffScreen)
+                    walkingItems[item] = game.collectionWalkDelay;
+                else
+                    Destroy(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
-                i--;
             }
         }
+
+        if (didConsume != null)
+        {
+            if (didConsume.IsCollectible)
+            {
+                SpawnRandomNonExistentCollectibleItem();
+                return true;
+            }
+            SpawnItem(didConsume);
+        }
+
+        return false;
+    }
+
+    public void FinishedWalking(ItemController item)
+    {
+        walkingItems.Remove(item);
+        Destroy(item);
     }
 }

@@ -2,69 +2,145 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
+    [Header("Friends")]
     public InputActions controls;
+    public Snake snakePrefab;
+    public GameObject specificItemParent;
+    public ItemController itemControllerPrefab;
+
+    [Header("Grid")]
     public int width = 10;
     public int height = 10;
     public float cellSize = 1;
-    public float timeToMove = 0.5f;
     public Vector3 orig;
-    public Snake snakePrefab;
-    private Snake snake;
-    private Grid grid;
-    private ItemsManager itemsManager;
+    public Vector2Int initialSnakePos;
+
+    [Header("Game options")]
+    public int numItems = 1;
+    public float initTimeToMove = 0.5f;
+    public float minTimeToMove = 0.1f;
+    public float timeToMoveReduction = 0.01f;
+    public bool spawnNewSnakeOnCollection = false;
+    public bool collectionWalksOffScreen = false;
+    public int collectionWalkDelay = 3;
+    public bool onlyCollectSpecificItem = false;
+
+    // [Header("Game feel")]
 
     public Grid Grid => grid;
     public Snake Snake => snake;
 
+    private Snake snake;
+    private Grid grid;
+    private ItemsManager itemsManager;
+    private float timeToMove;
+    private ItemController specificItem;
+
     // Start is called before the first frame update
     private void Awake()
     {
-        controls = new InputActions();
-        controls.PlayerInput.MoveVertical.performed += ctx => MoveVertical(ctx);
-        controls.PlayerInput.MoveHorizontal.performed += ctx => MoveHorizontal(ctx);
         itemsManager = GetComponent<ItemsManager>();
+        timeToMove = initTimeToMove;
     }
 
     void Start()
     {
         grid = new Grid(width, height, cellSize, orig);
+        SpawnSnake();
+        StartCoroutine(MoveSnake(timeToMove));
+    }
+
+    void SpawnSnake()
+    {
         snake = Instantiate(snakePrefab, orig, Quaternion.identity, null);
         snake.SetSize(cellSize);
-        snake.SetInitialPos(new Vector2Int(width / 2, height / 2));
-        StartCoroutine(MoveSnake(timeToMove));
+        snake.SetInitialPos(initialSnakePos);
     }
 
     private void OnEnable()
     {
+        if (controls == null)
+            controls = new InputActions();
+        controls.PlayerInput.MoveVertical.performed += MoveVertical;
+        controls.PlayerInput.MoveHorizontal.performed += MoveHorizontal;
+        controls.PlayerInput.Reset.performed += OnReset;
         controls.Enable();
     }
 
     private void OnDisable()
     {
         controls.Disable();
+        controls.PlayerInput.MoveVertical.performed -= MoveVertical;
+        controls.PlayerInput.MoveHorizontal.performed -= MoveHorizontal;
+        controls.PlayerInput.Reset.performed -= OnReset;
     }
 
     public IEnumerator MoveSnake(float timeToMove)
     {
+        // Gross hack to make sure that all of the Start() stuff - e.g. items and so on - has been
+        // set up before starting to move the snake.
+        yield return null;
+        MaybeSpawnSpecificItem();
+
         while (true)
         {
             yield return new WaitForSeconds(timeToMove);
             if (snake.Move())
-                itemsManager.SnakeMoved();
+            {
+                if (itemsManager.SnakeMoved(specificItem?.ItemData))
+                {
+                    timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+
+                    if (spawnNewSnakeOnCollection)
+                    {
+                        GameObject.Destroy(snake);
+                        SpawnSnake();
+                    }
+
+                    MaybeSpawnSpecificItem();
+                }
+            }
+            else
+            {
+                Die();
+            }
         }
     }
 
-    public void MoveVertical(InputAction.CallbackContext callbackContext)
+    private void MaybeSpawnSpecificItem()
+    {
+        if (!onlyCollectSpecificItem)
+            return;
+
+        if (specificItem != null)
+            GameObject.Destroy(specificItem.gameObject);
+
+        specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
+        specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().ItemData);
+    }
+
+    public void Die()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void MoveVertical(InputAction.CallbackContext callbackContext)
     {
         snake.SetDirection(new Vector2Int(0, RoundIntValue(callbackContext)));
     }
 
-    public void MoveHorizontal(InputAction.CallbackContext callbackContext)
+    private void MoveHorizontal(InputAction.CallbackContext callbackContext)
     {
         snake.SetDirection(new Vector2Int(RoundIntValue(callbackContext), 0));
+    }
+
+    private void OnReset(InputAction.CallbackContext callbackContext)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private int RoundIntValue(InputAction.CallbackContext callbackContext)

@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &292428359
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 292428360}
+  m_Layer: 0
+  m_Name: Specific item parent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &292428360
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292428359}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,12 +277,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a26ff62ff1be904fa37ef8758787b2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 15
-  height: 15
-  cellSize: 0.25
-  timeToMove: 0.1
-  orig: {x: -2.5, y: -2.5, z: 0}
   snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
+  specificItemParent: {fileID: 292428359}
+  itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
+  width: 12
+  height: 12
+  cellSize: 0.25
+  orig: {x: -2.5, y: -2.5, z: 0}
+  initialSnakePos: {x: 2, y: 0}
+  numItems: 3
+  initTimeToMove: 0.3
+  minTimeToMove: 0.05
+  timeToMoveReduction: 0.025
+  spawnNewSnakeOnCollection: 1
+  collectionWalksOffScreen: 1
+  collectionWalkDelay: 3
+  onlyCollectSpecificItem: 1
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0
@@ -300,6 +341,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: b1a479e3-70ce-43ce-88da-503a3d2520b2
     m_ActionName: PlayerInput/MoveVertical[/Keyboard/s,/Keyboard/w]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1ab7f3de-0a86-41f1-8fa6-9f1779dc83f8
+    m_ActionName: PlayerInput/Reset[/Keyboard/r]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: PlayerInput
@@ -319,13 +364,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData:
   - {fileID: 11400000, guid: 7493c34985a4d496999cf45b44aaf219, type: 2}
-  - {fileID: 11400000, guid: 005d311c830104fa3aa78a43943ea554, type: 2}
   - {fileID: 11400000, guid: 8f453e0d809e440e6af71db1792f8114, type: 2}
+  - {fileID: 11400000, guid: 5ea974890d59549aeb944151635c7700, type: 2}
+  - {fileID: 11400000, guid: 657d82b4c8f7049a9bad3e3d77d5936a, type: 2}
+  - {fileID: 11400000, guid: 005d311c830104fa3aa78a43943ea554, type: 2}
+  - {fileID: 11400000, guid: ccd661737fe2b4cd191d665e0fa98ddb, type: 2}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
-  randomSpawnItemTries: 30
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 1915158410}
+  - {fileID: 292428360}
