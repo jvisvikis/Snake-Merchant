@@ -19,15 +19,16 @@ public class DayManager : MonoBehaviour
     public int obstacleDayEnd;
     public int minScore;
     public int maxScore;
-    public int scoreModifier;
+    public float scoreModifier;
 
     public bool IsPlaying => isPlaying;
     public int CurrentDay => currentDay;
+    public int CurrentTargetScore => currentTargetScore;
 
     private bool isPlaying = true;
     private int currentDay;
-    private int currentScore;
-    private int currentDayScore;
+    private int currentTargetScore;
+    private int currentTotalScore;
     private float dayTimeLimit;
 
     private void Awake()
@@ -46,34 +47,39 @@ public class DayManager : MonoBehaviour
     private void Start()
     {
         dayTimeLimit = maxTimeLimit;
-        currentDayScore = minScore;
+        currentTargetScore = minScore;
         StartCoroutine(StartDay());
     }
 
     public IEnumerator StartDay()
     {
-
         isPlaying = true;
         float currentTime = 0;
         UIManager.Instance.SetTimeSliderValue(1f);
-        while(isPlaying)
+        UIManager.Instance.SetCurrentDayText($"Day: {currentDay}");
+        UIManager.Instance.SetTargetText($"Target: {currentTargetScore}");
+        UIManager.Instance.SetCurrentScoreText($"Current: {0}");
+        while(isPlaying && currentTime < dayTimeLimit)
         {
             currentTime += Time.deltaTime;
             UIManager.Instance.SetTimeSliderValue(1 - currentTime / dayTimeLimit);
             yield return null;
         }
         isPlaying = false;
-        //Temp, change to button event
         EndDay();
-        //^^^^
     }
 
     public void EndDay()
     {
+        UIManager.Instance.EndDay();
+    }
+
+    public void NextDay()
+    {
         currentDay++;
         ModifyDayMaxTimeLimit();
+        ModifyDayScore();
         ReloadScene();
-        StartCoroutine(StartDay());
     }
 
     private void ModifyDayMaxTimeLimit()
@@ -83,7 +89,7 @@ public class DayManager : MonoBehaviour
 
     private void ModifyDayScore()
     {
-        currentDayScore *= scoreModifier;
+        currentTargetScore = Mathf.FloorToInt(currentTargetScore * scoreModifier);
     }
 
     public void ReloadScene()

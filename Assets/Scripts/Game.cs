@@ -56,12 +56,13 @@ public class Game : MonoBehaviour
     private int coins = 0;
     private int itemsCollected = 0;
     private int coinSpawnCountdown;
+    private int currentDayScore;
     private DayManager dayManager;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        dayManager = FindObjectOfType<DayManager>();
+        dayManager = DayManager.Instance;
         itemsManager = GetComponent<ItemsManager>();
         timeToMove = initTimeToMove;
     }
@@ -72,6 +73,7 @@ public class Game : MonoBehaviour
         coinSpawnCountdown = coinsFirstSpawnTurns;
         SpawnSnake();
         StartCoroutine(MoveSnake());
+        StartCoroutine(dayManager.StartDay());
     }
 
     void SpawnSnake()
@@ -152,7 +154,8 @@ public class Game : MonoBehaviour
 
     public void Die()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        //This will need a revist
+        dayManager.EndDay();
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
@@ -183,6 +186,13 @@ public class Game : MonoBehaviour
     public void OnItemCollected()
     {
         itemsCollected++;
+        currentDayScore += specificItem.ItemData.Value;
+        UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
+        if(dayManager.CurrentTargetScore <=currentDayScore)
+        {
+            dayManager.EndDay();
+            return;
+        }
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
         MaybeSpawnSpecificItem();
     }

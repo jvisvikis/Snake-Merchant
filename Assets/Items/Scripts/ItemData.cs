@@ -10,7 +10,7 @@ public class ItemData : ScriptableObject
         Entry = 1,
         Middle = 2,
     }
-
+    public int Value = 0;
     [Min(1)]
     public int Width = 1;
 
