@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class ItemController : MonoBehaviour
 {
     private ItemData itemData;
@@ -66,6 +70,7 @@ public class ItemController : MonoBehaviour
         return false;
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (!itemData)
@@ -85,5 +90,9 @@ public class ItemController : MonoBehaviour
                     Gizmos.DrawCube(cellPosition + new Vector3(cellSize / 2, cellSize / 2), cellSize * Vector3.one);
             }
         }
+
+        if (ItemData.IsCoin)
+            Handles.Label(transform.position, $"{game.CoinSpawnCountdown}");
     }
+#endif
 }

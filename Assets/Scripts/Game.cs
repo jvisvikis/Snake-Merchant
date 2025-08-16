@@ -17,7 +17,6 @@ public class Game : MonoBehaviour
     public int height = 10;
     public float cellSize = 1;
     public Vector3 orig;
-    public Vector2Int initialSnakePos;
 
     [Header("Game variation")]
     public int numItems = 1;
@@ -36,11 +35,16 @@ public class Game : MonoBehaviour
 
     [Header("Coins")]
     public int numCoins = 3;
-    public int coinsSpawnEveryTurns = 10;
+    public int coinsSpawnTurns = 15;
+    public int coinsFirstSpawnTurns = 5;
+
+    [Header("Snake")]
+    public int startNumParts = 3;
 
     public Grid Grid => grid;
     public Snake Snake => snake;
     public int Coins => coins;
+    public int CoinSpawnCountdown => coinSpawnCountdown;
 
     private Snake snake;
     private Grid grid;
@@ -48,6 +52,8 @@ public class Game : MonoBehaviour
     private float timeToMove;
     private ItemController specificItem;
     private int coins = 0;
+    private int itemsCollected = 0;
+    private int coinSpawnCountdown;
 
     // Start is called before the first frame update
     private void Awake()
@@ -59,6 +65,7 @@ public class Game : MonoBehaviour
     void Start()
     {
         grid = new Grid(width, height, cellSize, orig);
+        coinSpawnCountdown = coinsFirstSpawnTurns;
         SpawnSnake();
         StartCoroutine(MoveSnake(timeToMove));
     }
@@ -67,7 +74,7 @@ public class Game : MonoBehaviour
     {
         snake = Instantiate(snakePrefab, orig, Quaternion.identity, null);
         snake.SetSize(cellSize);
-        snake.SetInitialPos(initialSnakePos);
+        snake.Init(new Vector2Int(0, 0));
     }
 
     private void OnEnable()
@@ -98,6 +105,7 @@ public class Game : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(timeToMove);
+
             bool didMove = snake.Move();
 
             // allow grace time if snake is about to die for player to avoid death.
@@ -122,6 +130,14 @@ public class Game : MonoBehaviour
                 }
 
                 MaybeSpawnSpecificItem();
+            }
+
+            coinSpawnCountdown--;
+
+            if (coinSpawnCountdown == 0)
+            {
+                itemsManager.RespawnCoins();
+                coinSpawnCountdown = coinsSpawnTurns;
             }
         }
     }
@@ -168,8 +184,13 @@ public class Game : MonoBehaviour
         coins++;
     }
 
+    public void OnItemCollected()
+    {
+        itemsCollected++;
+    }
+
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 200, 30), $"Coins: {coins}");
+        GUI.Label(new Rect(10, 10, 200, 30), $"Coins: {coins}\nItems: {itemsCollected}");
     }
 }

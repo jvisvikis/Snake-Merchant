@@ -55,12 +55,12 @@ public class Grid
     /// The position is returned as a Vector2Int of the minimum value i.e. the bottom-left corner
     /// conceptually in Unity.
     /// </summary>
-    public Vector2Int RandomCell(int blockWidth, int blockHeight)
+    public Vector2Int RandomCell(int blockWidth, int blockHeight, int startX, int startY)
     {
         Debug.Assert(blockWidth > 0);
         Debug.Assert(blockWidth <= width);
         Debug.Assert(blockHeight > 0);
         Debug.Assert(blockHeight <= height);
-        return new Vector2Int(Random.Range(0, width - blockWidth), Random.Range(0, height - blockHeight));
+        return new Vector2Int(Random.Range(startX, width - blockWidth), Random.Range(startY, height - blockHeight));
     }
 }

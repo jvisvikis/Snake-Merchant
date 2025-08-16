@@ -16,9 +16,10 @@ MonoBehaviour:
   Height: 3
   IsApple: 0
   IsMushroom: 0
+  IsCoin: 0
   cells: '# # #
 
     # _ #
 
     # # #'
-  debugColor: {r: 0.68501765, g: 0.8396226, b: 0.04356533, a: 1}
+  debugColor: {r: 0.36111668, g: 0.7169812, b: 0.064257726, a: 1}

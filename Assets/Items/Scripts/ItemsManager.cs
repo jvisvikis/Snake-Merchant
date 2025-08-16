@@ -43,11 +43,6 @@ public class ItemsManager : MonoBehaviour
         SpawnItem(appleItemData);
         SpawnItem(mushroomItemData);
 
-        // TODO: Spawn multiple coins, make them only last a set number of rounds before expiring,
-        // and only respawn on expiration not when collected.
-        for (int i = 0; i < game.numCoins; i++)
-            SpawnItem(coinItemData);
-
         // weird copy/shuffle logic so that we (a) spawn random items and (b) don't spawn the same
         // item more than once.
         var ncid = new List<ItemData>(collectibleItemData);
@@ -55,6 +50,24 @@ public class ItemsManager : MonoBehaviour
 
         for (int i = 0; i < Mathf.Min(ncid.Count, game.numItems); i++)
             SpawnItem(ncid[i]);
+    }
+
+    public void RespawnCoins()
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            var item = items[i];
+            if (item.ItemData.IsCoin)
+            {
+                Destroy(item.gameObject);
+                items[i] = items[^1];
+                items.RemoveAt(items.Count - 1);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < game.numCoins; i++)
+            SpawnItem(coinItemData);
     }
 
     private void SpawnRandomNonExistentCollectibleItem()
@@ -100,7 +113,7 @@ public class ItemsManager : MonoBehaviour
 
     private void SpawnItem(ItemData itemData)
     {
-        var cell = game.Grid.RandomCell(itemData.Width, itemData.Height);
+        var cell = game.Grid.RandomCell(itemData.Width, itemData.Height, 1, 1);
         var startCell = cell;
 
         while (CellIsOccupied(cell, itemData.Width, itemData.Height))
@@ -111,11 +124,11 @@ public class ItemsManager : MonoBehaviour
             if (cell.x + itemData.Width >= game.Grid.Width)
             {
                 cell.y++;
-                cell.x = 0;
+                cell.x = 1;
             }
 
             if (cell.y + itemData.Height >= game.Grid.Height)
-                cell.y = 0;
+                cell.y = 1;
 
             if (cell == startCell)
             {
@@ -189,7 +202,6 @@ public class ItemsManager : MonoBehaviour
         {
             var item = items[i];
             var itemData = item.ItemData;
-
             var canConsumeItem = itemData.IsConsumable || specificItem == null || itemData == specificItem;
 
             if (canConsumeItem && game.Snake.CanConsume(item))
@@ -202,6 +214,7 @@ public class ItemsManager : MonoBehaviour
                     Destroy(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
+                break; // can only consume 1 item
             }
         }
 
@@ -209,12 +222,15 @@ public class ItemsManager : MonoBehaviour
         {
             if (didConsume.IsCollectible)
             {
+                if (game.snakeCarriesItemOnCollection)
+                    game.Snake.CarryItem(didConsume);
+
                 SpawnRandomNonExistentCollectibleItem();
                 return true;
             }
-            if (game.snakeCarriesItemOnCollection)
-                game.Snake.CarryItem(didConsume);
-            SpawnItem(didConsume);
+
+            if (!didConsume.IsCoin)
+                SpawnItem(didConsume);
         }
 
         return false;

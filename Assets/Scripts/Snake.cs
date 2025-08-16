@@ -14,7 +14,7 @@ public class Snake : MonoBehaviour
     private Game game;
     private Vector2Int dir = Vector2Int.right;
     private List<SnakePart> parts;
-    private bool newPartOnNextMove = false;
+    private int targetParts = 0;
     private Vector2Int newDirOnNextMove = Vector2Int.zero;
     private ItemData carryingItem = null;
 
@@ -22,6 +22,8 @@ public class Snake : MonoBehaviour
     {
         game = FindObjectOfType<Game>();
         parts = new(GetComponentsInChildren<SnakePart>());
+        Debug.Assert(parts.Count == 1);
+        targetParts = game.startNumParts;
     }
 
     private void OnDestroy()
@@ -35,13 +37,12 @@ public class Snake : MonoBehaviour
         this.transform.localScale = new Vector3(size, size);
     }
 
-    public void SetInitialPos(Vector2Int pos)
+    public void Init(Vector2Int pos)
     {
         parts[0].transform.localPosition = new Vector3(pos.x, pos.y);
-        for (int i = 1; i < parts.Count; i++)
-        {
-            parts[i].transform.localPosition = parts[i - 1].transform.localPosition + Vector3.left;
-        }
+
+        while (parts.Count < targetParts)
+            Move();
     }
 
     public bool ContainsCell(Vector2Int cell)
@@ -107,12 +108,19 @@ public class Snake : MonoBehaviour
 
         parts[0].transform.localPosition += FromVector2Int(dir);
 
-        if (newPartOnNextMove)
+        if (targetParts > parts.Count)
         {
             var part = GameObject.Instantiate(partPrefab, transform);
             part.transform.localPosition = tailPosition;
             parts.Add(part);
-            newPartOnNextMove = false;
+        }
+
+        if (Head == Vector2Int.zero && carryingItem != null)
+        {
+            game.OnItemCollected();
+            carryingItem = null;
+            foreach (var snakePart in parts)
+                snakePart.ResetColor();
         }
 
         return true;
@@ -132,7 +140,7 @@ public class Snake : MonoBehaviour
     {
         if (itemData.IsApple)
         {
-            newPartOnNextMove = true;
+            targetParts++;
         }
         else if (itemData.IsMushroom)
         {
@@ -143,6 +151,7 @@ public class Snake : MonoBehaviour
             }
             GameObject.Destroy(parts[^1].gameObject);
             parts.RemoveAt(parts.Count - 1);
+            targetParts--;
         }
         else if (itemData.IsCoin)
         {
@@ -153,5 +162,8 @@ public class Snake : MonoBehaviour
     public void CarryItem(ItemData itemData)
     {
         carryingItem = itemData;
+
+        foreach (var snakePart in parts)
+            snakePart.SetColor(itemData.debugColor);
     }
 }
