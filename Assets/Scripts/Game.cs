@@ -191,6 +191,6 @@ public class Game : MonoBehaviour
 
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 200, 30), $"Coins: {coins}\nItems: {itemsCollected}");
+        GUI.Label(new Rect(10, 10, 500, 500), $"Coins: {coins}\nItems: {itemsCollected}");
     }
 }
