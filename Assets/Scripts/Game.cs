@@ -1,3 +1,4 @@
+using FMOD;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,10 +54,12 @@ public class Game : MonoBehaviour
     private int coins = 0;
     private int itemsCollected = 0;
     private int coinSpawnCountdown;
+    private DayManager dayManager;
 
     // Start is called before the first frame update
     private void Awake()
     {
+        dayManager = FindObjectOfType<DayManager>();
         itemsManager = GetComponent<ItemsManager>();
         timeToMove = initTimeToMove;
     }
@@ -101,7 +104,7 @@ public class Game : MonoBehaviour
         yield return null;
         MaybeSpawnSpecificItem();
 
-        while (true)
+        while (dayManager.IsPlaying)
         {
             yield return new WaitForSeconds(timeToMove);
 
