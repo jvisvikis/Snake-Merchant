@@ -16,6 +16,7 @@ public class Snake : MonoBehaviour
     private List<SnakePart> parts;
     private bool newPartOnNextMove = false;
     private Vector2Int newDirOnNextMove = Vector2Int.zero;
+    private ItemData carryingItem = null;
 
     private void Awake()
     {
@@ -53,9 +54,12 @@ public class Snake : MonoBehaviour
         return false;
     }
 
-    public bool ExactlyContainsItem(ItemController item)
+    public bool CanConsume(ItemController item)
     {
-        if (parts.Count != item.ItemData.CellCount && !item.ItemData.IsApple && !item.ItemData.IsMushroom)
+        if (game.mustHaveExactLengthToCollectItem && parts.Count != item.ItemData.CellCount)
+            return false;
+
+        if (parts.Count < item.ItemData.CellCount)
             return false;
 
         var itemCells = item.ItemData.GetCellStructure();
@@ -140,5 +144,14 @@ public class Snake : MonoBehaviour
             GameObject.Destroy(parts[^1].gameObject);
             parts.RemoveAt(parts.Count - 1);
         }
+        else if (itemData.IsCoin)
+        {
+            game.AddCoin();
+        }
+    }
+
+    public void CarryItem(ItemData itemData)
+    {
+        carryingItem = itemData;
     }
 }

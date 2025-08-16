@@ -5,7 +5,7 @@ using UnityEngine;
 public class ItemsManager : MonoBehaviour
 {
     [SerializeField]
-    private List<ItemData> itemData = new();
+    private List<ItemData> allItemData = new();
 
     [SerializeField]
     private ItemController itemControllerPrefab;
@@ -13,6 +13,7 @@ public class ItemsManager : MonoBehaviour
     private Game game;
     private ItemData appleItemData;
     private ItemData mushroomItemData;
+    private ItemData coinItemData;
     private List<ItemData> collectibleItemData = new();
 
     private List<ItemController> items = new();
@@ -24,14 +25,16 @@ public class ItemsManager : MonoBehaviour
     {
         game = GetComponent<Game>();
 
-        foreach (var id in itemData)
+        foreach (var itemData in allItemData)
         {
-            if (id.IsApple)
-                appleItemData = id;
-            else if (id.IsMushroom)
-                mushroomItemData = id;
+            if (itemData.IsApple)
+                appleItemData = itemData;
+            else if (itemData.IsMushroom)
+                mushroomItemData = itemData;
+            else if (itemData.IsCoin)
+                coinItemData = itemData;
             else
-                collectibleItemData.Add(id);
+                collectibleItemData.Add(itemData);
         }
     }
 
@@ -39,6 +42,11 @@ public class ItemsManager : MonoBehaviour
     {
         SpawnItem(appleItemData);
         SpawnItem(mushroomItemData);
+
+        // TODO: Spawn multiple coins, make them only last a set number of rounds before expiring,
+        // and only respawn on expiration not when collected.
+        for (int i = 0; i < game.numCoins; i++)
+            SpawnItem(coinItemData);
 
         // weird copy/shuffle logic so that we (a) spawn random items and (b) don't spawn the same
         // item more than once.
@@ -158,10 +166,6 @@ public class ItemsManager : MonoBehaviour
     /// <summary>
     /// Returns true if a collectible item was consumed.
     /// </summary>
-    /// <returns></returns> <summary>
-    ///
-    /// </summary>
-    /// <returns></returns>
     public bool SnakeMoved(ItemData specificItem)
     {
         var walkingItemKeys = new List<ItemController>(walkingItems.Keys);
@@ -188,7 +192,7 @@ public class ItemsManager : MonoBehaviour
 
             var canConsumeItem = itemData.IsConsumable || specificItem == null || itemData == specificItem;
 
-            if (canConsumeItem && game.Snake.ExactlyContainsItem(item))
+            if (canConsumeItem && game.Snake.CanConsume(item))
             {
                 game.Snake.Consume(itemData);
                 didConsume = itemData;
@@ -208,6 +212,8 @@ public class ItemsManager : MonoBehaviour
                 SpawnRandomNonExistentCollectibleItem();
                 return true;
             }
+            if (game.snakeCarriesItemOnCollection)
+                game.Snake.CarryItem(didConsume);
             SpawnItem(didConsume);
         }
 

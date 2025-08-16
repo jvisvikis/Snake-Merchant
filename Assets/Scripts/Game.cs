@@ -19,27 +19,35 @@ public class Game : MonoBehaviour
     public Vector3 orig;
     public Vector2Int initialSnakePos;
 
-    [Header("Game options")]
+    [Header("Game variation")]
     public int numItems = 1;
     public bool spawnNewSnakeOnCollection = false;
     public bool collectionWalksOffScreen = false;
-    public int collectionWalkDelay = 3;
     public bool onlyCollectSpecificItem = false;
+    public bool snakeCarriesItemOnCollection = false;
+    public bool mustHaveExactLengthToCollectItem = false;
 
-    [Header("Game feel")]
+    [Header("Game feel/settings")]
     public float initTimeToMove = 0.5f;
     public float minTimeToMove = 0.1f;
     public float timeToMoveReduction = 0.01f;
     public float timeToDieGrace = 0.1f;
+    public int collectionWalkDelay = 3;
+
+    [Header("Coins")]
+    public int numCoins = 3;
+    public int coinsSpawnEveryTurns = 10;
 
     public Grid Grid => grid;
     public Snake Snake => snake;
+    public int Coins => coins;
 
     private Snake snake;
     private Grid grid;
     private ItemsManager itemsManager;
     private float timeToMove;
     private ItemController specificItem;
+    private int coins = 0;
 
     // Start is called before the first frame update
     private void Awake()
@@ -153,5 +161,15 @@ public class Game : MonoBehaviour
     private int RoundIntValue(InputAction.CallbackContext callbackContext)
     {
         return (int)Mathf.Ceil(callbackContext.ReadValue<float>());
+    }
+
+    public void AddCoin()
+    {
+        coins++;
+    }
+
+    void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, 200, 30), $"Coins: {coins}");
     }
 }

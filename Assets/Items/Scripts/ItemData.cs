@@ -14,6 +14,8 @@ public class ItemData : ScriptableObject
 
     public bool IsMushroom = false;
 
+    public bool IsCoin = false;
+
     [TextArea(10, 10), SerializeField, Tooltip("Structure of the item, occupy-able bits use the '#' character and empty use '_'")]
     private string cells;
 
@@ -24,7 +26,7 @@ public class ItemData : ScriptableObject
     private int cellCount;
 
     public int CellCount => GetCellCount();
-    public bool IsConsumable => IsApple || IsMushroom;
+    public bool IsConsumable => IsApple || IsMushroom || IsCoin;
     public bool IsCollectible => !IsConsumable;
 
     private const string OccupiedCellChar = "#";
