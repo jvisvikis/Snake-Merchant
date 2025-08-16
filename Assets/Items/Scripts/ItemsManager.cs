@@ -18,9 +18,6 @@ public class ItemsManager : MonoBehaviour
 
     private List<ItemController> items = new();
 
-    // Maps item that is walking off screen => delay until start walking.
-    private Dictionary<ItemController, int> walkingItems = new();
-
     private void Awake()
     {
         game = GetComponent<Game>();
@@ -148,23 +145,21 @@ public class ItemsManager : MonoBehaviour
         items.Add(item);
     }
 
-    private bool CellIsOccupied(Vector2Int cell, int width, int height)
+    /// <summary>
+    /// Rough check that gridCell is occupied. Doesn't check inside the structure of items, e.g. the
+    /// middle of a donut will still return true.
+    /// </summary>
+    private bool CellIsOccupied(Vector2Int gridCell, int itemWidth, int itemHeight)
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < itemWidth; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < itemHeight; y++)
             {
-                var checkCell = cell + new Vector2Int(x, y);
+                var checkCell = gridCell + new Vector2Int(x, y);
 
                 foreach (var item in items)
                 {
                     if (item.ContainsCell(checkCell))
-                        return true;
-                }
-
-                foreach (var walkingItem in walkingItems.Keys)
-                {
-                    if (walkingItem.ContainsCell(checkCell))
                         return true;
                 }
 
@@ -177,25 +172,31 @@ public class ItemsManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Finds the item at a grid cell, and returns the cell type at that grid cell if one is found.
+    /// Checks the internal structure of the cell, e.g. the middle of a donut will return null.
+    /// </summary>
+    public ItemController GetItemAtCell(Vector2Int gridCell, out ItemData.CellType cellType)
+    {
+        foreach (var item in items)
+        {
+            if (item.ContainsCell(gridCell))
+            {
+                var cellOffset = gridCell - item.Cell;
+                cellType = item.ItemData.GetCellStructure()[cellOffset.x][cellOffset.y];
+                if (cellType != ItemData.CellType.Empty)
+                    return item;
+            }
+        }
+
+        cellType = ItemData.CellType.Empty;
+        return null;
+    }
+
+    /// <summary>
     /// Returns true if a collectible item was consumed.
     /// </summary>
     public bool SnakeMoved(ItemData specificItem)
     {
-        var walkingItemKeys = new List<ItemController>(walkingItems.Keys);
-
-        foreach (var walkingItem in walkingItemKeys)
-        {
-            if (walkingItems[walkingItem] == 0)
-            {
-                if (!walkingItem.MoveLeft())
-                    Destroy(walkingItem);
-            }
-            else
-            {
-                walkingItems[walkingItem]--;
-            }
-        }
-
         ItemData didConsume = null;
 
         for (int i = 0; i < items.Count; i++)
@@ -206,12 +207,9 @@ public class ItemsManager : MonoBehaviour
 
             if (canConsumeItem && game.Snake.CanConsume(item))
             {
-                game.Snake.Consume(itemData);
+                game.Snake.Consume(item);
                 didConsume = itemData;
-                if (itemData.IsCollectible && game.collectionWalksOffScreen)
-                    walkingItems[item] = game.collectionWalkDelay;
-                else
-                    Destroy(item.gameObject);
+                Destroy(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
                 break; // can only consume 1 item
@@ -238,7 +236,6 @@ public class ItemsManager : MonoBehaviour
 
     public void FinishedWalking(ItemController item)
     {
-        walkingItems.Remove(item);
         Destroy(item);
     }
 }

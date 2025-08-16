@@ -20,8 +20,6 @@ public class Game : MonoBehaviour
 
     [Header("Game variation")]
     public int numItems = 1;
-    public bool spawnNewSnakeOnCollection = false;
-    public bool collectionWalksOffScreen = false;
     public bool onlyCollectSpecificItem = false;
     public bool snakeCarriesItemOnCollection = false;
     public bool mustHaveExactLengthToCollectItem = false;
@@ -43,6 +41,7 @@ public class Game : MonoBehaviour
 
     public Grid Grid => grid;
     public Snake Snake => snake;
+    public ItemsManager ItemsManager => itemsManager;
     public int Coins => coins;
     public int CoinSpawnCountdown => coinSpawnCountdown;
 
@@ -122,13 +121,6 @@ public class Game : MonoBehaviour
             else if (itemsManager.SnakeMoved(specificItem?.ItemData))
             {
                 timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
-
-                if (spawnNewSnakeOnCollection)
-                {
-                    GameObject.Destroy(snake);
-                    SpawnSnake();
-                }
-
                 MaybeSpawnSpecificItem();
             }
 

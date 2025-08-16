@@ -290,7 +290,6 @@ MonoBehaviour:
   height: 12
   cellSize: 0.25
   orig: {x: -2.5, y: -2.5, z: 0}
-  initialSnakePos: {x: 2, y: 0}
   numItems: 3
   spawnNewSnakeOnCollection: 0
   collectionWalksOffScreen: 0
@@ -305,6 +304,7 @@ MonoBehaviour:
   numCoins: 3
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
+  startNumParts: 3
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0
@@ -383,6 +383,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 657d82b4c8f7049a9bad3e3d77d5936a, type: 2}
   - {fileID: 11400000, guid: 005d311c830104fa3aa78a43943ea554, type: 2}
   - {fileID: 11400000, guid: ccd661737fe2b4cd191d665e0fa98ddb, type: 2}
+  - {fileID: 11400000, guid: adcd60eef5ae94f669415d37d6a6a09a, type: 2}
+  - {fileID: 11400000, guid: d5eb5ac3a86894ea69e13f714024f84f, type: 2}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

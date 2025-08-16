@@ -17,6 +17,7 @@ public class Snake : MonoBehaviour
     private int targetParts = 0;
     private Vector2Int newDirOnNextMove = Vector2Int.zero;
     private ItemData carryingItem = null;
+    private ItemController insideItem = null;
 
     private void Awake()
     {
@@ -57,6 +58,9 @@ public class Snake : MonoBehaviour
 
     public bool CanConsume(ItemController item)
     {
+        if (carryingItem && !item.ItemData.IsCoin)
+            return false;
+
         if (game.mustHaveExactLengthToCollectItem && parts.Count != item.ItemData.CellCount)
             return false;
 
@@ -69,7 +73,7 @@ public class Snake : MonoBehaviour
         {
             for (int y = 0; y < item.ItemData.Height; y++)
             {
-                if (itemCells[x][y] && !ContainsCell(item.Cell + new Vector2Int(x, y)))
+                if (itemCells[x][y] != ItemData.CellType.Empty && !ContainsCell(item.Cell + new Vector2Int(x, y)))
                     return false;
             }
         }
@@ -98,6 +102,33 @@ public class Snake : MonoBehaviour
 
         if (ContainsCell(newPos))
             return false;
+
+        var moveInsideItem = game.ItemsManager.GetItemAtCell(newPos, out var moveInsideCellType);
+
+        if (insideItem == null && moveInsideItem != null)
+        {
+            // Moving from outside item => inside item. Only allowed if is an entry.
+            if (moveInsideCellType != ItemData.CellType.Entry)
+                return false;
+            insideItem = moveInsideItem;
+        }
+        else if (insideItem != null && moveInsideItem != insideItem)
+        {
+            // Moving from inside item => outside item, or between items. Only allowed if the
+            // current square is an entry (aka exit). This "GetItemAtCell" call should return
+            // "insideItem" or something weird is going on.
+            //
+            // Btw note will all this that this can only happen if insideItem wasn't completed,
+            // because if it had, it would have been consumed.
+            game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
+            if (currentyInsideCellType != ItemData.CellType.Entry)
+                return false;
+            if (moveInsideItem != null && moveInsideCellType != ItemData.CellType.Entry)
+                return false;
+            insideItem = null;
+        }
+
+        // From here on, move must have been successful (i.e. cannot return false from here).
 
         var tailPosition = parts[^1].transform.localPosition;
 
@@ -136,8 +167,11 @@ public class Snake : MonoBehaviour
         return new Vector3(v.x, v.y, 0);
     }
 
-    public void Consume(ItemData itemData)
+    public void Consume(ItemController item)
     {
+        Debug.Assert(item == insideItem);
+        var itemData = item.ItemData;
+
         if (itemData.IsApple)
         {
             targetParts++;
@@ -157,6 +191,8 @@ public class Snake : MonoBehaviour
         {
             game.AddCoin();
         }
+
+        insideItem = null;
     }
 
     public void CarryItem(ItemData itemData)

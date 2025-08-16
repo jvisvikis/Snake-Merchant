@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
-  m_Name: Box
+  m_Name: Crank
   m_EditorClassIdentifier: 
-  Width: 2
+  Width: 3
   Height: 2
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
-  cells: '@ @
+  cells: '_ # @
 
-    @ @'
-  debugColor: {r: 0.8584906, g: 0.17412782, b: 0.46009892, a: 1}
+    @ # _'
+  debugColor: {r: 0.6132076, g: 0.18222678, b: 0.36200735, a: 1}

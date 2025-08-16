@@ -51,21 +51,16 @@ public class ItemController : MonoBehaviour
         this.itemData = itemData;
     }
 
-    public bool ContainsCell(Vector2Int checkCell, bool checkItemStructure = false)
+    public bool ContainsCell(Vector2Int gridCell)
     {
         if (!attachedToGrid)
             return false;
 
         var containsItemBounds =
-            checkCell.x >= cell.x && checkCell.x < cell.x + itemData.Width && checkCell.y >= cell.y && checkCell.y < cell.y + itemData.Height;
+            gridCell.x >= cell.x && gridCell.x < cell.x + itemData.Width && gridCell.y >= cell.y && gridCell.y < cell.y + itemData.Height;
 
         if (containsItemBounds)
             return true;
-
-        if (checkItemStructure)
-        {
-            // TODO implement for things like boots and irregularly shaped objects if needed
-        }
 
         return false;
     }
@@ -76,8 +71,6 @@ public class ItemController : MonoBehaviour
         if (!itemData)
             return;
 
-        Gizmos.color = itemData.debugColor;
-
         var cellSize = game.Grid.CellSize;
         var itemCells = itemData.GetCellStructure();
 
@@ -86,8 +79,17 @@ public class ItemController : MonoBehaviour
             for (int y = 0; y < itemData.Height; y++)
             {
                 var cellPosition = transform.position + new Vector3(x * cellSize, y * cellSize);
-                if (itemCells[x][y] && (!attachedToGrid || !game.Snake.ContainsCell(cell + new Vector2Int(x, y))))
+                var cellType = itemCells[x][y];
+                if (cellType != ItemData.CellType.Empty && (!attachedToGrid || !game.Snake.ContainsCell(cell + new Vector2Int(x, y))))
+                {
+                    Gizmos.color = itemData.debugColor;
                     Gizmos.DrawCube(cellPosition + new Vector3(cellSize / 2, cellSize / 2), cellSize * Vector3.one);
+                    if (cellType == ItemData.CellType.Middle)
+                    {
+                        Gizmos.color = Color.black;
+                        Gizmos.DrawLine(cellPosition, cellPosition + cellSize * Vector3.one);
+                    }
+                }
             }
         }
 
