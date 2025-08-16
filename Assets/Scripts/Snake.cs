@@ -89,11 +89,14 @@ public class Snake : MonoBehaviour
             return;
         }
 
+        // TODO ben actually I think this is wrong?
+
         // Already have a new direction, if this is in the same axis then override it, but if it's
         // in a different axis then queue it up. This allows nice 180 degree turns for example.
         if (newDirOnNextMove.x == 0 && dir.x == 0)
         {
             newDirOnNextMove = dir;
+            queuedDir = Vector2Int.zero;
         }
         else
         {
