@@ -48,7 +48,6 @@ public class DayManager : MonoBehaviour
     {
         dayTimeLimit = maxTimeLimit;
         currentTargetScore = minScore;
-        StartCoroutine(StartDay());
     }
 
     public IEnumerator StartDay()
@@ -71,6 +70,7 @@ public class DayManager : MonoBehaviour
 
     public void EndDay()
     {
+        isPlaying = false;
         UIManager.Instance.EndDay();
     }
 
@@ -79,6 +79,15 @@ public class DayManager : MonoBehaviour
         currentDay++;
         ModifyDayMaxTimeLimit();
         ModifyDayScore();
+        ReloadScene();
+    }
+
+    public void Reset()
+    {
+        isPlaying = false;
+        currentDay = 0;
+        currentTargetScore = minScore;
+        dayTimeLimit = maxTimeLimit;
         ReloadScene();
     }
 

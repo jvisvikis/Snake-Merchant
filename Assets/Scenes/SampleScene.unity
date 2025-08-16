@@ -459,7 +459,7 @@ MonoBehaviour:
   maxDayToModifyTimeLimit: 10
   obstacleDayStart: 5
   obstacleDayEnd: 10
-  minScore: 1000
+  minScore: 100
   maxScore: 9999
   scoreModifier: 1.05
 --- !u!4 &196152557

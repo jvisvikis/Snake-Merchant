@@ -155,7 +155,7 @@ public class Game : MonoBehaviour
     public void Die()
     {
         //This will need a revist
-        dayManager.EndDay();
+        dayManager.Reset();
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
@@ -170,7 +170,7 @@ public class Game : MonoBehaviour
 
     private void OnReset(InputAction.CallbackContext callbackContext)
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        dayManager.Reset();
     }
 
     private int RoundIntValue(InputAction.CallbackContext callbackContext)
