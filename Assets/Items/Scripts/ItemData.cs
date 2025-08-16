@@ -33,8 +33,8 @@ public class ItemData : ScriptableObject
     private int cellCount;
 
     public int CellCount => GetCellCount();
-    public bool IsConsumable => IsApple || IsMushroom || IsCoin;
-    public bool IsCollectible => !IsConsumable;
+    public bool IsMunchie => IsApple || IsMushroom;
+    public bool IsCollectible => !IsMunchie && !IsCoin;
 
     private const string MiddleCellChar = "#";
     private const string EntryCellChar = "@";

@@ -24,6 +24,7 @@ public class Game : MonoBehaviour
     public bool onlyCollectSpecificItem = false;
     public bool snakeCarriesItemOnCollection = false;
     public bool mustHaveExactLengthToCollectItem = false;
+    public bool snakeGetsSmallerOnDelivery = false;
 
     [Header("Game feel/settings")]
     public float initTimeToMove = 0.5f;
@@ -31,6 +32,7 @@ public class Game : MonoBehaviour
     public float timeToMoveReduction = 0.01f;
     public float timeToDieGrace = 0.1f;
     public int collectionWalkDelay = 3;
+    public bool mushrooms = false;
 
     [Header("Coins")]
     public int numCoins = 3;
@@ -69,7 +71,7 @@ public class Game : MonoBehaviour
         grid = new Grid(width, height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
         SpawnSnake();
-        StartCoroutine(MoveSnake(timeToMove));
+        StartCoroutine(MoveSnake());
     }
 
     void SpawnSnake()
@@ -97,7 +99,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.Reset.performed -= OnReset;
     }
 
-    public IEnumerator MoveSnake(float timeToMove)
+    public IEnumerator MoveSnake()
     {
         // Gross hack to make sure that all of the Start() stuff - e.g. items and so on - has been
         // set up before starting to move the snake.
@@ -123,8 +125,7 @@ public class Game : MonoBehaviour
             }
             else if (itemsManager.SnakeMoved(specificItem?.ItemData))
             {
-                timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
-                MaybeSpawnSpecificItem();
+                OnItemCollected();
             }
 
             coinSpawnCountdown--;
@@ -156,12 +157,12 @@ public class Game : MonoBehaviour
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
     {
-        snake.SetDirection(new Vector2Int(0, RoundIntValue(callbackContext)));
+        snake.QueueDirection(new Vector2Int(0, RoundIntValue(callbackContext)));
     }
 
     private void MoveHorizontal(InputAction.CallbackContext callbackContext)
     {
-        snake.SetDirection(new Vector2Int(RoundIntValue(callbackContext), 0));
+        snake.QueueDirection(new Vector2Int(RoundIntValue(callbackContext), 0));
     }
 
     private void OnReset(InputAction.CallbackContext callbackContext)
@@ -182,10 +183,12 @@ public class Game : MonoBehaviour
     public void OnItemCollected()
     {
         itemsCollected++;
+        timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+        MaybeSpawnSpecificItem();
     }
 
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 500, 500), $"Coins: {coins}\nItems: {itemsCollected}");
+        GUI.Label(new Rect(10, 10, 500, 500), $"Coins: {coins}\nItems: {itemsCollected}\nSpeed: {timeToMove:F3}s");
     }
 }

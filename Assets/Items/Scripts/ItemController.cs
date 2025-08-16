@@ -74,6 +74,10 @@ public class ItemController : MonoBehaviour
         var cellSize = game.Grid.CellSize;
         var itemCells = itemData.GetCellStructure();
 
+        var cubeSize = cellSize * Vector3.one;
+        if (itemData.IsMunchie || itemData.IsCoin)
+            cubeSize *= 0.5f;
+
         for (int x = 0; x < itemData.Width; x++)
         {
             for (int y = 0; y < itemData.Height; y++)
@@ -83,7 +87,7 @@ public class ItemController : MonoBehaviour
                 if (cellType != ItemData.CellType.Empty && (!attachedToGrid || !game.Snake.ContainsCell(cell + new Vector2Int(x, y))))
                 {
                     Gizmos.color = itemData.debugColor;
-                    Gizmos.DrawCube(cellPosition + new Vector3(cellSize / 2, cellSize / 2), cellSize * Vector3.one);
+                    Gizmos.DrawCube(cellPosition + new Vector3(cellSize / 2, cellSize / 2), cubeSize);
                     if (cellType == ItemData.CellType.Middle)
                     {
                         Gizmos.color = Color.black;
@@ -93,8 +97,8 @@ public class ItemController : MonoBehaviour
             }
         }
 
-        if (ItemData.IsCoin)
-            Handles.Label(transform.position, $"{game.CoinSpawnCountdown}");
+        // if (ItemData.IsCoin)
+        //     Handles.Label(transform.position, $"{game.CoinSpawnCountdown}");
     }
 #endif
 }

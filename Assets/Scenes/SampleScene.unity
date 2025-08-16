@@ -700,6 +700,7 @@ MonoBehaviour:
   onlyCollectSpecificItem: 1
   snakeCarriesItemOnCollection: 1
   mustHaveExactLengthToCollectItem: 0
+  snakeGetsSmallerOnDelivery: 1
   initTimeToMove: 0.3
   minTimeToMove: 0.05
   timeToMoveReduction: 0.025
