@@ -8,7 +8,6 @@ public class Snake : MonoBehaviour
     private SnakePart partPrefab;
 
     public Vector2Int Head => ToVector2Int(parts[0].transform.localPosition);
-    public Vector2Int Dir => dir;
     public int Length => parts.Count;
 
     private Game game;
@@ -16,6 +15,7 @@ public class Snake : MonoBehaviour
     private List<SnakePart> parts;
     private int targetParts = 0;
     private Vector2Int newDirOnNextMove = Vector2Int.zero;
+    private Vector2Int queuedDir = Vector2Int.zero;
     private ItemData carryingItem = null;
     private ItemController insideItem = null;
 
@@ -81,9 +81,24 @@ public class Snake : MonoBehaviour
         return true;
     }
 
-    public void SetDirection(Vector2Int dir)
+    public void QueueDirection(Vector2Int dir)
     {
-        newDirOnNextMove = dir;
+        if (newDirOnNextMove == Vector2Int.zero)
+        {
+            newDirOnNextMove = dir;
+            return;
+        }
+
+        // Already have a new direction, if this is in the same axis then override it, but if it's
+        // in a different axis then queue it up. This allows nice 180 degree turns for example.
+        if (newDirOnNextMove.x == 0 && dir.x == 0)
+        {
+            newDirOnNextMove = dir;
+        }
+        else
+        {
+            queuedDir = dir;
+        }
     }
 
     public bool Move()
@@ -92,10 +107,11 @@ public class Snake : MonoBehaviour
         {
             if (dir != -newDirOnNextMove)
                 dir = newDirOnNextMove;
-            newDirOnNextMove = Vector2Int.zero;
+            newDirOnNextMove = queuedDir;
+            queuedDir = Vector2Int.zero;
         }
 
-        var newPos = Head + Dir;
+        var newPos = Head + dir;
 
         if (!game.Grid.InGrid(newPos.x, newPos.y))
             return false;
@@ -148,13 +164,29 @@ public class Snake : MonoBehaviour
 
         if (Head == Vector2Int.zero && carryingItem != null)
         {
+            // Reached goal while carrying an item.
             game.OnItemCollected();
-            carryingItem = null;
             foreach (var snakePart in parts)
                 snakePart.ResetColor();
+            if (game.snakeGetsSmallerOnDelivery)
+                SetNumParts(Mathf.Max(game.startNumParts, parts.Count - carryingItem.CellCount));
+            carryingItem = null;
+            game.ItemsManager.SpawnRandomNonExistentCollectibleItem();
+            game.ItemsManager.SpawnMunchies(); // they were despawned when the item was picked up
         }
 
         return true;
+    }
+
+    private void SetNumParts(int numParts)
+    {
+        targetParts = numParts;
+
+        for (int i = parts.Count - 1; i >= numParts; i--)
+        {
+            Destroy(parts[i].gameObject);
+            parts.RemoveAt(i);
+        }
     }
 
     private static Vector2Int ToVector2Int(Vector3 v)
@@ -169,7 +201,7 @@ public class Snake : MonoBehaviour
 
     public void Consume(ItemController item)
     {
-        Debug.Assert(item == insideItem);
+        Debug.Assert(insideItem == null || item == insideItem);
         var itemData = item.ItemData;
 
         if (itemData.IsApple)

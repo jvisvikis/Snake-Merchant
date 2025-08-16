@@ -37,8 +37,7 @@ public class ItemsManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnItem(appleItemData);
-        SpawnItem(mushroomItemData);
+        SpawnMunchies();
 
         // weird copy/shuffle logic so that we (a) spawn random items and (b) don't spawn the same
         // item more than once.
@@ -67,7 +66,7 @@ public class ItemsManager : MonoBehaviour
             SpawnItem(coinItemData);
     }
 
-    private void SpawnRandomNonExistentCollectibleItem()
+    public void SpawnRandomNonExistentCollectibleItem()
     {
         var ncid = new List<ItemData>(collectibleItemData);
         ListUtil.Shuffle(ncid);
@@ -203,7 +202,7 @@ public class ItemsManager : MonoBehaviour
         {
             var item = items[i];
             var itemData = item.ItemData;
-            var canConsumeItem = itemData.IsConsumable || specificItem == null || itemData == specificItem;
+            var canConsumeItem = itemData.IsMunchie || itemData.IsCoin || specificItem == null || itemData == specificItem;
 
             if (canConsumeItem && game.Snake.CanConsume(item))
             {
@@ -221,21 +220,43 @@ public class ItemsManager : MonoBehaviour
             if (didConsume.IsCollectible)
             {
                 if (game.snakeCarriesItemOnCollection)
+                {
                     game.Snake.CarryItem(didConsume);
-
-                SpawnRandomNonExistentCollectibleItem();
-                return true;
+                    DespawnMunchies();
+                }
+                else
+                {
+                    SpawnRandomNonExistentCollectibleItem();
+                    return true;
+                }
             }
 
-            if (!didConsume.IsCoin)
+            if (didConsume.IsMunchie)
                 SpawnItem(didConsume);
         }
 
         return false;
     }
 
-    public void FinishedWalking(ItemController item)
+    public void SpawnMunchies()
     {
-        Destroy(item);
+        SpawnItem(appleItemData);
+        if (game.mushrooms)
+            SpawnItem(mushroomItemData);
+    }
+
+    private void DespawnMunchies()
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            var item = items[i];
+            if (item.ItemData.IsApple || item.ItemData.IsMushroom)
+            {
+                Destroy(item.gameObject);
+                items[i] = items[^1];
+                items.RemoveAt(items.Count - 1);
+                i--;
+            }
+        }
     }
 }

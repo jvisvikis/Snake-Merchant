@@ -291,11 +291,10 @@ MonoBehaviour:
   cellSize: 0.25
   orig: {x: -2.5, y: -2.5, z: 0}
   numItems: 3
-  spawnNewSnakeOnCollection: 0
-  collectionWalksOffScreen: 0
   onlyCollectSpecificItem: 1
   snakeCarriesItemOnCollection: 1
   mustHaveExactLengthToCollectItem: 0
+  snakeGetsSmallerOnDelivery: 1
   initTimeToMove: 0.3
   minTimeToMove: 0.05
   timeToMoveReduction: 0.025
