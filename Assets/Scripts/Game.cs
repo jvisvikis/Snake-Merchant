@@ -69,6 +69,7 @@ public class Game : MonoBehaviour
         grid = new Grid(width, height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
         startNumParts += EconomyManager.Instance.SnakeLengthLevel;
+        UIManager.Instance.SetCurrentCoinText(coins.ToString());
         SpawnSnake();
         StartCoroutine(MoveSnake());
         StartCoroutine(DayManager.Instance.StartDay());
@@ -181,6 +182,7 @@ public class Game : MonoBehaviour
     public void AddCoin()
     {
         coins++;
+        UIManager.Instance.SetCurrentCoinText(coins.ToString());
     }
 
     public void OnItemCollected()
