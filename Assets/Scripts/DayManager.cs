@@ -9,14 +9,11 @@ public class DayManager : MonoBehaviour
     public static DayManager Instance => instance;
     private static DayManager instance;
 
-    [Header("DayModifiers")]
-    public float snakeSpeedModifier;
-    public int maxDaysToModifySnakeSpeed;
+    [Header("Day Modifiers")]
     public float maxTimeLimit;
     public float timeLimitModifier;
     public int maxDayToModifyTimeLimit;
-    public int obstacleDayStart;
-    public int obstacleDayEnd;
+    [Header("Score Modifiers")]
     public int minScore;
     public int maxScore;
     public float scoreModifier;
@@ -65,11 +62,12 @@ public class DayManager : MonoBehaviour
             yield return null;
         }
         isPlaying = false;
-        EndDay();
+        EndDay(0);
     }
 
-    public void EndDay()
+    public void EndDay(int currentDayScore)
     {
+        currentTotalScore += currentDayScore;
         isPlaying = false;
         UIManager.Instance.EndDay();
     }

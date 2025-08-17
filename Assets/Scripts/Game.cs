@@ -57,12 +57,10 @@ public class Game : MonoBehaviour
     private int itemsCollected = 0;
     private int coinSpawnCountdown;
     private int currentDayScore;
-    private DayManager dayManager;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        dayManager = DayManager.Instance;
         itemsManager = GetComponent<ItemsManager>();
         timeToMove = initTimeToMove;
     }
@@ -73,7 +71,7 @@ public class Game : MonoBehaviour
         coinSpawnCountdown = coinsFirstSpawnTurns;
         SpawnSnake();
         StartCoroutine(MoveSnake());
-        StartCoroutine(dayManager.StartDay());
+        StartCoroutine(DayManager.Instance.StartDay());
     }
 
     void SpawnSnake()
@@ -108,7 +106,7 @@ public class Game : MonoBehaviour
         yield return null;
         MaybeSpawnSpecificItem();
 
-        while (dayManager.IsPlaying)
+        while (DayManager.Instance.IsPlaying)
         {
             yield return new WaitForSeconds(timeToMove);
 
@@ -155,7 +153,7 @@ public class Game : MonoBehaviour
     public void Die()
     {
         //This will need a revist
-        dayManager.Reset();
+        DayManager.Instance.Reset();
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
@@ -170,7 +168,7 @@ public class Game : MonoBehaviour
 
     private void OnReset(InputAction.CallbackContext callbackContext)
     {
-        dayManager.Reset();
+        DayManager.Instance.Reset();
     }
 
     private int RoundIntValue(InputAction.CallbackContext callbackContext)
@@ -188,9 +186,10 @@ public class Game : MonoBehaviour
         itemsCollected++;
         currentDayScore += specificItem.ItemData.Value;
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
-        if(dayManager.CurrentTargetScore <=currentDayScore)
+        if(DayManager.Instance.CurrentTargetScore <=currentDayScore)
         {
-            dayManager.EndDay();
+            EconomyManager.Instance.AddCoins(coins);
+            DayManager.Instance.EndDay(currentDayScore);
             return;
         }
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
