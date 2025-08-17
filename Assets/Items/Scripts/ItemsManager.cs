@@ -5,7 +5,7 @@ using UnityEngine;
 public class ItemsManager : MonoBehaviour
 {
     [SerializeField]
-    private List<ItemData> allItemData = new();
+    private ItemDataCollection allItemData;
 
     [SerializeField]
     private ItemController itemControllerPrefab;
@@ -22,16 +22,19 @@ public class ItemsManager : MonoBehaviour
     {
         game = GetComponent<Game>();
 
-        foreach (var itemData in allItemData)
+        if (allItemData != null)
         {
-            if (itemData.IsApple)
-                appleItemData = itemData;
-            else if (itemData.IsMushroom)
-                mushroomItemData = itemData;
-            else if (itemData.IsCoin)
-                coinItemData = itemData;
-            else
-                collectibleItemData.Add(itemData);
+            foreach (var itemData in allItemData.Items)
+            {
+                if (itemData.IsApple)
+                    appleItemData = itemData;
+                else if (itemData.IsMushroom)
+                    mushroomItemData = itemData;
+                else if (itemData.IsCoin)
+                    coinItemData = itemData;
+                else
+                    collectibleItemData.Add(itemData);
+            }
         }
     }
 
@@ -104,51 +107,94 @@ public class ItemsManager : MonoBehaviour
                 return item;
         }
 
+        Debug.Assert(false);
         return null;
     }
 
     private void SpawnItem(ItemData itemData)
     {
-        var cell = game.Grid.RandomCell(itemData.Width, itemData.Height, 1, 1);
-        var startCell = cell;
+        // In order to be collectible, the item needs to have space on the entry side, and we need
+        // to keep the rotation of the object in mind both for using the correct width/height and
+        // for picking the side that the entry is on.
 
-        while (CellIsOccupied(cell, itemData.Width, itemData.Height))
+        // Use a (1, 1) start offset to leave a blank border around the spawn point of the snake so
+        // that items never get in the way of returning, and so that the snake doesn't immediately
+        // spawn in front of an item.
+        var candidateCell = game.Grid.RandomCell(itemData.Width, itemData.Height, 1, 1);
+
+        var itemBounds = new BoundsInt((Vector3Int)candidateCell, new Vector3Int(itemData.Width, itemData.Height));
+        var borderBounds = new BoundsInt(itemBounds.position, itemBounds.size);
+
+        if (itemData.HasLeftEntryOrExit)
+            borderBounds.min += Vector3Int.left;
+
+        if (itemData.HasRightEntryOrExit)
+            borderBounds.max += Vector3Int.right;
+
+        if (itemData.HasUpEntryOrExit)
+            borderBounds.max += Vector3Int.up;
+
+        if (itemData.HasDownEntryOrExit)
+            borderBounds.min += Vector3Int.down;
+
+        var rotation = ItemController.Rotation.Up;
+        // var rotation = (ItemController.Rotation)Random.Range(0, 4);
+
+        // if (rotation == ItemController.Rotation.Right || rotation == ItemController.Rotation.Left)
+        // {
+        //     (gridWidth, gridHeight) = (gridHeight, gridWidth);
+        //     (xOffset, yOffset) = (yOffset, xOffset);
+        // }
+
+        var startCell = borderBounds.position;
+        int bugCatcher = 0;
+
+        while (!CanSpawnItemInCell((Vector2Int)borderBounds.position, borderBounds.size.x, borderBounds.size.y))
         {
             // linearly search to find a spot that fits.
-            cell.x++;
+            borderBounds.position += Vector3Int.right;
+            itemBounds.position += Vector3Int.right;
 
-            if (cell.x + itemData.Width >= game.Grid.Width)
+            if (borderBounds.max.x > game.Grid.Width)
             {
-                cell.y++;
-                cell.x = 1;
+                // next row (starts from 1 to leave empty column on left)
+                var prevBorderPosition = borderBounds.position;
+                borderBounds.position = new Vector3Int(1, prevBorderPosition.y + 1);
+
+                if (borderBounds.max.y > game.Grid.Height)
+                {
+                    // wrap around the start (starts from 1 to leave empty row on bottom)
+                    borderBounds.position = new Vector3Int(1, 1);
+                }
+
+                itemBounds.position += borderBounds.position - prevBorderPosition;
             }
 
-            if (cell.y + itemData.Height >= game.Grid.Height)
-                cell.y = 1;
-
-            if (cell == startCell)
+            if (borderBounds.position == startCell)
             {
                 Debug.LogWarning($"Can't find anywhere to spawn item: {itemData}");
                 game.Die();
                 return;
             }
+
+            if (bugCatcher++ > 10000)
+            {
+                Debug.LogWarning("BUG BUG BUG");
+                return;
+            }
         }
 
-        // TODO also a random orientation if it's not a 1-by-1 item, but note, not using unity
-        // transform rotation but by using tricky maths and stuff.
-
         var item = GameObject.Instantiate(itemControllerPrefab, transform);
-        item.transform.position = game.Grid.GetWorldPos(cell);
-        item.SetGridLocation(cell);
+        item.transform.position = game.Grid.GetWorldPos((Vector2Int)borderBounds.min);
         item.SetData(itemData);
+        item.SetGridLocation(itemBounds, borderBounds, rotation);
         items.Add(item);
     }
 
     /// <summary>
-    /// Rough check that gridCell is occupied. Doesn't check inside the structure of items, e.g. the
-    /// middle of a donut will still return true.
+    /// Rough check that gridCell is a valid spawn location for an item of a given width/height.
     /// </summary>
-    private bool CellIsOccupied(Vector2Int gridCell, int itemWidth, int itemHeight)
+    private bool CanSpawnItemInCell(Vector2Int gridCell, int itemWidth, int itemHeight)
     {
         for (int x = 0; x < itemWidth; x++)
         {
@@ -158,16 +204,16 @@ public class ItemsManager : MonoBehaviour
 
                 foreach (var item in items)
                 {
-                    if (item.ContainsCell(checkCell))
-                        return true;
+                    if (item.ItemBorderContainsCell(checkCell))
+                        return false;
                 }
 
                 if (game.Snake.ContainsCell(checkCell))
-                    return true;
+                    return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     /// <summary>
@@ -178,13 +224,8 @@ public class ItemsManager : MonoBehaviour
     {
         foreach (var item in items)
         {
-            if (item.ContainsCell(gridCell))
-            {
-                var cellOffset = gridCell - item.Cell;
-                cellType = item.ItemData.GetCellStructure()[cellOffset.x][cellOffset.y];
-                if (cellType != ItemData.CellType.Empty)
-                    return item;
-            }
+            if (item.ItemContainsCell(gridCell, out cellType))
+                return item;
         }
 
         cellType = ItemData.CellType.Empty;
@@ -219,20 +260,13 @@ public class ItemsManager : MonoBehaviour
         {
             if (didConsume.IsCollectible)
             {
-                if (game.snakeCarriesItemOnCollection)
-                {
-                    game.Snake.CarryItem(didConsume);
-                    DespawnMunchies();
-                }
-                else
-                {
-                    SpawnRandomNonExistentCollectibleItem();
-                    return true;
-                }
+                game.Snake.CarryItem(didConsume);
+                DespawnMunchies();
             }
-
-            if (didConsume.IsMunchie)
+            else if (didConsume.IsMunchie)
+            {
                 SpawnItem(didConsume);
+            }
         }
 
         return false;
