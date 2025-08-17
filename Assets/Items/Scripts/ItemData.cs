@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,13 +8,37 @@ public class ItemData : ScriptableObject
     public enum CellType
     {
         Empty = 0,
-        Entry = 1,
+        EntryOrExit = 1,
         Middle = 2,
+        LeftEntry = 3,
+        RightEntry = 4,
+        UpEntry = 5,
+        DownEntry = 6,
+        Exit = 7,
     }
+
+    private const string MiddleCellChar = "#";
+    private const string EntryOrExitCellChar = "@";
+    private const string EmptyCellChar = "_";
+    private const string LeftEntryCellChar = "L";
+    private const string RightEntryCellChar = "R";
+    private const string UpEntryCellChar = "U";
+    private const string DownEntryCellChar = "D";
+    private const string ExitCellChar = "X";
+
     public int Value = 0;
+
+    /// <summary>
+    /// This does not take into account item rotation.
+    /// Use ItemController.GridWidth for that.
+    /// </summary>
     [Min(1)]
     public int Width = 1;
 
+    /// <summary>
+    /// This does not take into account item rotation.
+    /// Use ItemController.GridHeight for that.
+    /// </summary>
     [Min(1)]
     public int Height = 1;
 
@@ -23,22 +48,30 @@ public class ItemData : ScriptableObject
 
     public bool IsCoin = false;
 
-    [TextArea(10, 10), SerializeField, Tooltip("Structure of the item, occupy-able bits use the '#' character and empty use '_'")]
+    [TextArea(10, 10), SerializeField]
     private string cells;
 
     [Header("Debug")]
     public Color debugColor = Color.white;
 
-    private CellType[][] cachedCellStructure;
-    private int cellCount;
-
     public int CellCount => GetCellCount();
     public bool IsMunchie => IsApple || IsMushroom;
     public bool IsCollectible => !IsMunchie && !IsCoin;
 
-    private const string MiddleCellChar = "#";
-    private const string EntryCellChar = "@";
-    private const string EmptyCellChar = "_";
+    [NonSerialized]
+    public bool HasLeftEntryOrExit = false;
+
+    [NonSerialized]
+    public bool HasRightEntryOrExit = false;
+
+    [NonSerialized]
+    public bool HasUpEntryOrExit = false;
+
+    [NonSerialized]
+    public bool HasDownEntryOrExit = false;
+
+    private CellType[][] cachedCellStructure;
+    private int cellCount;
 
     public int GetCellCount()
     {
@@ -86,23 +119,73 @@ public class ItemData : ScriptableObject
                     break;
 
                 var cells = lines[y].Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
+
                 if (cells.Length != Width)
                     Debug.LogWarning($"Item {name} has width {Width}, but its structure has {cells.Length} entries on row {y}");
+
+                var cellY = Height - y - 1;
 
                 for (int x = 0; x < Width; x++)
                 {
                     if (x >= cells.Length)
                         break;
 
-                    cachedCellStructure[x][y] = CellType.Empty;
+                    cachedCellStructure[x][cellY] = CellType.Empty;
 
                     if (cells[x] == MiddleCellChar)
                     {
-                        cachedCellStructure[x][y] = CellType.Middle;
+                        cachedCellStructure[x][cellY] = CellType.Middle;
                     }
-                    else if (cells[x] == EntryCellChar)
+                    else if (cells[x] == EntryOrExitCellChar)
                     {
-                        cachedCellStructure[x][y] = CellType.Entry;
+                        cachedCellStructure[x][cellY] = CellType.EntryOrExit;
+                        if (cells.Length == 1)
+                            ; // apple coin etc
+                        else if (x == 0)
+                            HasLeftEntryOrExit = true;
+                        else if (x == Width - 1)
+                            HasRightEntryOrExit = true;
+                        else if (y == 0)
+                            HasUpEntryOrExit = true;
+                        else if (y == Height - 1)
+                            HasDownEntryOrExit = true;
+                        numEnds++;
+                    }
+                    else if (cells[x] == LeftEntryCellChar)
+                    {
+                        cachedCellStructure[x][cellY] = CellType.LeftEntry;
+                        HasLeftEntryOrExit = true;
+                        numEnds++;
+                    }
+                    else if (cells[x] == RightEntryCellChar)
+                    {
+                        cachedCellStructure[x][cellY] = CellType.RightEntry;
+                        HasRightEntryOrExit = true;
+                        numEnds++;
+                    }
+                    else if (cells[x] == UpEntryCellChar)
+                    {
+                        cachedCellStructure[x][cellY] = CellType.UpEntry;
+                        HasUpEntryOrExit = true;
+                        numEnds++;
+                    }
+                    else if (cells[x] == DownEntryCellChar)
+                    {
+                        cachedCellStructure[x][cellY] = CellType.DownEntry;
+                        HasDownEntryOrExit = true;
+                        numEnds++;
+                    }
+                    else if (cells[x] == ExitCellChar)
+                    {
+                        cachedCellStructure[x][cellY] = CellType.Exit;
+                        if (x == 0)
+                            HasLeftEntryOrExit = true;
+                        else if (x == Width - 1)
+                            HasRightEntryOrExit = true;
+                        else if (y == 0)
+                            HasUpEntryOrExit = true;
+                        else if (y == Height - 1)
+                            HasDownEntryOrExit = true;
                         numEnds++;
                     }
                     else if (cells[x] != EmptyCellChar)

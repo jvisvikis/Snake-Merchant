@@ -67,15 +67,10 @@ public class Snake : MonoBehaviour
         if (parts.Count < item.ItemData.CellCount)
             return false;
 
-        var itemCells = item.ItemData.GetCellStructure();
-
-        for (int x = 0; x < item.ItemData.Width; x++)
+        for (int i = 0; i < item.ItemGridCells.Count; i++)
         {
-            for (int y = 0; y < item.ItemData.Height; y++)
-            {
-                if (itemCells[x][y] != ItemData.CellType.Empty && !ContainsCell(item.Cell + new Vector2Int(x, y)))
-                    return false;
-            }
+            if (!ContainsCell(item.ItemGridCells[i]))
+                return false;
         }
 
         return true;
@@ -89,19 +84,40 @@ public class Snake : MonoBehaviour
             return;
         }
 
-        // TODO ben actually I think this is wrong?
-
-        // Already have a new direction, if this is in the same axis then override it, but if it's
-        // in a different axis then queue it up. This allows nice 180 degree turns for example.
-        if (newDirOnNextMove.x == 0 && dir.x == 0)
+        if (Mathf.Abs(newDirOnNextMove.x) == 0 && Mathf.Abs(dir.x) == 0)
         {
+            // New move is in the same axis as the old move. This move replaces it.
             newDirOnNextMove = dir;
             queuedDir = Vector2Int.zero;
         }
         else
         {
+            // New move is in a different axis. Queue it up to run after the current move.
             queuedDir = dir;
         }
+    }
+
+    private static bool CanEnterFromDirection(ItemData.CellType cellType, Vector2Int direction)
+    {
+        switch (cellType)
+        {
+            case ItemData.CellType.EntryOrExit:
+                return true;
+            case ItemData.CellType.LeftEntry:
+                return direction == Vector2Int.right;
+            case ItemData.CellType.RightEntry:
+                return direction == Vector2Int.left;
+            case ItemData.CellType.UpEntry:
+                return direction == Vector2Int.down;
+            case ItemData.CellType.DownEntry:
+                return direction == Vector2Int.up;
+        }
+        return false;
+    }
+
+    private static bool CanExit(ItemData.CellType cellType)
+    {
+        return cellType == ItemData.CellType.EntryOrExit || cellType == ItemData.CellType.Exit;
     }
 
     public bool Move()
@@ -126,25 +142,31 @@ public class Snake : MonoBehaviour
 
         if (insideItem == null && moveInsideItem != null)
         {
-            // Moving from outside item => inside item. Only allowed if is an entry.
-            if (moveInsideCellType != ItemData.CellType.Entry)
+            // Moving from outside => inside an item.
+            if (!CanEnterFromDirection(moveInsideCellType, dir))
+                return false;
+            if (carryingItem != null)
                 return false;
             insideItem = moveInsideItem;
         }
-        else if (insideItem != null && moveInsideItem != insideItem)
+        else if (insideItem != null && moveInsideItem == null)
         {
-            // Moving from inside item => outside item, or between items. Only allowed if the
-            // current square is an entry (aka exit). This "GetItemAtCell" call should return
-            // "insideItem" or something weird is going on.
-            //
-            // Btw note will all this that this can only happen if insideItem wasn't completed,
-            // because if it had, it would have been consumed.
-            game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
-            if (currentyInsideCellType != ItemData.CellType.Entry)
-                return false;
-            if (moveInsideItem != null && moveInsideCellType != ItemData.CellType.Entry)
+            // Moving from inside item => outside, but only if the item is incomplete. If the item
+            // was completed then the snake would be holding it and insideItem would be null.
+            var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
+            Debug.Assert(itemAtCell == insideItem);
+            if (!CanExit(currentyInsideCellType))
                 return false;
             insideItem = null;
+        }
+        else if (insideItem != null && moveInsideItem != null && insideItem != moveInsideItem)
+        {
+            var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
+            Debug.Assert(itemAtCell == insideItem);
+            // Moving between items, err, this would be pretty rare but handle it anyway?
+            if (!CanEnterFromDirection(moveInsideCellType, dir) || !CanExit(currentyInsideCellType))
+                return false;
+            insideItem = moveInsideItem;
         }
 
         // From here on, move must have been successful (i.e. cannot return false from here).

@@ -22,7 +22,6 @@ public class Game : MonoBehaviour
     [Header("Game variation")]
     public int numItems = 1;
     public bool onlyCollectSpecificItem = false;
-    public bool snakeCarriesItemOnCollection = false;
     public bool mustHaveExactLengthToCollectItem = false;
     public bool snakeGetsSmallerOnDelivery = false;
 
@@ -106,6 +105,7 @@ public class Game : MonoBehaviour
         // Gross hack to make sure that all of the Start() stuff - e.g. items and so on - has been
         // set up before starting to move the snake.
         yield return null;
+
         MaybeSpawnSpecificItem();
 
         while (dayManager.IsPlaying)
@@ -150,6 +150,7 @@ public class Game : MonoBehaviour
 
         specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
         specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().ItemData);
+        specificItem.SetFloating();
     }
 
     public void Die()
@@ -188,7 +189,7 @@ public class Game : MonoBehaviour
         itemsCollected++;
         currentDayScore += specificItem.ItemData.Value;
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
-        if(dayManager.CurrentTargetScore <=currentDayScore)
+        if (dayManager.CurrentTargetScore <= currentDayScore)
         {
             dayManager.EndDay();
             return;
