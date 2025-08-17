@@ -124,20 +124,25 @@ public class ItemsManager : MonoBehaviour
 
         var itemBounds = new BoundsInt((Vector3Int)candidateCell, new Vector3Int(itemData.Width, itemData.Height));
         var borderBounds = new BoundsInt(itemBounds.position, itemBounds.size);
-
-        if (itemData.HasLeftEntryOrExit)
-            borderBounds.min += Vector3Int.left;
-
-        if (itemData.HasRightEntryOrExit)
-            borderBounds.max += Vector3Int.right;
-
-        if (itemData.HasUpEntryOrExit)
-            borderBounds.max += Vector3Int.up;
-
-        if (itemData.HasDownEntryOrExit)
-            borderBounds.min += Vector3Int.down;
-
         var rotation = ItemController.Rotation.Up;
+
+        if (itemData.CellCount > 1)
+        {
+            if (itemData.HasLeftEntryOrExit)
+                borderBounds.min += Vector3Int.left;
+
+            if (itemData.HasRightEntryOrExit)
+                borderBounds.max += Vector3Int.right;
+
+            if (itemData.HasUpEntryOrExit)
+                borderBounds.max += Vector3Int.up;
+
+            if (itemData.HasDownEntryOrExit)
+                borderBounds.min += Vector3Int.down;
+        }
+
+        // var rotation = ItemController.Rotation.Up;
+
         // var rotation = (ItemController.Rotation)Random.Range(0, 4);
 
         // if (rotation == ItemController.Rotation.Right || rotation == ItemController.Rotation.Left)

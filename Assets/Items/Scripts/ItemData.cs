@@ -57,21 +57,17 @@ public class ItemData : ScriptableObject
     public int CellCount => GetCellCount();
     public bool IsMunchie => IsApple || IsMushroom;
     public bool IsCollectible => !IsMunchie && !IsCoin;
-
-    [NonSerialized]
-    public bool HasLeftEntryOrExit = false;
-
-    [NonSerialized]
-    public bool HasRightEntryOrExit = false;
-
-    [NonSerialized]
-    public bool HasUpEntryOrExit = false;
-
-    [NonSerialized]
-    public bool HasDownEntryOrExit = false;
+    public bool HasLeftEntryOrExit => hasLeftEntryOrExit;
+    public bool HasRightEntryOrExit => hasRightEntryOrExit;
+    public bool HasUpEntryOrExit => hasUpEntryOrExit;
+    public bool HasDownEntryOrExit => hasDownEntryOrExit;
 
     private CellType[][] cachedCellStructure;
     private int cellCount;
+    public bool hasLeftEntryOrExit = false;
+    public bool hasRightEntryOrExit = false;
+    public bool hasUpEntryOrExit = false;
+    public bool hasDownEntryOrExit = false;
 
     public int GetCellCount()
     {
@@ -139,53 +135,51 @@ public class ItemData : ScriptableObject
                     else if (cells[x] == EntryOrExitCellChar)
                     {
                         cachedCellStructure[x][cellY] = CellType.EntryOrExit;
-                        if (cells.Length == 1)
-                            ; // apple coin etc
-                        else if (x == 0)
-                            HasLeftEntryOrExit = true;
+                        if (x == 0)
+                            hasLeftEntryOrExit = true;
                         else if (x == Width - 1)
-                            HasRightEntryOrExit = true;
+                            hasRightEntryOrExit = true;
                         else if (y == 0)
-                            HasUpEntryOrExit = true;
+                            hasUpEntryOrExit = true;
                         else if (y == Height - 1)
-                            HasDownEntryOrExit = true;
+                            hasDownEntryOrExit = true;
                         numEnds++;
                     }
                     else if (cells[x] == LeftEntryCellChar)
                     {
                         cachedCellStructure[x][cellY] = CellType.LeftEntry;
-                        HasLeftEntryOrExit = true;
+                        hasLeftEntryOrExit = true;
                         numEnds++;
                     }
                     else if (cells[x] == RightEntryCellChar)
                     {
                         cachedCellStructure[x][cellY] = CellType.RightEntry;
-                        HasRightEntryOrExit = true;
+                        hasRightEntryOrExit = true;
                         numEnds++;
                     }
                     else if (cells[x] == UpEntryCellChar)
                     {
                         cachedCellStructure[x][cellY] = CellType.UpEntry;
-                        HasUpEntryOrExit = true;
+                        hasUpEntryOrExit = true;
                         numEnds++;
                     }
                     else if (cells[x] == DownEntryCellChar)
                     {
                         cachedCellStructure[x][cellY] = CellType.DownEntry;
-                        HasDownEntryOrExit = true;
+                        hasDownEntryOrExit = true;
                         numEnds++;
                     }
                     else if (cells[x] == ExitCellChar)
                     {
                         cachedCellStructure[x][cellY] = CellType.Exit;
                         if (x == 0)
-                            HasLeftEntryOrExit = true;
+                            hasLeftEntryOrExit = true;
                         else if (x == Width - 1)
-                            HasRightEntryOrExit = true;
+                            hasRightEntryOrExit = true;
                         else if (y == 0)
-                            HasUpEntryOrExit = true;
+                            hasUpEntryOrExit = true;
                         else if (y == Height - 1)
-                            HasDownEntryOrExit = true;
+                            hasDownEntryOrExit = true;
                         numEnds++;
                     }
                     else if (cells[x] != EmptyCellChar)

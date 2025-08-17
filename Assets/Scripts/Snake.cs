@@ -140,6 +140,12 @@ public class Snake : MonoBehaviour
 
         var moveInsideItem = game.ItemsManager.GetItemAtCell(newPos, out var moveInsideCellType);
 
+        if (moveInsideItem && (moveInsideItem.ItemData.IsMunchie || moveInsideItem.ItemData.IsCoin))
+        {
+            // The snake doesn't move inside apples, coins etc, it will immediately eat them later.
+            moveInsideItem = null;
+        }
+
         if (insideItem == null && moveInsideItem != null)
         {
             // Moving from outside => inside an item.

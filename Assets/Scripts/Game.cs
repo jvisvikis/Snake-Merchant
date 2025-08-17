@@ -1,4 +1,3 @@
-using FMOD;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -89,6 +88,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.MoveVertical.performed += MoveVertical;
         controls.PlayerInput.MoveHorizontal.performed += MoveHorizontal;
         controls.PlayerInput.Reset.performed += OnReset;
+        controls.PlayerInput.Pause.performed += OnPause;
         controls.Enable();
     }
 
@@ -98,6 +98,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.MoveVertical.performed -= MoveVertical;
         controls.PlayerInput.MoveHorizontal.performed -= MoveHorizontal;
         controls.PlayerInput.Reset.performed -= OnReset;
+        controls.PlayerInput.Pause.performed -= OnPause;
     }
 
     public IEnumerator MoveSnake()
@@ -172,6 +173,11 @@ public class Game : MonoBehaviour
     private void OnReset(InputAction.CallbackContext callbackContext)
     {
         DayManager.Instance.Reset();
+    }
+
+    private void OnPause(InputAction.CallbackContext callbackContext)
+    {
+        Time.timeScale = 1f - Time.timeScale;
     }
 
     private int RoundIntValue(InputAction.CallbackContext callbackContext)
