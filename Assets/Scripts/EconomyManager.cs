@@ -52,25 +52,30 @@ public class EconomyManager : MonoBehaviour
     }
     #region Upgrades
     //TODO Change method to use warehouse upgrade price
-    public bool UpgradeWarehouse(int price)
+    public bool UpgradeWarehouse()
     {
         if (!WarehouseUpgradeAvailable())
         {
             Debug.LogError("No warehouse upgrade available");
             return false;
         }
-        return false;
         //Uncomment when warehouses have prices
-        //if (SpendCoins(warehouses[warehouseLevel].price))
-        //{
-        //    warehouseLevel++;
-        //    return true;
-        //}
-        //else
-        //{
-        //    Debug.Log("Not enough Coins");
-        //    return false;
-        //}
+        if (SpendCoins(warehousePrices[warehouseLevel]))
+        {
+            warehouseLevel++;
+            UIManager.Instance.SetWarehouseLevelText(snakeSpeedLevel.ToString());
+            UIManager.Instance.SetWarehouseUpgradePrice(GetCurrentWarehouseUpgradePrice().ToString());
+            if (!WarehouseUpgradeAvailable())
+            {
+                UIManager.Instance.SetEnableSpeedUpgrade(false);
+            }
+            return true;
+        }
+        else
+        {
+            Debug.Log("Not enough Coins");
+            return false;
+        }
     }
 
     public bool UpgradeSpeedLevel()
@@ -85,6 +90,10 @@ public class EconomyManager : MonoBehaviour
             snakeSpeedLevel++;
             UIManager.Instance.SetSpeedLevelText(snakeSpeedLevel.ToString());
             UIManager.Instance.SetSpeedUpgradePrice(GetCurrentSpeedUpgradePrice().ToString());
+            if (!SnakeSpeedUpgradeAvailable())
+            {
+                UIManager.Instance.SetEnableSpeedUpgrade(false);
+            }
             return true;
         }
         else 
@@ -105,7 +114,11 @@ public class EconomyManager : MonoBehaviour
         {
             snakeLengthLevel++;
             UIManager.Instance.SetLengthLevelText(snakeLengthLevel.ToString());
-            UIManager.Instance.SetLengthUpgradePrice(GetCurrentSpeedUpgradePrice().ToString());
+            UIManager.Instance.SetLengthUpgradePrice(GetCurrentLengthUpgradePrice().ToString());
+            if (!SnakeLengthUpgradeAvailable())
+            {
+                UIManager.Instance.SetEnableLengthUpgrade(false);
+            }
             return true;
         }
         else
@@ -125,6 +138,10 @@ public class EconomyManager : MonoBehaviour
         if (SpendCoins(lifePrice))
         {
             AddLife();
+            if(!LivesUpgradeAvailable())
+            {
+                UIManager.Instance.SetEnableLifeUpgrade(false);
+            }
             return true;
         }
         else
@@ -158,9 +175,9 @@ public class EconomyManager : MonoBehaviour
     #region Get Upgrade Prices
     public int GetCurrentWarehouseUpgradePrice()
     {
-        //Change once warehouse items are in and have prices
-        //warehouses[warehouseLevel+1].price
-        return -1;
+        if(!WarehouseUpgradeAvailable())
+            return -1;
+        return warehousePrices[warehouseLevel+1];
     }
     public int GetCurrentLengthUpgradePrice()
     {

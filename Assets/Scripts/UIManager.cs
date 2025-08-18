@@ -38,7 +38,15 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI speedLevelText;
 
-    [Header("UpgradePricesUI")]
+    [Header("UpgradeShopUI")]
+    [SerializeField]
+    private Button warehouseUpgradeButton;
+    [SerializeField]
+    private Button lengthUpgradeButton;
+    [SerializeField]
+    private Button speedUpgradeButton;
+    [SerializeField]
+    private Button livesUpgradeButton;
     [SerializeField]
     private TextMeshProUGUI warehouseUpgradePriceText;
     [SerializeField]
@@ -83,7 +91,10 @@ public class UIManager : MonoBehaviour
         SetLengthUpgradePrice(EconomyManager.Instance.GetCurrentLengthUpgradePrice().ToString());
         SetSpeedUpgradePrice(EconomyManager.Instance.GetCurrentSpeedUpgradePrice().ToString());
         SetLifePurchasePrice(EconomyManager.Instance.GetLifeUpgradePrice().ToString());
-        
+        SetEnableWarehouseUpgrade(EconomyManager.Instance.WarehouseUpgradeAvailable());
+        SetEnableLengthUpgrade(EconomyManager.Instance.SnakeLengthUpgradeAvailable());
+        SetEnableSpeedUpgrade(EconomyManager.Instance.SnakeSpeedUpgradeAvailable());
+        SetEnableLifeUpgrade(EconomyManager.Instance.LivesUpgradeAvailable());
     }
     #region Set Text
     public void SetTimeSliderValue(float value)
@@ -147,26 +158,10 @@ public class UIManager : MonoBehaviour
         livesUpgradePriceText.text = text;
     }
     #endregion
-    public void EndDay()
-    {
-        SetEndDayPanelActive(true);
-    }
-    public void StartNextDay()
-    {
-        DayManager.Instance.NextDay();
-    }
-    public void SetEndDayPanelActive(bool active)
-    {
-        endDayPanel.gameObject.SetActive(active);
-    }
-    public void SetNextDayButtonVisible(bool visible)
-    {
-        nextDayButton.gameObject.SetActive(visible);
-    }
-
+    #region Buy Upgrades
     public void BuyWarehouseUpgrade()
     {
-        EconomyManager.Instance.UpgradeWarehouse(3);
+        EconomyManager.Instance.UpgradeWarehouse();
     }
 
     public void BuyLengthUpgrade()
@@ -187,5 +182,42 @@ public class UIManager : MonoBehaviour
     {
         EconomyManager.Instance.BuyLife();
     }
+    #endregion
+    #region Enable/Disable Buttons
+    public void SetEnableWarehouseUpgrade(bool active)
+    {
+        warehouseUpgradeButton.interactable = active;
+    }
+    public void SetEnableLengthUpgrade(bool active)
+    {
+        lengthUpgradeButton.interactable = active;
+    }
+    public void SetEnableSpeedUpgrade(bool active)
+    {
+        speedUpgradeButton.interactable = active;
+    }
+    public void SetEnableLifeUpgrade(bool active)
+    {
+        livesUpgradeButton.interactable = active;
+    }
+    #endregion
+    public void EndDay()
+    {
+        SetEndDayPanelActive(true);
+    }
+    public void StartNextDay()
+    {
+        DayManager.Instance.NextDay();
+    }
+    public void SetEndDayPanelActive(bool active)
+    {
+        endDayPanel.gameObject.SetActive(active);
+    }
+    public void SetNextDayButtonVisible(bool visible)
+    {
+        nextDayButton.gameObject.SetActive(visible);
+    }
+    
+
 
 }
