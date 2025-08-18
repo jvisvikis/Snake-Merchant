@@ -79,7 +79,11 @@ public class DayManager : MonoBehaviour
         ModifyDayScore();
         ReloadScene();
     }
-
+    public void ResetDay()
+    {
+        EconomyManager.Instance.RemoveLife();
+        ReloadScene();
+    }
     public void Reset()
     {
         isPlaying = false;

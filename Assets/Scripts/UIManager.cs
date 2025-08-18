@@ -45,12 +45,16 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI lengthUpgradePriceText;
     [SerializeField]
     private TextMeshProUGUI speedUpgradePriceText;
+    [SerializeField]
+    private TextMeshProUGUI livesUpgradePriceText;
 
     [Header("CoinUI")]
     [SerializeField]
     private TextMeshProUGUI totalCoinsText;
+
+    [Header("LivesUI")]
     [SerializeField]
-    private TextMeshProUGUI currentCoinsText;
+    private TextMeshProUGUI livesText;
 
     private void Awake()
     {
@@ -70,13 +74,16 @@ public class UIManager : MonoBehaviour
     private void SetupDay()
     {
         SetEndDayPanelActive(false);
-        SetTotalCoinText($"Coins: {EconomyManager.Instance.TotalCoins}");
+        SetTotalCoinText($"Coins: <color=yellow>{EconomyManager.Instance.TotalCoins}");
+        SetLivesText($"Lives: <color=green>{EconomyManager.Instance.Lives.ToString()}");
         SetWarehouseLevelText(EconomyManager.Instance.WarehouseLevel.ToString());
         SetLengthLevelText(EconomyManager.Instance.SnakeLengthLevel.ToString());
         SetSpeedLevelText(EconomyManager.Instance.SnakeSpeedLevel.ToString());
         SetWarehouseUpgradePrice(EconomyManager.Instance.GetCurrentWarehouseUpgradePrice().ToString());
         SetLengthUpgradePrice(EconomyManager.Instance.GetCurrentLengthUpgradePrice().ToString());
         SetSpeedUpgradePrice(EconomyManager.Instance.GetCurrentSpeedUpgradePrice().ToString());
+        SetLifePurchasePrice(EconomyManager.Instance.GetLifeUpgradePrice().ToString());
+        
     }
     #region Set Text
     public void SetTimeSliderValue(float value)
@@ -107,13 +114,13 @@ public class UIManager : MonoBehaviour
     {
         speedLevelText.text = text;
     }
-    public void SetCurrentCoinText(string text)
-    {
-        currentCoinsText.text = text;
-    }
     public void SetTotalCoinText(string text)
     {
         totalCoinsText.text = text;
+    }
+    public void SetLivesText(string text)
+    {
+        livesText.text = text;
     }
     public void SetWarehouseUpgradePrice(string text)
     {
@@ -132,6 +139,12 @@ public class UIManager : MonoBehaviour
         if (text.Equals("-1"))
             text = "N/A";
         speedUpgradePriceText.text = text;
+    }
+    public void SetLifePurchasePrice(string text)
+    {
+        if (text.Equals("-1"))
+            text = "N/A";
+        livesUpgradePriceText.text = text;
     }
     #endregion
     public void EndDay()
@@ -169,6 +182,10 @@ public class UIManager : MonoBehaviour
     public void BuyRemoveObstacle()
     {
         EconomyManager.Instance.BuyObstacleRemoval();
+    }
+    public void BuyLife()
+    {
+        EconomyManager.Instance.BuyLife();
     }
 
 }
