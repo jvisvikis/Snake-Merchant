@@ -14,6 +14,7 @@ public class Grid
     public float CellSize => cellSize;
     public int Width => width;
     public int Height => height;
+    public Vector2 Orig => orig;
 
     public Grid(int width, int height, float cellSize, Vector3 orig)
     {

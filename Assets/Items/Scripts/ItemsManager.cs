@@ -5,9 +5,6 @@ using UnityEngine;
 public class ItemsManager : MonoBehaviour
 {
     [SerializeField]
-    private ItemDataCollection allItemData;
-
-    [SerializeField]
     private ItemController itemControllerPrefab;
 
     private Game game;
@@ -21,25 +18,24 @@ public class ItemsManager : MonoBehaviour
     private void Awake()
     {
         game = GetComponent<Game>();
-
-        if (allItemData != null)
-        {
-            foreach (var itemData in allItemData.Items)
-            {
-                if (itemData.IsApple)
-                    appleItemData = itemData;
-                else if (itemData.IsMushroom)
-                    mushroomItemData = itemData;
-                else if (itemData.IsCoin)
-                    coinItemData = itemData;
-                else
-                    collectibleItemData.Add(itemData);
-            }
-        }
     }
 
-    private void Start()
+    public void LoadLevel()
     {
+        collectibleItemData.Clear();
+
+        foreach (var itemData in game.CurrentLevel.Items.Items)
+        {
+            if (itemData.IsApple)
+                appleItemData = itemData;
+            else if (itemData.IsMushroom)
+                mushroomItemData = itemData;
+            else if (itemData.IsCoin)
+                coinItemData = itemData;
+            else
+                collectibleItemData.Add(itemData);
+        }
+
         SpawnMunchies();
 
         // weird copy/shuffle logic so that we (a) spawn random items and (b) don't spawn the same
@@ -53,7 +49,7 @@ public class ItemsManager : MonoBehaviour
         {
             if (SpawnItem(ncid[i]))
                 numSpawned++;
-            if (numSpawned >= game.numItems)
+            if (numSpawned >= game.CurrentLevel.NumItems)
                 break;
         }
     }
@@ -72,7 +68,7 @@ public class ItemsManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < game.numCoins; i++)
+        for (int i = 0; i < game.CurrentLevel.NumCoins; i++)
             SpawnItem(coinItemData);
     }
 
@@ -341,7 +337,7 @@ public class ItemsManager : MonoBehaviour
     public void SpawnMunchies()
     {
         SpawnItem(appleItemData);
-        if (game.mushrooms)
+        if (game.CurrentLevel.Mushrooms)
             SpawnItem(mushroomItemData);
     }
 

@@ -3024,11 +3024,10 @@ MonoBehaviour:
   snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
   specificItemParent: {fileID: 292428359}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
-  width: 8
-  height: 8
+  levels:
+  - {fileID: 11400000, guid: 7919659961c994580af077b764df0297, type: 2}
   cellSize: 0.35
-  orig: {x: -2.5, y: -2.5, z: 0}
-  numItems: 6
+  numItems: 4
   onlyCollectSpecificItem: 1
   mustHaveExactLengthToCollectItem: 0
   snakeGetsSmallerOnDelivery: 0
@@ -3115,7 +3114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a92b5e4c825246598e77594ce952eb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allItemData: {fileID: 11400000, guid: 79b1127dafaf44ceba2e7f331a285bf8, type: 2}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
 --- !u!1 &1953276796
 GameObject:

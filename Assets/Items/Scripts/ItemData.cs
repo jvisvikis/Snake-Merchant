@@ -2,7 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ItemData", menuName = "Items/Item", order = 0)]
+[CreateAssetMenu(fileName = "ItemData", menuName = "Snake/Item", order = 0)]
 public class ItemData : ScriptableObject
 {
     public enum CellType

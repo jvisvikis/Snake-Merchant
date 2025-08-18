@@ -9,16 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
-  m_Name: Box
+  m_Script: {fileID: 11500000, guid: 3f00d66c4e8164a05982a9b3fc7b7a4c, type: 3}
+  m_Name: AllItemsLevel
   m_EditorClassIdentifier: 
-  Value: 100
-  Width: 2
-  Height: 2
-  IsApple: 0
-  IsMushroom: 0
-  IsCoin: 0
-  cells: '# #
-
-    D X'
-  debugColor: {r: 0.8584906, g: 0.17412782, b: 0.46009892, a: 1}
+  Width: 12
+  Height: 12
+  Cost: 1
+  Items: {fileID: 11400000, guid: 79b1127dafaf44ceba2e7f331a285bf8, type: 2}
