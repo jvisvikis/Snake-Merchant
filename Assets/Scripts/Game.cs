@@ -1,4 +1,3 @@
-using FMOD;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,14 +12,16 @@ public class Game : MonoBehaviour
     public GameObject specificItemParent;
     public ItemController itemControllerPrefab;
 
+    [Header("Levels")]
+    [SerializeField]
+    private LevelData[] levels;
+
     [Header("Grid")]
-    public int width = 10;
-    public int height = 10;
     public float cellSize = 1;
-    public Vector3 orig;
+
+    // public Vector3 orig;
 
     [Header("Game variation")]
-    public int numItems = 1;
     public bool onlyCollectSpecificItem = false;
     public bool mustHaveExactLengthToCollectItem = false;
     public bool snakeGetsSmallerOnDelivery = false;
@@ -31,10 +32,8 @@ public class Game : MonoBehaviour
     public float timeToMoveReduction = 0.01f;
     public float timeToDieGrace = 0.1f;
     public int collectionWalkDelay = 3;
-    public bool mushrooms = false;
 
     [Header("Coins")]
-    public int numCoins = 3;
     public int coinsSpawnTurns = 15;
     public int coinsFirstSpawnTurns = 5;
 
@@ -46,6 +45,7 @@ public class Game : MonoBehaviour
     public ItemsManager ItemsManager => itemsManager;
     public int Coins => coins;
     public int CoinSpawnCountdown => coinSpawnCountdown;
+    public LevelData CurrentLevel => levels[currentLevelIndex];
 
     private Snake snake;
     private Grid grid;
@@ -56,6 +56,7 @@ public class Game : MonoBehaviour
     private int itemsCollected = 0;
     private int coinSpawnCountdown;
     private int currentDayScore;
+    private int currentLevelIndex = 0;
 
     // Start is called before the first frame update
     private void Awake()
@@ -66,17 +67,20 @@ public class Game : MonoBehaviour
 
     void Start()
     {
-        grid = new Grid(width, height, cellSize, orig);
+        var firstLevel = levels[0];
+        var orig = new Vector2(firstLevel.Width, firstLevel.Height) * cellSize / -2f;
+        grid = new Grid(firstLevel.Width, firstLevel.Height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
         startNumParts += EconomyManager.Instance.SnakeLengthLevel;
         SpawnSnake();
+        itemsManager.LoadLevel();
         StartCoroutine(MoveSnake());
         StartCoroutine(DayManager.Instance.StartDay());
     }
 
     void SpawnSnake()
     {
-        snake = Instantiate(snakePrefab, orig, Quaternion.identity, null);
+        snake = Instantiate(snakePrefab, grid.Orig, Quaternion.identity, null);
         snake.SetSize(cellSize);
         snake.Init(new Vector2Int(0, 0));
     }
@@ -88,6 +92,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.MoveVertical.performed += MoveVertical;
         controls.PlayerInput.MoveHorizontal.performed += MoveHorizontal;
         controls.PlayerInput.Reset.performed += OnReset;
+        controls.PlayerInput.Pause.performed += OnPause;
         controls.Enable();
     }
 
@@ -97,6 +102,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.MoveVertical.performed -= MoveVertical;
         controls.PlayerInput.MoveHorizontal.performed -= MoveHorizontal;
         controls.PlayerInput.Reset.performed -= OnReset;
+        controls.PlayerInput.Pause.performed -= OnPause;
     }
 
     public IEnumerator MoveSnake()
@@ -124,7 +130,7 @@ public class Game : MonoBehaviour
             {
                 Die();
             }
-            else if (itemsManager.SnakeMoved(specificItem?.ItemData))
+            else if (itemsManager.SnakeMoved(specificItem?.RItemData?.ItemData))
             {
                 OnItemCollected();
             }
@@ -141,14 +147,11 @@ public class Game : MonoBehaviour
 
     private void MaybeSpawnSpecificItem()
     {
-        if (!onlyCollectSpecificItem)
-            return;
-
         if (specificItem != null)
             GameObject.Destroy(specificItem.gameObject);
 
         specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
-        specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().ItemData);
+        specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().RItemData);
         specificItem.SetFloating();
     }
 
@@ -173,6 +176,11 @@ public class Game : MonoBehaviour
         DayManager.Instance.Reset();
     }
 
+    private void OnPause(InputAction.CallbackContext callbackContext)
+    {
+        Time.timeScale = 1f - Time.timeScale;
+    }
+
     private int RoundIntValue(InputAction.CallbackContext callbackContext)
     {
         return (int)Mathf.Ceil(callbackContext.ReadValue<float>());
@@ -187,9 +195,11 @@ public class Game : MonoBehaviour
     public void OnItemCollected()
     {
         itemsCollected++;
-        currentDayScore += specificItem.ItemData.Value;
+        Debug.Assert(specificItem != null);
+        Debug.Assert(specificItem.RItemData != null);
+        currentDayScore += specificItem.RItemData.Value;
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
-        if(DayManager.Instance.CurrentTargetScore <=currentDayScore)
+        if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
             DayManager.Instance.EndDay(currentDayScore);
             return;

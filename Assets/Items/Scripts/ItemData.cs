@@ -2,7 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ItemData", menuName = "Items/Item", order = 0)]
+[CreateAssetMenu(fileName = "ItemData", menuName = "Snake/Item", order = 0)]
 public class ItemData : ScriptableObject
 {
     public enum CellType
@@ -48,6 +48,8 @@ public class ItemData : ScriptableObject
 
     public bool IsCoin = false;
 
+    public bool IsObstacle = false;
+
     [TextArea(10, 10), SerializeField]
     private string cells;
 
@@ -56,22 +58,30 @@ public class ItemData : ScriptableObject
 
     public int CellCount => GetCellCount();
     public bool IsMunchie => IsApple || IsMushroom;
-    public bool IsCollectible => !IsMunchie && !IsCoin;
+    public bool IsCollectible => !IsMunchie && !IsCoin && !IsObstacle;
+    public bool IsConsumable => IsMunchie || IsCoin;
+    public bool HasLeftEntryOrExit => hasLeftEntryOrExit;
+    public bool HasRightEntryOrExit => hasRightEntryOrExit;
+    public bool HasUpEntryOrExit => hasUpEntryOrExit;
+    public bool HasDownEntryOrExit => hasDownEntryOrExit;
 
     [NonSerialized]
-    public bool HasLeftEntryOrExit = false;
+    private CellType[][] cellStructure;
 
     [NonSerialized]
-    public bool HasRightEntryOrExit = false;
-
-    [NonSerialized]
-    public bool HasUpEntryOrExit = false;
-
-    [NonSerialized]
-    public bool HasDownEntryOrExit = false;
-
-    private CellType[][] cachedCellStructure;
     private int cellCount;
+
+    [NonSerialized]
+    private bool hasLeftEntryOrExit = false;
+
+    [NonSerialized]
+    private bool hasRightEntryOrExit = false;
+
+    [NonSerialized]
+    private bool hasUpEntryOrExit = false;
+
+    [NonSerialized]
+    private bool hasDownEntryOrExit = false;
 
     public int GetCellCount()
     {
@@ -85,7 +95,7 @@ public class ItemData : ScriptableObject
         {
             for (int y = 0; y < Height; y++)
             {
-                if (cachedCellStructure[x][y] != CellType.Empty)
+                if (cellStructure[x][y] != CellType.Empty)
                     count++;
             }
         }
@@ -101,104 +111,102 @@ public class ItemData : ScriptableObject
     /// </summary>
     public CellType[][] GetCellStructure()
     {
-        if (cachedCellStructure == null)
+        if (cellStructure != null)
+            return cellStructure;
+
+        int numEnds = 0;
+        cellStructure = new CellType[Width][];
+
+        for (int i = 0; i < Width; i++)
+            cellStructure[i] = new CellType[Height];
+
+        var lines = cells.Split("\n", System.StringSplitOptions.RemoveEmptyEntries);
+        if (lines.Length != Height)
+            Debug.LogWarning($"Item {name} has height {Height}, but its structure has {lines.Length}");
+
+        for (int y = 0; y < Height; y++)
         {
-            int numEnds = 0;
-            cachedCellStructure = new CellType[Width][];
+            if (y >= lines.Length)
+                break;
 
-            for (int i = 0; i < Width; i++)
-                cachedCellStructure[i] = new CellType[Height];
+            var cells = lines[y].Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
 
-            var lines = cells.Split("\n", System.StringSplitOptions.RemoveEmptyEntries);
-            if (lines.Length != Height)
-                Debug.LogWarning($"Item {name} has height {Height}, but its structure has {lines.Length}");
+            if (cells.Length != Width)
+                Debug.LogWarning($"Item {name} has width {Width}, but its structure has {cells.Length} entries on row {y}");
 
-            for (int y = 0; y < Height; y++)
+            var cellY = Height - y - 1;
+
+            for (int x = 0; x < Width; x++)
             {
-                if (y >= lines.Length)
+                if (x >= cells.Length)
                     break;
 
-                var cells = lines[y].Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
+                cellStructure[x][cellY] = CellType.Empty;
 
-                if (cells.Length != Width)
-                    Debug.LogWarning($"Item {name} has width {Width}, but its structure has {cells.Length} entries on row {y}");
-
-                var cellY = Height - y - 1;
-
-                for (int x = 0; x < Width; x++)
+                if (cells[x] == MiddleCellChar)
                 {
-                    if (x >= cells.Length)
-                        break;
-
-                    cachedCellStructure[x][cellY] = CellType.Empty;
-
-                    if (cells[x] == MiddleCellChar)
-                    {
-                        cachedCellStructure[x][cellY] = CellType.Middle;
-                    }
-                    else if (cells[x] == EntryOrExitCellChar)
-                    {
-                        cachedCellStructure[x][cellY] = CellType.EntryOrExit;
-                        if (cells.Length == 1)
-                            ; // apple coin etc
-                        else if (x == 0)
-                            HasLeftEntryOrExit = true;
-                        else if (x == Width - 1)
-                            HasRightEntryOrExit = true;
-                        else if (y == 0)
-                            HasUpEntryOrExit = true;
-                        else if (y == Height - 1)
-                            HasDownEntryOrExit = true;
-                        numEnds++;
-                    }
-                    else if (cells[x] == LeftEntryCellChar)
-                    {
-                        cachedCellStructure[x][cellY] = CellType.LeftEntry;
-                        HasLeftEntryOrExit = true;
-                        numEnds++;
-                    }
-                    else if (cells[x] == RightEntryCellChar)
-                    {
-                        cachedCellStructure[x][cellY] = CellType.RightEntry;
-                        HasRightEntryOrExit = true;
-                        numEnds++;
-                    }
-                    else if (cells[x] == UpEntryCellChar)
-                    {
-                        cachedCellStructure[x][cellY] = CellType.UpEntry;
-                        HasUpEntryOrExit = true;
-                        numEnds++;
-                    }
-                    else if (cells[x] == DownEntryCellChar)
-                    {
-                        cachedCellStructure[x][cellY] = CellType.DownEntry;
-                        HasDownEntryOrExit = true;
-                        numEnds++;
-                    }
-                    else if (cells[x] == ExitCellChar)
-                    {
-                        cachedCellStructure[x][cellY] = CellType.Exit;
-                        if (x == 0)
-                            HasLeftEntryOrExit = true;
-                        else if (x == Width - 1)
-                            HasRightEntryOrExit = true;
-                        else if (y == 0)
-                            HasUpEntryOrExit = true;
-                        else if (y == Height - 1)
-                            HasDownEntryOrExit = true;
-                        numEnds++;
-                    }
-                    else if (cells[x] != EmptyCellChar)
-                    {
-                        Debug.LogWarning($"Item {name} has invalid character {cells[x]}");
-                    }
+                    cellStructure[x][cellY] = CellType.Middle;
+                }
+                else if (cells[x] == EntryOrExitCellChar)
+                {
+                    cellStructure[x][cellY] = CellType.EntryOrExit;
+                    if (x == 0)
+                        hasLeftEntryOrExit = true;
+                    else if (x == Width - 1)
+                        hasRightEntryOrExit = true;
+                    else if (y == 0)
+                        hasUpEntryOrExit = true;
+                    else if (y == Height - 1)
+                        hasDownEntryOrExit = true;
+                    numEnds++;
+                }
+                else if (cells[x] == LeftEntryCellChar)
+                {
+                    cellStructure[x][cellY] = CellType.LeftEntry;
+                    hasLeftEntryOrExit = true;
+                    numEnds++;
+                }
+                else if (cells[x] == RightEntryCellChar)
+                {
+                    cellStructure[x][cellY] = CellType.RightEntry;
+                    hasRightEntryOrExit = true;
+                    numEnds++;
+                }
+                else if (cells[x] == UpEntryCellChar)
+                {
+                    cellStructure[x][cellY] = CellType.UpEntry;
+                    hasUpEntryOrExit = true;
+                    numEnds++;
+                }
+                else if (cells[x] == DownEntryCellChar)
+                {
+                    cellStructure[x][cellY] = CellType.DownEntry;
+                    hasDownEntryOrExit = true;
+                    numEnds++;
+                }
+                else if (cells[x] == ExitCellChar)
+                {
+                    cellStructure[x][cellY] = CellType.Exit;
+                    if (x == 0)
+                        hasLeftEntryOrExit = true;
+                    else if (x == Width - 1)
+                        hasRightEntryOrExit = true;
+                    else if (y == 0)
+                        hasUpEntryOrExit = true;
+                    else if (y == Height - 1)
+                        hasDownEntryOrExit = true;
+                    numEnds++;
+                }
+                else if (cells[x] != EmptyCellChar)
+                {
+                    Debug.LogWarning($"Item {name} has invalid character {cells[x]}");
                 }
             }
-
-            if (cachedCellStructure.Length > 1 && numEnds < 2)
-                Debug.LogWarning($"Item {name} has {numEnds} ends, but it should have at least 2!");
         }
 
-        return cachedCellStructure;
+        if (cellStructure.Length > 1 && numEnds < 2)
+            Debug.LogWarning($"Item {name} has {numEnds} ends, but it should have at least 2!");
+
+        return cellStructure;
     }
 }
