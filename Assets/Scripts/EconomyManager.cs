@@ -41,23 +41,6 @@ public class EconomyManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
-    public void AddCoins(int coins)
-    {
-        this.totalCoins += coins;
-        UIManager.Instance.SetTotalCoinText($"Coins: <color=yellow>{totalCoins}");
-    }
-
-    public bool SpendCoins(int value)
-    {
-        if(value>totalCoins)
-        {
-            return false;
-        }
-        totalCoins -= value;
-        UIManager.Instance.SetTotalCoinText($"Coins: <color=yellow>{totalCoins}");
-        return true;
-    }
     #region Upgrades
     //TODO Change method to use warehouse upgrade price
     public bool UpgradeWarehouse(int price)
@@ -202,7 +185,21 @@ public class EconomyManager : MonoBehaviour
         //TODO remove obstacle
         Debug.Log("Not implemented yet");
     }
-
+    public void AddCoins(int coins)
+    {
+        this.totalCoins += coins;
+        UIManager.Instance.SetTotalCoinText($"Coins: <color=yellow>{totalCoins}");
+    }
+    public bool SpendCoins(int value)
+    {
+        if (value > totalCoins)
+        {
+            return false;
+        }
+        totalCoins -= value;
+        UIManager.Instance.SetTotalCoinText($"Coins: <color=yellow>{totalCoins}");
+        return true;
+    }
     public bool AddLife()
     {
         if (!LivesUpgradeAvailable())
@@ -215,7 +212,6 @@ public class EconomyManager : MonoBehaviour
         UIManager.Instance.SetLivesText($"Lives: <color=green>{lives}");
         return true;
     }
-
     public void RemoveLife()
     {
         lives--;
