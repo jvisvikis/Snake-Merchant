@@ -7,7 +7,7 @@ public class EconomyManager : MonoBehaviour
     public static EconomyManager Instance => instance;
     private static EconomyManager instance;
 
-    public List<Grid> warehouses = new();
+    public List<int> warehousePrices = new();
     public List<int> snakeLengthPrices = new();
     public List<int> snakeSpeedPrices = new();
     [Header("Life Settings")]
