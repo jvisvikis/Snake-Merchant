@@ -62,7 +62,7 @@ public class Game : MonoBehaviour
     private void Awake()
     {
         itemsManager = GetComponent<ItemsManager>();
-        timeToMove = initTimeToMove;
+        //timeToMove = initTimeToMove;
     }
 
     void Start()
@@ -73,6 +73,7 @@ public class Game : MonoBehaviour
         grid = new Grid(firstLevel.Width, firstLevel.Height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
         startNumParts += EconomyManager.Instance.SnakeLengthLevel;
+        timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
         SpawnSnake();
         itemsManager.LoadLevel();
         StartCoroutine(MoveSnake());
