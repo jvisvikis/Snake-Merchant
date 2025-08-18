@@ -41,6 +41,15 @@ public class EconomyManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    public void SetupWarehousePrices(LevelData[] levels)
+    {
+        foreach (LevelData level in levels)
+        {
+            if (level == null) continue;
+            warehousePrices.Add(level.Cost);
+        }
+    }
     #region Upgrades
     //TODO Change method to use warehouse upgrade price
     public bool UpgradeWarehouse(int price)
@@ -130,7 +139,7 @@ public class EconomyManager : MonoBehaviour
 
     public bool WarehouseUpgradeAvailable()
     {
-        return warehouseLevel < warehouses.Count - 1;
+        return warehouseLevel < warehousePrices.Count - 1;
     }
     public bool SnakeLengthUpgradeAvailable()
     {

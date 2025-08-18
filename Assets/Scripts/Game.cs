@@ -68,6 +68,7 @@ public class Game : MonoBehaviour
     void Start()
     {
         var firstLevel = levels[0];
+        EconomyManager.Instance.SetupWarehousePrices(levels);
         var orig = new Vector2(firstLevel.Width, firstLevel.Height) * cellSize / -2f;
         grid = new Grid(firstLevel.Width, firstLevel.Height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
