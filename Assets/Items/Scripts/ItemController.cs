@@ -8,15 +8,7 @@ using UnityEditor;
 
 public class ItemController : MonoBehaviour
 {
-    public enum Rotation
-    {
-        Up,
-        Down,
-        Right,
-        Left,
-    }
-
-    public ItemData ItemData => itemData;
+    public RotatedItemData RItemData => itemData;
 
     /// <summary>
     /// Every grid cell that this item takes up, taking into account its structure - e.g. the empty
@@ -35,12 +27,11 @@ public class ItemController : MonoBehaviour
     /// </summary>
     public List<Vector2Int> BorderGridCells => borderGridCells;
 
-    private ItemData itemData;
+    private RotatedItemData itemData;
     private Game game;
     private bool attachedToGrid = false;
     private BoundsInt itemBounds;
     private BoundsInt borderBounds;
-    private Rotation rotation = Rotation.Up;
     private List<Vector2Int> itemGridCells;
     private List<ItemData.CellType> itemGridCellTypes;
     private List<Vector2Int> borderGridCells;
@@ -50,22 +41,21 @@ public class ItemController : MonoBehaviour
         game = FindObjectOfType<Game>();
     }
 
-    public void SetData(ItemData itemData)
+    public void SetData(RotatedItemData itemData)
     {
         this.itemData = itemData;
     }
 
-    public void SetGridLocation(BoundsInt itemBounds, BoundsInt borderBounds, Rotation rotation)
+    public void SetGridLocation(BoundsInt itemBounds, BoundsInt borderBounds)
     {
         this.itemBounds = itemBounds;
         this.borderBounds = borderBounds;
-        this.rotation = rotation;
         attachedToGrid = true;
         itemGridCells = CalcItemGridCells(out itemGridCellTypes);
         borderGridCells = GetBorderGridCells();
 
         // Debug.Log(
-        //     $"[{itemData.name}] itemBounds: {itemBounds}, borderBounds: {borderBounds}, itemGridCells: {ListUtil.ListToString(itemGridCells)}, borderGridCells: {ListUtil.ListToString(borderGridCells)}",
+        //     $"[{itemData.Name}] itemBounds: {itemBounds}, borderBounds: {borderBounds}, itemGridCells: {ListUtil.ListToString(itemGridCells)}, borderGridCells: {ListUtil.ListToString(borderGridCells)}",
         //     gameObject
         // );
     }
@@ -92,34 +82,6 @@ public class ItemController : MonoBehaviour
         }
         cellType = ItemData.CellType.Empty;
         return false;
-    }
-
-    /// <summary>
-    /// Rotates an x/y cell in an un-rotated ItemData into the coordinates of this item as if it
-    /// were rotated. Pass in backwards=true to rotate in the opposite direction of rotation, in
-    /// other words, rotating back from a rotated cell into the local item data's cell.
-    /// </summary>
-    /// <param name="itemCell"></param>
-    /// <returns></returns>
-    private Vector2Int RotateCell(Vector2Int itemCell, bool backwards)
-    {
-        var left = new Vector2Int(itemData.Height - itemCell.y - 1, itemCell.x);
-        var right = new Vector2Int(itemCell.y, itemData.Width - itemCell.x - 1);
-
-        switch (rotation)
-        {
-            case Rotation.Up:
-                return itemCell;
-            case Rotation.Down:
-                return new Vector2Int(itemData.Width - itemCell.x - 1, itemData.Height - itemCell.y - 1);
-            case Rotation.Left:
-                return backwards ? right : left;
-            case Rotation.Right:
-                return backwards ? left : right;
-        }
-
-        Debug.Assert(false);
-        return itemCell;
     }
 
     /// <summary>
@@ -157,8 +119,7 @@ public class ItemController : MonoBehaviour
         {
             for (int y = 0; y < itemBounds.size.y; y++)
             {
-                var rotateXY = RotateCell(new Vector2Int(x, y), true);
-                var cellType = cellStructure[rotateXY.x][rotateXY.y];
+                var cellType = cellStructure[x][y];
                 if (cellType != ItemData.CellType.Empty)
                 {
                     cells.Add((Vector2Int)itemBounds.position + new Vector2Int(x, y));
@@ -190,7 +151,7 @@ public class ItemController : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (!itemData)
+        if (itemData == null)
             return;
 
         var cellSize = game.Grid.CellSize;
@@ -220,7 +181,7 @@ public class ItemController : MonoBehaviour
 
             var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;
             var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
-            Gizmos.color = itemData.debugColor;
+            Gizmos.color = itemData.DebugColor;
             Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
 
             Gizmos.color = Color.black;

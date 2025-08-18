@@ -56,22 +56,32 @@ public class Snake : MonoBehaviour
         return false;
     }
 
-    public bool CanConsume(ItemController item)
+    public bool CanConsumeOrCollect(ItemController item)
     {
-        if (carryingItem && !item.ItemData.IsCoin)
+        if (item.RItemData.IsConsumable)
+            return Head == item.ItemGridCells[0];
+
+        if (carryingItem)
             return false;
 
-        if (game.mustHaveExactLengthToCollectItem && parts.Count != item.ItemData.CellCount)
+        if (game.mustHaveExactLengthToCollectItem && parts.Count != item.RItemData.CellCount)
             return false;
 
-        if (parts.Count < item.ItemData.CellCount)
+        if (parts.Count < item.RItemData.CellCount)
             return false;
 
+        // can only consume if all squares of the item are filled.
         for (int i = 0; i < item.ItemGridCells.Count; i++)
         {
             if (!ContainsCell(item.ItemGridCells[i]))
                 return false;
         }
+
+        // can only consume if it's an exit square, otherwise snake must have filled item but be
+        // somewhere in the middle of it.
+        game.ItemsManager.GetItemAtCell(Head, out var cellType);
+        if (cellType != ItemData.CellType.EntryOrExit && cellType != ItemData.CellType.Exit)
+            return false;
 
         return true;
     }
@@ -140,7 +150,7 @@ public class Snake : MonoBehaviour
 
         var moveInsideItem = game.ItemsManager.GetItemAtCell(newPos, out var moveInsideCellType);
 
-        if (moveInsideItem && (moveInsideItem.ItemData.IsMunchie || moveInsideItem.ItemData.IsCoin))
+        if (moveInsideItem && moveInsideItem.RItemData.IsConsumable)
         {
             // The snake doesn't move inside apples, coins etc, it will immediately eat them later.
             moveInsideItem = null;
@@ -230,10 +240,10 @@ public class Snake : MonoBehaviour
         return new Vector3(v.x, v.y, 0);
     }
 
-    public void Consume(ItemController item)
+    public void ConsumeOrCollect(ItemController item)
     {
         Debug.Assert(insideItem == null || item == insideItem);
-        var itemData = item.ItemData;
+        var itemData = item.RItemData;
 
         if (itemData.IsApple)
         {

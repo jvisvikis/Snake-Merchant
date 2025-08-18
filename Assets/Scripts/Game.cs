@@ -126,7 +126,7 @@ public class Game : MonoBehaviour
             {
                 Die();
             }
-            else if (itemsManager.SnakeMoved(specificItem?.ItemData))
+            else if (itemsManager.SnakeMoved(specificItem?.RItemData?.ItemData))
             {
                 OnItemCollected();
             }
@@ -143,14 +143,11 @@ public class Game : MonoBehaviour
 
     private void MaybeSpawnSpecificItem()
     {
-        if (!onlyCollectSpecificItem)
-            return;
-
         if (specificItem != null)
             GameObject.Destroy(specificItem.gameObject);
 
         specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
-        specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().ItemData);
+        specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().RItemData);
         specificItem.SetFloating();
     }
 
@@ -194,9 +191,11 @@ public class Game : MonoBehaviour
     public void OnItemCollected()
     {
         itemsCollected++;
-        currentDayScore += specificItem.ItemData.Value;
+        Debug.Assert(specificItem != null);
+        Debug.Assert(specificItem.RItemData != null);
+        currentDayScore += specificItem.RItemData.Value;
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
-        if(DayManager.Instance.CurrentTargetScore <=currentDayScore)
+        if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
             EconomyManager.Instance.AddCoins(coins);
             DayManager.Instance.EndDay(currentDayScore);

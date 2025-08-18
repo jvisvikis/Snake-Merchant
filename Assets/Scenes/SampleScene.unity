@@ -3024,11 +3024,11 @@ MonoBehaviour:
   snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
   specificItemParent: {fileID: 292428359}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
-  width: 12
-  height: 12
+  width: 8
+  height: 8
   cellSize: 0.35
   orig: {x: -2.5, y: -2.5, z: 0}
-  numItems: 4
+  numItems: 6
   onlyCollectSpecificItem: 1
   mustHaveExactLengthToCollectItem: 0
   snakeGetsSmallerOnDelivery: 0
@@ -3038,7 +3038,7 @@ MonoBehaviour:
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   mushrooms: 0
-  numCoins: 3
+  numCoins: 4
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
   startNumParts: 3

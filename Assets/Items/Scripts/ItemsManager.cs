@@ -47,8 +47,15 @@ public class ItemsManager : MonoBehaviour
         var ncid = new List<ItemData>(collectibleItemData);
         ListUtil.Shuffle(ncid);
 
-        for (int i = 0; i < Mathf.Min(ncid.Count, game.numItems); i++)
-            SpawnItem(ncid[i]);
+        int numSpawned = 0;
+
+        for (int i = 0; i < ncid.Count; i++)
+        {
+            if (SpawnItem(ncid[i]))
+                numSpawned++;
+            if (numSpawned >= game.numItems)
+                break;
+        }
     }
 
     public void RespawnCoins()
@@ -56,7 +63,7 @@ public class ItemsManager : MonoBehaviour
         for (int i = 0; i < items.Count; i++)
         {
             var item = items[i];
-            if (item.ItemData.IsCoin)
+            if (item.RItemData.IsCoin)
             {
                 Destroy(item.gameObject);
                 items[i] = items[^1];
@@ -74,26 +81,22 @@ public class ItemsManager : MonoBehaviour
         var ncid = new List<ItemData>(collectibleItemData);
         ListUtil.Shuffle(ncid);
 
-        ItemData spawnItem = null;
-
         foreach (var itemData in ncid)
         {
-            spawnItem = itemData;
+            var spawnItem = itemData;
 
             foreach (var item in items)
             {
-                if (item.ItemData == itemData)
+                if (item.RItemData.ItemData == itemData)
                 {
                     spawnItem = null;
                     break;
                 }
             }
 
-            if (spawnItem != null)
+            if (spawnItem != null && SpawnItem(spawnItem))
                 break;
         }
-
-        SpawnItem(spawnItem);
     }
 
     public ItemController GetRandomExistingCollectibleItem()
@@ -103,7 +106,7 @@ public class ItemsManager : MonoBehaviour
 
         foreach (var item in itemsCopy)
         {
-            if (item.ItemData.IsCollectible)
+            if (item.RItemData.IsCollectible)
                 return item;
         }
 
@@ -111,48 +114,82 @@ public class ItemsManager : MonoBehaviour
         return null;
     }
 
-    private void SpawnItem(ItemData itemData)
+    private bool SpawnItem(ItemData originalItemData)
     {
+        var rotation = (ItemRotation)Random.Range(0, 4);
+        var itemData = new RotatedItemData(originalItemData, rotation);
+
         // In order to be collectible, the item needs to have space on the entry side, and we need
         // to keep the rotation of the object in mind both for using the correct width/height and
         // for picking the side that the entry is on.
-
-        // Use a (1, 1) start offset to leave a blank border around the spawn point of the snake so
-        // that items never get in the way of returning, and so that the snake doesn't immediately
-        // spawn in front of an item.
-        var candidateCell = game.Grid.RandomCell(itemData.Width, itemData.Height, 1, 1);
+        //
+        // It's OK to spawn apples and coins around the border of the grid, since those can always
+        // be consumed. But don't spawn items since that can create impossible-to-solve boards.
+        var spawnBorderOk = itemData.IsApple || itemData.IsCoin;
+        var spawnBorder = spawnBorderOk ? 0 : 1;
+        var candidateCell = game.Grid.RandomSpawnCell(itemData.Width, itemData.Height, spawnBorderOk);
 
         var itemBounds = new BoundsInt((Vector3Int)candidateCell, new Vector3Int(itemData.Width, itemData.Height));
         var borderBounds = new BoundsInt(itemBounds.position, itemBounds.size);
-        var rotation = ItemController.Rotation.Up;
 
-        if (itemData.CellCount > 1)
+        if (itemData.HasLeftEntryOrExit)
         {
-            if (itemData.HasLeftEntryOrExit)
+            if (borderBounds.min.x > spawnBorder)
+            {
                 borderBounds.min += Vector3Int.left;
-
-            if (itemData.HasRightEntryOrExit)
+            }
+            else
+            {
+                // expanding to left would push the border out of bounds, expand and move to the right instead.
                 borderBounds.max += Vector3Int.right;
-
-            if (itemData.HasUpEntryOrExit)
-                borderBounds.max += Vector3Int.up;
-
-            if (itemData.HasDownEntryOrExit)
-                borderBounds.min += Vector3Int.down;
+                itemBounds.position += Vector3Int.right;
+            }
         }
 
-        // var rotation = ItemController.Rotation.Up;
+        if (itemData.HasRightEntryOrExit)
+        {
+            if (xExtent(borderBounds) < game.Grid.Width - spawnBorder - 1)
+            {
+                borderBounds.max += Vector3Int.right;
+            }
+            else
+            {
+                // expanding to right would push the border out of bounds, expand and move to the left instead.
+                borderBounds.min += Vector3Int.left;
+                itemBounds.position += Vector3Int.left;
+            }
+        }
 
-        // var rotation = (ItemController.Rotation)Random.Range(0, 4);
+        if (itemData.HasUpEntryOrExit)
+        {
+            if (yExtent(borderBounds) < game.Grid.Height - spawnBorder - 1)
+            {
+                borderBounds.max += Vector3Int.up;
+            }
+            else
+            {
+                // expanding upwards would push the border out of bounds, expand and move downwards instead.
+                borderBounds.min += Vector3Int.down;
+                itemBounds.position += Vector3Int.down;
+            }
+        }
 
-        // if (rotation == ItemController.Rotation.Right || rotation == ItemController.Rotation.Left)
-        // {
-        //     (gridWidth, gridHeight) = (gridHeight, gridWidth);
-        //     (xOffset, yOffset) = (yOffset, xOffset);
-        // }
+        if (itemData.HasDownEntryOrExit)
+        {
+            if (borderBounds.min.y > spawnBorder)
+            {
+                borderBounds.min += Vector3Int.down;
+            }
+            else
+            {
+                // expanding downwards would push the border out of bounds, expand and move upwards instead.
+                borderBounds.max += Vector3Int.up;
+                itemBounds.position += Vector3Int.up;
+            }
+        }
 
         var startCell = borderBounds.position;
-        int bugCatcher = 0;
+        int dontInfiniteLoop = 0;
 
         while (!CanSpawnItemInCell((Vector2Int)borderBounds.position, borderBounds.size.x, borderBounds.size.y))
         {
@@ -160,16 +197,19 @@ public class ItemsManager : MonoBehaviour
             borderBounds.position += Vector3Int.right;
             itemBounds.position += Vector3Int.right;
 
-            if (borderBounds.max.x > game.Grid.Width)
+            if (xExtent(borderBounds) >= game.Grid.Width - spawnBorder)
             {
-                // next row (starts from 1 to leave empty column on left)
                 var prevBorderPosition = borderBounds.position;
-                borderBounds.position = new Vector3Int(1, prevBorderPosition.y + 1);
+                borderBounds.position = new Vector3Int(spawnBorder, borderBounds.position.y + 1);
 
-                if (borderBounds.max.y > game.Grid.Height)
+                if (yExtent(borderBounds) >= game.Grid.Height - spawnBorder)
                 {
-                    // wrap around the start (starts from 1 to leave empty row on bottom)
-                    borderBounds.position = new Vector3Int(1, 1);
+                    borderBounds.position = new Vector3Int(spawnBorder, spawnBorder);
+                    if (borderBounds.position == Vector3Int.zero)
+                    {
+                        // oops. this is the delivery point.
+                        borderBounds.position = new Vector3Int(spawnBorder, 1);
+                    }
                 }
 
                 itemBounds.position += borderBounds.position - prevBorderPosition;
@@ -177,23 +217,44 @@ public class ItemsManager : MonoBehaviour
 
             if (borderBounds.position == startCell)
             {
-                Debug.LogWarning($"Can't find anywhere to spawn item: {itemData}");
-                game.Die();
-                return;
+                // Debug.LogWarning($"Can't find anywhere to spawn item: {itemData}");
+                return false;
             }
 
-            if (bugCatcher++ > 10000)
+            if (dontInfiniteLoop++ > 10000)
             {
-                Debug.LogWarning("BUG BUG BUG");
-                return;
+                Debug.LogWarning($"BUG BUG BUG: {itemData} never wrapped around to {startCell}");
+                return false;
             }
         }
 
         var item = GameObject.Instantiate(itemControllerPrefab, transform);
         item.transform.position = game.Grid.GetWorldPos((Vector2Int)borderBounds.min);
         item.SetData(itemData);
-        item.SetGridLocation(itemBounds, borderBounds, rotation);
+        item.SetGridLocation(itemBounds, borderBounds);
         items.Add(item);
+
+        return true;
+    }
+
+    /// <summary>
+    /// The maximum x position within bounds. This is similar to bounds.xMax but inclusive of the
+    /// bounds not exclusive. I.e. the extent of the bounds is WITHIN the bounds.
+    /// </summary>
+    private int xExtent(BoundsInt bounds)
+    {
+        Debug.Assert(bounds.size.x > 0);
+        return bounds.xMax - 1;
+    }
+
+    /// <summary>
+    /// The maximum y position within bounds. This is similar to bounds.yMax but inclusive of the
+    /// bounds not exclusive. I.e. the extent of the bounds is WITHIN the bounds.
+    /// </summary>
+    private int yExtent(BoundsInt bounds)
+    {
+        Debug.Assert(bounds.size.y > 0);
+        return bounds.yMax - 1;
     }
 
     /// <summary>
@@ -247,13 +308,13 @@ public class ItemsManager : MonoBehaviour
         for (int i = 0; i < items.Count; i++)
         {
             var item = items[i];
-            var itemData = item.ItemData;
-            var canConsumeItem = itemData.IsMunchie || itemData.IsCoin || specificItem == null || itemData == specificItem;
+            var itemData = item.RItemData;
+            var canConsumeItem = itemData.IsMunchie || itemData.IsCoin || !game.onlyCollectSpecificItem || itemData.ItemData == specificItem;
 
-            if (canConsumeItem && game.Snake.CanConsume(item))
+            if (canConsumeItem && game.Snake.CanConsumeOrCollect(item))
             {
-                game.Snake.Consume(item);
-                didConsume = itemData;
+                game.Snake.ConsumeOrCollect(item);
+                didConsume = itemData.ItemData;
                 Destroy(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
@@ -289,7 +350,7 @@ public class ItemsManager : MonoBehaviour
         for (int i = 0; i < items.Count; i++)
         {
             var item = items[i];
-            if (item.ItemData.IsApple || item.ItemData.IsMushroom)
+            if (item.RItemData.IsApple || item.RItemData.IsMushroom)
             {
                 Destroy(item.gameObject);
                 items[i] = items[^1];

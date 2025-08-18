@@ -18,5 +18,5 @@ MonoBehaviour:
   IsApple: 0
   IsMushroom: 1
   IsCoin: 0
-  cells: '@'
+  cells: '#'
   debugColor: {r: 0.38679248, g: 0.20986082, b: 0.04926131, a: 1}
