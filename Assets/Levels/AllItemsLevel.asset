@@ -15,4 +15,34 @@ MonoBehaviour:
   Width: 12
   Height: 12
   Cost: 1
+  NumCoins: 5
+  NumItems: 3
+  Mushrooms: 0
   Items: {fileID: 11400000, guid: 79b1127dafaf44ceba2e7f331a285bf8, type: 2}
+  layout: '_ _ _ _ _ _ _ _ _ _ _ _
+
+    _ O O _ _ _ _ _ _ O O _
+
+    _ O O _ _ _
+    _ _ _ O O _
+
+    _ _ _ _ _ _ _ _ _ _ _ _
+
+    _ _ _ _ _ _ _ _ _ _ _ _
+
+    _
+    _ _ _ _ O O _ _ _ _ _
+
+    _ _ _ _ _ O O _ _ _ _ _
+
+    _ _ _ _ _ _ _ _ _ _ _
+    _
+
+    _ _ _ _ _ _ _ _ _ _ _ _
+
+    _ O O _ _ _ _ _ _ O O _
+
+    _ O O _ _ _
+    _ _ _ O O _
+
+    _ _ _ _ _ _ _ _ _ _ _ _'

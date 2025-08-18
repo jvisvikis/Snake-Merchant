@@ -185,12 +185,11 @@ public class ItemController : MonoBehaviour
             Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
 
             Gizmos.color = Color.black;
-
-            // TODO: NEED TO ROTATE THIS INTO COORDINATE SYSTEM
             switch (itemGridCellTypes[i])
             {
                 case ItemData.CellType.Middle:
-                    Gizmos.DrawLine(cellPosition, cellPosition + cellSize * Vector3.one);
+                    if (!itemData.IsConsumable)
+                        Gizmos.DrawLine(cellPosition, cellPosition + cellSize * Vector3.one);
                     break;
                 case ItemData.CellType.LeftEntry:
                     DrawArrow(cellPosition + halfCellSize * Vector3.one, -90f, halfCellSize);

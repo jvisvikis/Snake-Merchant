@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemsManager : MonoBehaviour
@@ -7,11 +8,13 @@ public class ItemsManager : MonoBehaviour
     [SerializeField]
     private ItemController itemControllerPrefab;
 
+    [SerializeField]
+    private ItemData obstacleItemData;
+
     private Game game;
     private ItemData appleItemData;
     private ItemData mushroomItemData;
     private ItemData coinItemData;
-    private List<ItemData> collectibleItemData = new();
 
     private List<ItemController> items = new();
 
@@ -22,7 +25,7 @@ public class ItemsManager : MonoBehaviour
 
     public void LoadLevel()
     {
-        collectibleItemData.Clear();
+        DespawnItems();
 
         foreach (var itemData in game.CurrentLevel.Items.Items)
         {
@@ -32,22 +35,52 @@ public class ItemsManager : MonoBehaviour
                 mushroomItemData = itemData;
             else if (itemData.IsCoin)
                 coinItemData = itemData;
-            else
-                collectibleItemData.Add(itemData);
         }
 
+        SpawnObstacles();
+        SpawnCollectibles();
         SpawnMunchies();
+    }
 
+    private void DespawnItems()
+    {
+        foreach (var item in items)
+        {
+            GameObject.Destroy(item.gameObject);
+        }
+        items.Clear();
+    }
+
+    private void SpawnObstacles()
+    {
+        foreach (var obstacleCell in game.CurrentLevel.Obstacles)
+        {
+            var obstacleItem = GameObject.Instantiate(itemControllerPrefab, transform);
+            var bounds = new BoundsInt((Vector3Int)obstacleCell, new Vector3Int(1, 1));
+            obstacleItem.transform.position = game.Grid.GetWorldPos(obstacleCell);
+            obstacleItem.SetData(new RotatedItemData(obstacleItemData, ItemRotation.Up));
+            obstacleItem.SetGridLocation(bounds, bounds);
+            items.Add(obstacleItem);
+        }
+
+        for (int i = 0; i < game.CurrentLevel.NumRandomObstacles; i++)
+            SpawnItem(obstacleItemData);
+    }
+
+    private void SpawnCollectibles()
+    {
         // weird copy/shuffle logic so that we (a) spawn random items and (b) don't spawn the same
         // item more than once.
-        var ncid = new List<ItemData>(collectibleItemData);
-        ListUtil.Shuffle(ncid);
+        var shuffledItems = new List<ItemData>(game.CurrentLevel.Items.Items);
+        ListUtil.Shuffle(shuffledItems);
 
         int numSpawned = 0;
 
-        for (int i = 0; i < ncid.Count; i++)
+        foreach (var itemData in shuffledItems)
         {
-            if (SpawnItem(ncid[i]))
+            if (!itemData.IsCollectible)
+                continue;
+            if (SpawnItem(itemData))
                 numSpawned++;
             if (numSpawned >= game.CurrentLevel.NumItems)
                 break;
@@ -74,11 +107,14 @@ public class ItemsManager : MonoBehaviour
 
     public void SpawnRandomNonExistentCollectibleItem()
     {
-        var ncid = new List<ItemData>(collectibleItemData);
-        ListUtil.Shuffle(ncid);
+        var shuffledItems = new List<ItemData>(game.CurrentLevel.Items.Items);
+        ListUtil.Shuffle(shuffledItems);
 
-        foreach (var itemData in ncid)
+        foreach (var itemData in shuffledItems)
         {
+            if (!itemData.IsCollectible)
+                continue;
+
             var spawnItem = itemData;
 
             foreach (var item in items)
@@ -305,7 +341,7 @@ public class ItemsManager : MonoBehaviour
         {
             var item = items[i];
             var itemData = item.RItemData;
-            var canConsumeItem = itemData.IsMunchie || itemData.IsCoin || !game.onlyCollectSpecificItem || itemData.ItemData == specificItem;
+            var canConsumeItem = itemData.IsConsumable || !game.onlyCollectSpecificItem || itemData.ItemData == specificItem;
 
             if (canConsumeItem && game.Snake.CanConsumeOrCollect(item))
             {

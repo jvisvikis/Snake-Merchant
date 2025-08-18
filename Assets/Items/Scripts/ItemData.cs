@@ -48,6 +48,8 @@ public class ItemData : ScriptableObject
 
     public bool IsCoin = false;
 
+    public bool IsObstacle = false;
+
     [TextArea(10, 10), SerializeField]
     private string cells;
 
@@ -56,18 +58,29 @@ public class ItemData : ScriptableObject
 
     public int CellCount => GetCellCount();
     public bool IsMunchie => IsApple || IsMushroom;
-    public bool IsCollectible => !IsMunchie && !IsCoin;
+    public bool IsCollectible => !IsMunchie && !IsCoin && !IsObstacle;
     public bool IsConsumable => IsMunchie || IsCoin;
     public bool HasLeftEntryOrExit => hasLeftEntryOrExit;
     public bool HasRightEntryOrExit => hasRightEntryOrExit;
     public bool HasUpEntryOrExit => hasUpEntryOrExit;
     public bool HasDownEntryOrExit => hasDownEntryOrExit;
 
+    [NonSerialized]
     private CellType[][] cellStructure;
+
+    [NonSerialized]
     private int cellCount;
+
+    [NonSerialized]
     private bool hasLeftEntryOrExit = false;
+
+    [NonSerialized]
     private bool hasRightEntryOrExit = false;
+
+    [NonSerialized]
     private bool hasUpEntryOrExit = false;
+
+    [NonSerialized]
     private bool hasDownEntryOrExit = false;
 
     public int GetCellCount()

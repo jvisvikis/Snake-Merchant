@@ -3027,7 +3027,6 @@ MonoBehaviour:
   levels:
   - {fileID: 11400000, guid: 7919659961c994580af077b764df0297, type: 2}
   cellSize: 0.35
-  numItems: 4
   onlyCollectSpecificItem: 1
   mustHaveExactLengthToCollectItem: 0
   snakeGetsSmallerOnDelivery: 0
@@ -3036,8 +3035,6 @@ MonoBehaviour:
   timeToMoveReduction: 0.025
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
-  mushrooms: 0
-  numCoins: 4
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
   startNumParts: 3
@@ -3115,6 +3112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
+  obstacleItemData: {fileID: 11400000, guid: 994e06dc89f2048208e82aa39b87bd0c, type: 2}
 --- !u!1 &1953276796
 GameObject:
   m_ObjectHideFlags: 0
