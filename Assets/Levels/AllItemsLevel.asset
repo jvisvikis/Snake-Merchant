@@ -17,6 +17,7 @@ MonoBehaviour:
   Cost: 1
   NumCoins: 5
   NumItems: 3
+  NumRandomObstacles: 3
   Mushrooms: 0
   Items: {fileID: 11400000, guid: 79b1127dafaf44ceba2e7f331a285bf8, type: 2}
   layout: '_ _ _ _ _ _ _ _ _ _ _ _
