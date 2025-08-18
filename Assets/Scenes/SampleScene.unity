@@ -3409,11 +3409,9 @@ MonoBehaviour:
   snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
   specificItemParent: {fileID: 292428359}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
-  width: 12
-  height: 12
+  levels:
+  - {fileID: 11400000, guid: 7919659961c994580af077b764df0297, type: 2}
   cellSize: 0.25
-  orig: {x: -2.5, y: -2.5, z: 0}
-  numItems: 5
   onlyCollectSpecificItem: 1
   mustHaveExactLengthToCollectItem: 0
   snakeGetsSmallerOnDelivery: 1
@@ -3422,8 +3420,6 @@ MonoBehaviour:
   timeToMoveReduction: 0.025
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
-  mushrooms: 0
-  numCoins: 3
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
   startNumParts: 3
@@ -3479,6 +3475,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 1ab7f3de-0a86-41f1-8fa6-9f1779dc83f8
     m_ActionName: PlayerInput/Reset[/Keyboard/r]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 413ab706-3432-4bcd-aadc-5c7e1bedf447
+    m_ActionName: PlayerInput/Pause[/Keyboard/p]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: PlayerInput
@@ -3496,8 +3496,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a92b5e4c825246598e77594ce952eb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allItemData: {fileID: 11400000, guid: 79b1127dafaf44ceba2e7f331a285bf8, type: 2}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
+  obstacleItemData: {fileID: 11400000, guid: 994e06dc89f2048208e82aa39b87bd0c, type: 2}
 --- !u!1 &1961659199
 GameObject:
   m_ObjectHideFlags: 0
