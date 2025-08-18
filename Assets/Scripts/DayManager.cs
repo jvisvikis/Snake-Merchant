@@ -10,9 +10,10 @@ public class DayManager : MonoBehaviour
     private static DayManager instance;
 
     [Header("Day Modifiers")]
+    public float minTimeLimit;
     public float maxTimeLimit;
     public float timeLimitModifier;
-    public int maxDayToModifyTimeLimit;
+    
     [Header("Score Modifiers")]
     public int minScore;
     public int maxScore;
@@ -95,7 +96,11 @@ public class DayManager : MonoBehaviour
 
     private void ModifyDayMaxTimeLimit()
     {
-      dayTimeLimit -= dayTimeLimit * timeLimitModifier;
+        dayTimeLimit -= dayTimeLimit * timeLimitModifier;
+        if (dayTimeLimit < minTimeLimit)
+        {
+            dayTimeLimit = minTimeLimit;
+        }
     }
 
     private void ModifyDayScore()

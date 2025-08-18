@@ -816,9 +816,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35fff4662a032ef47a975c3719563bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minTimeLimit: 30
   maxTimeLimit: 90
   timeLimitModifier: 0.05
-  maxDayToModifyTimeLimit: 10
   minScore: 100
   maxScore: 9999
   scoreModifier: 1.05
@@ -1046,6 +1046,10 @@ MonoBehaviour:
   warehouseLevelText: {fileID: 613977054}
   lengthLevelText: {fileID: 1447093031}
   speedLevelText: {fileID: 1785806736}
+  warehouseUpgradeButton: {fileID: 8404186315484127335}
+  lengthUpgradeButton: {fileID: 938798302}
+  speedUpgradeButton: {fileID: 1031154760}
+  livesUpgradeButton: {fileID: 761355565}
   warehouseUpgradePriceText: {fileID: 295224939}
   lengthUpgradePriceText: {fileID: 62104408}
   speedUpgradePriceText: {fileID: 104253437}
@@ -1653,6 +1657,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3556628902087119650, guid: 727ccb27021559d459156503a9669e7d, type: 3}
   m_PrefabInstance: {fileID: 761355562}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &761355565 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5410057920811506742, guid: 727ccb27021559d459156503a9669e7d, type: 3}
+  m_PrefabInstance: {fileID: 761355562}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &774160616
 GameObject:
   m_ObjectHideFlags: 0
@@ -2040,6 +2055,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6993232521906668513, guid: 7284b952b8c5b934b991b94f60eccda9, type: 3}
   m_PrefabInstance: {fileID: 918352963}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &938798302 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5410057920811506742, guid: 727ccb27021559d459156503a9669e7d, type: 3}
+  m_PrefabInstance: {fileID: 872529321}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &969294274
 GameObject:
   m_ObjectHideFlags: 0
@@ -2360,6 +2386,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3556628902087119650, guid: 727ccb27021559d459156503a9669e7d, type: 3}
   m_PrefabInstance: {fileID: 1031154758}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1031154760 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5410057920811506742, guid: 727ccb27021559d459156503a9669e7d, type: 3}
+  m_PrefabInstance: {fileID: 1031154758}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1115803440
 GameObject:
   m_ObjectHideFlags: 0
@@ -3417,7 +3454,7 @@ MonoBehaviour:
   snakeGetsSmallerOnDelivery: 1
   initTimeToMove: 0.3
   minTimeToMove: 0.05
-  timeToMoveReduction: 0.025
+  timeToMoveReduction: 0.005
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   coinsSpawnTurns: 20
@@ -5161,6 +5198,10 @@ PrefabInstance:
       value: WHUpgradeCostText
       objectReference: {fileID: 0}
     - target: {fileID: 5410057920811506742, guid: 727ccb27021559d459156503a9669e7d, type: 3}
+      propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410057920811506742, guid: 727ccb27021559d459156503a9669e7d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -5198,6 +5239,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3556628902087119650, guid: 727ccb27021559d459156503a9669e7d, type: 3}
   m_PrefabInstance: {fileID: 8404186315484127333}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8404186315484127335 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5410057920811506742, guid: 727ccb27021559d459156503a9669e7d, type: 3}
+  m_PrefabInstance: {fileID: 8404186315484127333}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8473945531581061884
 MonoBehaviour:
   m_ObjectHideFlags: 0
