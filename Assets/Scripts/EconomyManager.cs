@@ -44,10 +44,16 @@ public class EconomyManager : MonoBehaviour
 
     public void SetupWarehousePrices(LevelData[] levels)
     {
+        warehousePrices.Clear();
         foreach (LevelData level in levels)
         {
             if (level == null) continue;
             warehousePrices.Add(level.Cost);
+        }
+        if (WarehouseUpgradeAvailable())
+        {
+            UIManager.Instance.SetEnableWarehouseUpgrade(true);
+            UIManager.Instance.SetWarehouseUpgradePrice(warehousePrices[warehouseLevel + 1].ToString());
         }
     }
     #region Upgrades
@@ -67,7 +73,7 @@ public class EconomyManager : MonoBehaviour
             UIManager.Instance.SetWarehouseUpgradePrice(GetCurrentWarehouseUpgradePrice().ToString());
             if (!WarehouseUpgradeAvailable())
             {
-                UIManager.Instance.SetEnableSpeedUpgrade(false);
+                UIManager.Instance.SetEnableWarehouseUpgrade(false);
             }
             return true;
         }
