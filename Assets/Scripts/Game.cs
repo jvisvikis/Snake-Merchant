@@ -175,6 +175,7 @@ public class Game : MonoBehaviour
 
     private void OnReset(InputAction.CallbackContext callbackContext)
     {
+        EconomyManager.Instance.Reset();
         DayManager.Instance.Reset();
     }
 
