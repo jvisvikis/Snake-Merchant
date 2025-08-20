@@ -27,6 +27,7 @@ public class ItemController : MonoBehaviour
     /// </summary>
     public List<Vector2Int> BorderGridCells => borderGridCells;
 
+    private SpriteRenderer spriteRenderer;
     private RotatedItemData itemData;
     private Game game;
     private bool attachedToGrid = false;
@@ -38,12 +39,26 @@ public class ItemController : MonoBehaviour
 
     private void Awake()
     {
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         game = FindObjectOfType<Game>();
     }
 
     public void SetData(RotatedItemData itemData)
     {
         this.itemData = itemData;
+
+        if (itemData.Sprite)
+        {
+            spriteRenderer.sprite = itemData.Sprite;
+
+            var spriteOffset = itemData.Sprite.bounds.size / 2;
+
+            if (itemData.Rotation == ItemRotation.Right || itemData.Rotation == ItemRotation.Left)
+                (spriteOffset.x, spriteOffset.y) = (spriteOffset.y, spriteOffset.x);
+
+            spriteRenderer.transform.localPosition = spriteOffset;
+            spriteRenderer.transform.localRotation = itemData.RotationQuaternion();
+        }
     }
 
     public void SetGridLocation(BoundsInt itemBounds, BoundsInt borderBounds)
@@ -53,6 +68,8 @@ public class ItemController : MonoBehaviour
         attachedToGrid = true;
         itemGridCells = CalcItemGridCells(out itemGridCellTypes);
         borderGridCells = GetBorderGridCells();
+
+        spriteRenderer.transform.localPosition += (itemBounds.min - borderBounds.min);
 
         // Debug.Log(
         //     $"[{itemData.Name}] itemBounds: {itemBounds}, borderBounds: {borderBounds}, itemGridCells: {ListUtil.ListToString(itemGridCells)}, borderGridCells: {ListUtil.ListToString(borderGridCells)}",
@@ -181,8 +198,12 @@ public class ItemController : MonoBehaviour
 
             var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;
             var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
-            Gizmos.color = itemData.DebugColor;
-            Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
+
+            if (itemData.Sprite == null)
+            {
+                Gizmos.color = itemData.DebugColor;
+                Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
+            }
 
             Gizmos.color = Color.black;
             switch (itemGridCellTypes[i])

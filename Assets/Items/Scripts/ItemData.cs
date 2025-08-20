@@ -42,6 +42,7 @@ public class ItemData : ScriptableObject
     [Min(1)]
     public int Height = 1;
 
+    [Header("Special items")]
     public bool IsApple = false;
 
     public bool IsMushroom = false;
@@ -52,6 +53,9 @@ public class ItemData : ScriptableObject
 
     [TextArea(10, 10), SerializeField]
     private string cells;
+
+    [Header("Rendering")]
+    public Sprite sprite;
 
     [Header("Debug")]
     public Color debugColor = Color.white;

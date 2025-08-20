@@ -18,5 +18,7 @@ MonoBehaviour:
   IsApple: 0
   IsMushroom: 0
   IsCoin: 1
+  IsObstacle: 0
   cells: '#'
+  sprite: {fileID: 21300000, guid: e0c4258abfa76487a9afe401a1eba748, type: 3}
   debugColor: {r: 0.93876386, g: 1, b: 0, a: 1}

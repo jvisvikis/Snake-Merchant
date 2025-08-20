@@ -11,10 +11,16 @@ public class ItemsManager : MonoBehaviour
     [SerializeField]
     private ItemData obstacleItemData;
 
-    private Game game;
+    [SerializeField]
     private ItemData appleItemData;
+
+    [SerializeField]
     private ItemData mushroomItemData;
+
+    [SerializeField]
     private ItemData coinItemData;
+
+    private Game game;
 
     private List<ItemController> items = new();
 
@@ -26,17 +32,6 @@ public class ItemsManager : MonoBehaviour
     public void LoadLevel()
     {
         DespawnItems();
-
-        foreach (var itemData in game.CurrentLevel.Items.Items)
-        {
-            if (itemData.IsApple)
-                appleItemData = itemData;
-            else if (itemData.IsMushroom)
-                mushroomItemData = itemData;
-            else if (itemData.IsCoin)
-                coinItemData = itemData;
-        }
-
         SpawnObstacles();
         SpawnCollectibles();
         SpawnMunchies();
@@ -148,7 +143,11 @@ public class ItemsManager : MonoBehaviour
 
     private bool SpawnItem(ItemData originalItemData)
     {
-        var rotation = (ItemRotation)Random.Range(0, 4);
+        var rotation = ItemRotation.Up;
+
+        if (originalItemData.CellCount > 1)
+            rotation = (ItemRotation)Random.Range(0, 4);
+
         var itemData = new RotatedItemData(originalItemData, rotation);
 
         // In order to be collectible, the item needs to have space on the entry side, and we need

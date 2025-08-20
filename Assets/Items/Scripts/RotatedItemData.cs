@@ -9,15 +9,13 @@ using UnityEngine;
 public class RotatedItemData
 {
     public ItemData ItemData { get; private set; }
-
-    // I'm leaving this private until it's actually needed to be public.
-    // Nothing wrong with that, it's just tricky code.
-    private ItemRotation Rotation; // { get; private set; }
+    public ItemRotation Rotation { get; private set; }
 
     public string Name => ItemData.name;
     public int Value => ItemData.Value;
     public int Width => GetWidth();
     public int Height => GetHeight();
+    public Sprite Sprite => ItemData.sprite;
     public bool IsApple => ItemData.IsApple;
     public bool IsMushroom => ItemData.IsMushroom;
     public bool IsCoin => ItemData.IsCoin;
@@ -42,6 +40,23 @@ public class RotatedItemData
     public int GetCellCount()
     {
         return ItemData.GetCellCount();
+    }
+
+    public Quaternion RotationQuaternion()
+    {
+        switch (Rotation)
+        {
+            case ItemRotation.Up:
+                return Quaternion.Euler(0, 0, 0);
+            case ItemRotation.Down:
+                return Quaternion.Euler(0, 0, 180);
+            case ItemRotation.Left:
+                return Quaternion.Euler(0, 0, 90);
+            case ItemRotation.Right:
+                return Quaternion.Euler(0, 0, -90);
+        }
+        Debug.Assert(false);
+        return Quaternion.identity;
     }
 
     public ItemData.CellType[][] GetCellStructure()
