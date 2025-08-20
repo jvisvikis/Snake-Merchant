@@ -31,7 +31,6 @@ public class LevelData : ScriptableObject
 
     private List<Vector2Int> GetObstacles()
     {
-        Debug.Log($"getting obstacles: {layout}");
         if (obstacles == null)
             ParseLayout();
         return obstacles;
@@ -39,7 +38,6 @@ public class LevelData : ScriptableObject
 
     private void ParseLayout()
     {
-        Debug.Log($"parsing layout: {layout}");
         obstacles = new();
 
         var lines = layout.Split("\n", System.StringSplitOptions.RemoveEmptyEntries);

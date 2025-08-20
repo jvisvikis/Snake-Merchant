@@ -83,6 +83,11 @@ public class ItemData : ScriptableObject
     [NonSerialized]
     private bool hasDownEntryOrExit = false;
 
+    public static bool IsAnyExit(CellType cellType)
+    {
+        return cellType == CellType.EntryOrExit || cellType == CellType.Exit;
+    }
+
     public int GetCellCount()
     {
         if (cellCount > 0)

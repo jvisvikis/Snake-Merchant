@@ -3453,6 +3453,7 @@ MonoBehaviour:
   onlyCollectSpecificItem: 1
   mustHaveExactLengthToCollectItem: 0
   snakeGetsSmallerOnDelivery: 1
+  canExitAtAnyCell: 1
   initTimeToMove: 0.5
   minTimeToMove: 0.15
   timeToMoveReduction: 0.025

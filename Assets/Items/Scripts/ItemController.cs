@@ -188,7 +188,7 @@ public class ItemController : MonoBehaviour
             switch (itemGridCellTypes[i])
             {
                 case ItemData.CellType.Middle:
-                    if (!itemData.IsConsumable)
+                    if (!itemData.IsConsumable && !game.canExitAtAnyCell)
                         Gizmos.DrawLine(cellPosition, cellPosition + cellSize * Vector3.one);
                     break;
                 case ItemData.CellType.LeftEntry:

@@ -25,6 +25,7 @@ public class Game : MonoBehaviour
     public bool onlyCollectSpecificItem = false;
     public bool mustHaveExactLengthToCollectItem = false;
     public bool snakeGetsSmallerOnDelivery = false;
+    public bool canExitAtAnyCell = false;
 
     [Header("Game feel/settings")]
     public float initTimeToMove = 0.5f;

@@ -43,7 +43,14 @@ public class Snake : MonoBehaviour
         parts[0].transform.localPosition = new Vector3(pos.x, pos.y);
 
         while (parts.Count < targetParts)
-            Move();
+        {
+            if (!Move())
+            {
+                // the snake was so big there is nowhere for it to spawn.
+                // uhh, at least don't freeze.
+                break;
+            }
+        }
     }
 
     public bool ContainsCell(Vector2Int cell)
@@ -78,9 +85,10 @@ public class Snake : MonoBehaviour
         }
 
         // can only consume if it's an exit square, otherwise snake must have filled item but be
-        // somewhere in the middle of it.
+        // somewhere in the middle of it. (unless canExitAtAnyCell flag is set).
         game.ItemsManager.GetItemAtCell(Head, out var cellType);
-        if (cellType != ItemData.CellType.EntryOrExit && cellType != ItemData.CellType.Exit)
+
+        if (!game.canExitAtAnyCell && !ItemData.IsAnyExit(cellType))
             return false;
 
         return true;
@@ -125,9 +133,9 @@ public class Snake : MonoBehaviour
         return false;
     }
 
-    private static bool CanExit(ItemData.CellType cellType)
+    private bool CanExit(ItemData.CellType cellType)
     {
-        return cellType == ItemData.CellType.EntryOrExit || cellType == ItemData.CellType.Exit;
+        return game.canExitAtAnyCell || ItemData.IsAnyExit(cellType);
     }
 
     public bool Move()
