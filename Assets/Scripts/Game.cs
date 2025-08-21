@@ -46,7 +46,7 @@ public class Game : MonoBehaviour
     public ItemsManager ItemsManager => itemsManager;
     public int Coins => coins;
     public int CoinSpawnCountdown => coinSpawnCountdown;
-    public LevelData CurrentLevel => levels[currentLevelIndex];
+    public LevelData CurrentLevel => levels[EconomyManager.Instance.WarehouseLevel];
 
     private Snake snake;
     private Grid grid;
@@ -57,7 +57,7 @@ public class Game : MonoBehaviour
     private int itemsCollected = 0;
     private int coinSpawnCountdown;
     private int currentDayScore;
-    private int currentLevelIndex = 0;
+    //private int currentLevelIndex = 0;
 
     // Start is called before the first frame update
     private void Awake()
@@ -68,10 +68,10 @@ public class Game : MonoBehaviour
 
     void Start()
     {
-        var firstLevel = levels[0];
+        var chosenLevel = levels[EconomyManager.Instance.WarehouseLevel];
         EconomyManager.Instance.SetupWarehousePrices(levels);
-        var orig = new Vector2(firstLevel.Width, firstLevel.Height) * cellSize / -2f;
-        grid = new Grid(firstLevel.Width, firstLevel.Height, cellSize, orig);
+        var orig = new Vector2(chosenLevel.Width, chosenLevel.Height) * cellSize / -2f;
+        grid = new Grid(chosenLevel.Width, chosenLevel.Height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
         startNumParts += EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
@@ -79,6 +79,11 @@ public class Game : MonoBehaviour
         itemsManager.LoadLevel();
         StartCoroutine(MoveSnake());
         StartCoroutine(DayManager.Instance.StartDay());
+    }
+
+    private void Update()
+    {
+        grid.DrawGrid();
     }
 
     void SpawnSnake()

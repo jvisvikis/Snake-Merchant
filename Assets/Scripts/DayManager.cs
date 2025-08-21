@@ -22,6 +22,7 @@ public class DayManager : MonoBehaviour
     public bool IsPlaying => isPlaying;
     public int CurrentDay => currentDay;
     public int CurrentTargetScore => currentTargetScore;
+    public float DayTimeLimit => dayTimeLimit;
 
     private bool isPlaying = true;
     private int currentDay;
