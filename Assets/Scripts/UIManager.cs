@@ -34,6 +34,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI warehouseLevelText;
     [SerializeField]
+    private TextMeshProUGUI warehouseSizeText;
+    [SerializeField]
+    private TextMeshProUGUI warehouseMaxCoinsText;
+    [SerializeField]
     private TextMeshProUGUI lengthLevelText;
     [SerializeField]
     private TextMeshProUGUI speedLevelText;
@@ -82,15 +86,18 @@ public class UIManager : MonoBehaviour
     private void SetupDay()
     {
         SetEndDayPanelActive(false);
-        SetTotalCoinText($"Coins: <color=yellow>{EconomyManager.Instance.TotalCoins}");
-        SetLivesText($"Lives: <color=green>{EconomyManager.Instance.Lives.ToString()}");
-        SetWarehouseLevelText(EconomyManager.Instance.WarehouseLevel.ToString());
-        SetLengthLevelText(EconomyManager.Instance.SnakeLengthLevel.ToString());
+        SetTotalCoinText($"<sprite=0> <color=yellow>{EconomyManager.Instance.TotalCoins}");
+        SetLivesText($"<sprite=1> <color=green>{EconomyManager.Instance.Lives}");
+        //string warehouseLevelText = EconomyManager.Instance.WarehouseUpgradeAvailable() ? $"{EconomyManager.Instance.WarehouseLevel} <color=green> > {EconomyManager.Instance.WarehouseLevel + 1}" : "MAX";
+        //SetWarehouseLevelText($"Level: {warehouseLevelText}");
+        string lengthLevelText = EconomyManager.Instance.SnakeLengthUpgradeAvailable() ? $"{EconomyManager.Instance.SnakeLengthLevel+1} <color=green> > {EconomyManager.Instance.SnakeLengthLevel + 2}" : "<color=red>MAX";
+        SetLengthLevelText($"Length: {lengthLevelText}");
         SetSpeedLevelText(EconomyManager.Instance.SnakeSpeedLevel.ToString());
-        SetWarehouseUpgradePrice(EconomyManager.Instance.GetCurrentWarehouseUpgradePrice().ToString());
-        SetLengthUpgradePrice(EconomyManager.Instance.GetCurrentLengthUpgradePrice().ToString());
+        SetWarehouseUpgradePrice($"Upgrade: <color=yellow>{EconomyManager.Instance.GetCurrentWarehouseUpgradePrice()}<sprite=0>");
+        SetLengthUpgradePrice($"{EconomyManager.Instance.GetCurrentLengthUpgradePrice()}<sprite=0>");
         SetSpeedUpgradePrice(EconomyManager.Instance.GetCurrentSpeedUpgradePrice().ToString());
-        SetLifePurchasePrice(EconomyManager.Instance.GetLifeUpgradePrice().ToString());
+        string lifePrice = EconomyManager.Instance.LivesUpgradeAvailable() ? EconomyManager.Instance.GetLifeUpgradePrice().ToString() : "";
+        SetLifePurchasePrice(lifePrice);
         SetEnableWarehouseUpgrade(EconomyManager.Instance.WarehouseUpgradeAvailable());
         SetEnableLengthUpgrade(EconomyManager.Instance.SnakeLengthUpgradeAvailable());
         SetEnableSpeedUpgrade(EconomyManager.Instance.SnakeSpeedUpgradeAvailable());
@@ -135,27 +142,41 @@ public class UIManager : MonoBehaviour
     }
     public void SetWarehouseUpgradePrice(string text)
     {
-        if (text.Equals("-1"))
-            text = "N/A";
+        if (text.Contains("-1"))
+            text = "Upgrade: <color=red>MAX";
         warehouseUpgradePriceText.text = text;
     }
     public void SetLengthUpgradePrice(string text)
     {
-        if (text.Equals("-1"))
-            text = "N/A";
+        if (text.Contains("-1"))
+            text = "";
         lengthUpgradePriceText.text = text;
     }
     public void SetSpeedUpgradePrice(string text)
     {
-        if (text.Equals("-1"))
-            text = "N/A";
+        if (text.Contains("-1"))
+            text = "";
         speedUpgradePriceText.text = text;
     }
     public void SetLifePurchasePrice(string text)
     {
-        if (text.Equals("-1"))
-            text = "N/A";
+        if (text.Contains("-1"))
+            text = "";
         livesUpgradePriceText.text = text;
+    }
+
+    public void SetWarehouseInfo(LevelData current, LevelData next)
+    {
+        if(next == null)
+        {
+            warehouseSizeText.text = $"Size: <color=red>{current.Width}x{current.Height}";
+            warehouseMaxCoinsText.text = $"Max Coins: <color=red>{current.NumCoins}";
+        }
+        else
+        {
+            warehouseSizeText.text = $"Size: {current.Width}x{current.Height}<color=green> > {next.Width}x{next.Height}";
+            warehouseMaxCoinsText.text = $"Max Coins: {current.NumCoins}<color=green> > {next.NumCoins}";
+        }
     }
     #endregion
     #region Buy Upgrades

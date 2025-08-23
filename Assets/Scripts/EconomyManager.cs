@@ -7,7 +7,7 @@ public class EconomyManager : MonoBehaviour
     public static EconomyManager Instance => instance;
     private static EconomyManager instance;
 
-    public List<int> warehousePrices = new();
+    public LevelData[] warehouses;
     public List<int> snakeLengthPrices = new();
     public List<int> snakeSpeedPrices = new();
     [Header("Life Settings")]
@@ -47,18 +47,20 @@ public class EconomyManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-    public void SetupWarehousePrices(LevelData[] levels)
+    public void SetupWarehouses(LevelData[] levels)
     {
-        warehousePrices.Clear();
-        foreach (LevelData level in levels)
-        {
-            if (level == null) continue;
-            warehousePrices.Add(level.Cost);
-        }
+        warehouses = levels;
         if (WarehouseUpgradeAvailable())
         {
             UIManager.Instance.SetEnableWarehouseUpgrade(true);
-            UIManager.Instance.SetWarehouseUpgradePrice(warehousePrices[warehouseLevel + 1].ToString());
+            UIManager.Instance.SetWarehouseUpgradePrice($"Upgrade: <color=yellow>{GetCurrentWarehouseUpgradePrice()}<sprite=1>");
+            UIManager.Instance.SetWarehouseLevelText($"Level: {warehouseLevel}<color=green> > {warehouseLevel + 1}");
+            UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel], warehouses[warehouseLevel + 1]);
+        }
+        else
+        {
+            UIManager.Instance.SetWarehouseLevelText($"Level: <color=red>MAX");
+            UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel], null);
         }
     }
     #region Upgrades
@@ -71,16 +73,22 @@ public class EconomyManager : MonoBehaviour
             return false;
         }
         //Uncomment when warehouses have prices
-        if (SpendCoins(warehousePrices[warehouseLevel]))
+        if (SpendCoins(warehouses[warehouseLevel].Cost))
         {
             warehouseLevel++;
-            UIManager.Instance.SetWarehouseLevelText(warehouseLevel.ToString());
-            UIManager.Instance.SetWarehouseUpgradePrice(GetCurrentWarehouseUpgradePrice().ToString());
+            UIManager.Instance.SetWarehouseUpgradePrice($"Upgrade: <color=yellow>{GetCurrentWarehouseUpgradePrice()}<sprite=1>");
             if (!WarehouseUpgradeAvailable())
             {
+                UIManager.Instance.SetWarehouseLevelText($"Level: <color=red>MAX");
                 UIManager.Instance.SetEnableWarehouseUpgrade(false);
+                UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel], null);
             }
-            return true;
+            else
+            {
+                UIManager.Instance.SetWarehouseLevelText($"Level: {warehouseLevel}<color=green> > {warehouseLevel + 1}");
+                UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel], warehouses[warehouseLevel + 1]);
+            }
+                return true;
         }
         else
         {
@@ -124,10 +132,11 @@ public class EconomyManager : MonoBehaviour
         if (SpendCoins(snakeLengthPrices[snakeLengthLevel]))
         {
             snakeLengthLevel++;
-            UIManager.Instance.SetLengthLevelText(snakeLengthLevel.ToString());
-            UIManager.Instance.SetLengthUpgradePrice(GetCurrentLengthUpgradePrice().ToString());
+            UIManager.Instance.SetLengthLevelText($"Length: {snakeLengthLevel + 1}<color=green> > {snakeLengthLevel + 2}");
+            UIManager.Instance.SetLengthUpgradePrice($"{GetCurrentLengthUpgradePrice()}<sprite=1>");
             if (!SnakeLengthUpgradeAvailable())
             {
+                UIManager.Instance.SetLengthLevelText($"Length: <color=red>MAX");
                 UIManager.Instance.SetEnableLengthUpgrade(false);
             }
             return true;
@@ -167,7 +176,7 @@ public class EconomyManager : MonoBehaviour
 
     public bool WarehouseUpgradeAvailable()
     {
-        return warehouseLevel < warehousePrices.Count - 1;
+        return warehouseLevel < warehouses.Length - 1;
     }
     public bool SnakeLengthUpgradeAvailable()
     {
@@ -188,7 +197,7 @@ public class EconomyManager : MonoBehaviour
     {
         if(!WarehouseUpgradeAvailable())
             return -1;
-        return warehousePrices[warehouseLevel+1];
+        return warehouses[warehouseLevel+1].Cost;
     }
     public int GetCurrentLengthUpgradePrice()
     {
@@ -225,7 +234,7 @@ public class EconomyManager : MonoBehaviour
     public void AddCoins(int coins)
     {
         this.totalCoins += coins;
-        UIManager.Instance.SetTotalCoinText($"Coins: <color=yellow>{totalCoins}");
+        UIManager.Instance.SetTotalCoinText($"<sprite=1> <color=yellow>{totalCoins}");
     }
     public bool SpendCoins(int value)
     {
@@ -234,7 +243,7 @@ public class EconomyManager : MonoBehaviour
             return false;
         }
         totalCoins -= value;
-        UIManager.Instance.SetTotalCoinText($"Coins: <color=yellow>{totalCoins}");
+        UIManager.Instance.SetTotalCoinText($"<sprite=1> <color=yellow>{totalCoins}");
         return true;
     }
     public bool AddLife()
@@ -246,7 +255,7 @@ public class EconomyManager : MonoBehaviour
         {
             UIManager.Instance.SetLifePurchasePrice("-1");
         }
-        UIManager.Instance.SetLivesText($"Lives: <color=green>{lives}");
+        UIManager.Instance.SetLivesText($"<sprite=0> <color=green>{lives}");
         return true;
     }
     public void RemoveLife()
