@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
   m_Name: Box
   m_EditorClassIdentifier: 
-  Value: 100
+  Value: 25
   Width: 2
   Height: 2
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
+  IsObstacle: 0
   cells: '# #
 
     D X'
+  sprite: {fileID: 0}
   debugColor: {r: 0.8584906, g: 0.17412782, b: 0.46009892, a: 1}
