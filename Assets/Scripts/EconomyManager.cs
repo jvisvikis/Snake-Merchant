@@ -15,6 +15,10 @@ public class EconomyManager : MonoBehaviour
     private int maxLives;
     [SerializeField]
     private int lifePrice;
+    [Header("Debug")]
+    [SerializeField]
+    private bool manyCoins;
+
 
     public int TotalCoins => totalCoins;
     public int WarehouseLevel => warehouseLevel;
@@ -23,7 +27,7 @@ public class EconomyManager : MonoBehaviour
     public int Lives => lives;
     public bool IsAlive => lives <= 0;
 
-    private int totalCoins = 999;
+    private int totalCoins = 0;
     private int warehouseLevel = 0;
     private int snakeSpeedLevel = 0;
     private int snakeLengthLevel = 0;
@@ -35,13 +39,14 @@ public class EconomyManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
+            if (manyCoins)
+                totalCoins = 999;
         }
         else
         {
             Destroy(this.gameObject);
         }
     }
-
     public void SetupWarehousePrices(LevelData[] levels)
     {
         warehousePrices.Clear();
@@ -69,7 +74,7 @@ public class EconomyManager : MonoBehaviour
         if (SpendCoins(warehousePrices[warehouseLevel]))
         {
             warehouseLevel++;
-            UIManager.Instance.SetWarehouseLevelText(snakeSpeedLevel.ToString());
+            UIManager.Instance.SetWarehouseLevelText(warehouseLevel.ToString());
             UIManager.Instance.SetWarehouseUpgradePrice(GetCurrentWarehouseUpgradePrice().ToString());
             if (!WarehouseUpgradeAvailable())
             {
@@ -205,7 +210,7 @@ public class EconomyManager : MonoBehaviour
 
     public void Reset()
     {
-        totalCoins = 0;
+        totalCoins = manyCoins ? 999 : 0;
         warehouseLevel = 0;
         snakeSpeedLevel = 0;
         snakeLengthLevel = 0;

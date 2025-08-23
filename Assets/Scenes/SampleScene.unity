@@ -816,12 +816,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35fff4662a032ef47a975c3719563bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minTimeLimit: 30
-  maxTimeLimit: 90
+  minTimeLimit: 60
+  maxTimeLimit: 120
   timeLimitModifier: 0.05
   minScore: 100
   maxScore: 9999
-  scoreModifier: 1.05
+  scoreModifier: 1.1
+  instantWin: 0
 --- !u!4 &196152557
 Transform:
   m_ObjectHideFlags: 0
@@ -3447,22 +3448,25 @@ MonoBehaviour:
   specificItemParent: {fileID: 292428359}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
   levels:
-  - {fileID: 11400000, guid: 8f2734e360201f94c8110f33f0bcaf60, type: 2}
   - {fileID: 11400000, guid: d013e2b92fd7f6e4a81c21a0cd9bf0d8, type: 2}
-  - {fileID: 11400000, guid: 7919659961c994580af077b764df0297, type: 2}
+  - {fileID: 11400000, guid: d6914d8b6e214ca49a588113ca0748fb, type: 2}
+  - {fileID: 11400000, guid: e7725d7c6ac911d47970a93b164628f3, type: 2}
+  - {fileID: 11400000, guid: 7fc892a17b36b3c4bbca21302ee5113f, type: 2}
+  - {fileID: 11400000, guid: 46429c6350a3a04409c5f0b49b362d18, type: 2}
+  - {fileID: 11400000, guid: 727ca08977a05dd408579f119487a508, type: 2}
   cellSize: 1
-  onlyCollectSpecificItem: 1
+  onlyCollectSpecificItem: 0
   mustHaveExactLengthToCollectItem: 0
-  snakeGetsSmallerOnDelivery: 1
+  snakeGetsSmallerOnDelivery: 0
   canExitAtAnyCell: 1
-  initTimeToMove: 0.5
+  initTimeToMove: 0.4
   minTimeToMove: 0.15
   timeToMoveReduction: 0.025
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
-  startNumParts: 3
+  startNumParts: 1
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0
@@ -3742,10 +3746,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   warehousePrices: 
-  snakeLengthPrices: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a000000
-  snakeSpeedPrices: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a000000
+  snakeLengthPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000
+  snakeSpeedPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000
   maxLives: 10
   lifePrice: 1
+  manyCoins: 0
 --- !u!4 &2126290502
 Transform:
   m_ObjectHideFlags: 0
@@ -5491,7 +5496,7 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 1915158410}
   - {fileID: 292428360}
-  - {fileID: 196152557}
   - {fileID: 301925222}
   - {fileID: 1961659202}
+  - {fileID: 196152557}
   - {fileID: 2126290502}

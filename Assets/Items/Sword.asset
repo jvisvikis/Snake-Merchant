@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
-  Value: 100
+  Value: 50
   Width: 2
   Height: 5
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
+  IsObstacle: 0
   cells: '_ U
 
     _ #
@@ -27,8 +28,5 @@ MonoBehaviour:
     # #
 
     # X'
+  sprite: {fileID: 0}
   debugColor: {r: 1, g: 0.54467595, b: 0, a: 1}
-  HasLeftEntryOrExit: 0
-  HasRightEntryOrExit: 0
-  HasUpEntryOrExit: 0
-  HasDownEntryOrExit: 0

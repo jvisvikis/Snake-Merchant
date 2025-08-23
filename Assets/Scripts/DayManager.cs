@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class DayManager : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class DayManager : MonoBehaviour
     public int minScore;
     public int maxScore;
     public float scoreModifier;
+
+    [Header("Debug")]
+    [SerializeField]
+    private bool instantWin;
 
     public bool IsPlaying => isPlaying;
     public int CurrentDay => currentDay;
@@ -57,14 +62,19 @@ public class DayManager : MonoBehaviour
         UIManager.Instance.SetCurrentDayText($"Day: {currentDay}");
         UIManager.Instance.SetTargetText($"Target: {currentTargetScore}");
         UIManager.Instance.SetCurrentScoreText($"Current: {0}");
-        while(isPlaying && currentTime < dayTimeLimit)
+        if (instantWin)
+        {
+            EndDay(Int32.MaxValue);
+
+        }
+        while (isPlaying && currentTime < dayTimeLimit)
         {
             currentTime += Time.deltaTime;
             UIManager.Instance.SetTimeSliderValue(1 - currentTime / dayTimeLimit);
             yield return null;
         }
-        isPlaying = false;
-        EndDay(0);
+        if(currentTime > dayTimeLimit)
+            EndDay(0);
     }
 
     public void EndDay(int currentDayScore)
@@ -107,6 +117,16 @@ public class DayManager : MonoBehaviour
     private void ModifyDayScore()
     {
         currentTargetScore = Mathf.FloorToInt(currentTargetScore * scoreModifier);
+        currentTargetScore = RoundToTen(currentTargetScore);
+    }
+
+    private int RoundToTen(int number)
+    {
+        if(number%10 >=5)
+            number += 10 - number % 10;
+        else
+            number -= number % 10;
+        return number;
     }
 
     public void ReloadScene()
