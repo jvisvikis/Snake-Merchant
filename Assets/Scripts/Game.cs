@@ -161,6 +161,7 @@ public class Game : MonoBehaviour
         specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
         specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().RItemData);
         specificItem.SetFloating();
+        UIManager.Instance.SetFirstItemImage(specificItem.RItemData.Sprite);
     }
 
     public void Die()

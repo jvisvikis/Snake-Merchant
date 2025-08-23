@@ -30,6 +30,16 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button nextDayButton;
 
+    [Header("OverviewTextUI")]
+    [SerializeField]
+    private TextMeshProUGUI timeLeftText;
+    [SerializeField]
+    private TextMeshProUGUI totalBonusText;
+    [SerializeField]
+    private TextMeshProUGUI itemsCollectedText;
+    [SerializeField]
+    private TextMeshProUGUI coinsCollectedText;
+
     [Header("UpgradesUI")]
     [SerializeField]
     private TextMeshProUGUI warehouseLevelText;
@@ -67,6 +77,10 @@ public class UIManager : MonoBehaviour
     [Header("LivesUI")]
     [SerializeField]
     private TextMeshProUGUI livesText;
+
+    [Header("ItemQueueUI")]
+    [SerializeField]
+    private Image [] itemImages;
 
     private void Awake()
     {
@@ -179,6 +193,21 @@ public class UIManager : MonoBehaviour
         }
     }
     #endregion
+    #region Set Images
+    public void SetFirstItemImage(Sprite sprite)
+    {
+        itemImages[0].sprite = sprite;
+    }
+
+    public void SetAllItemImages(Sprite[] sprites)
+    {
+        for(int i = 0; i < sprites.Length; i++)
+        {
+            itemImages[i].sprite = sprites[i];
+        }
+    }
+    #endregion
+
     #region Buy Upgrades
     public void BuyWarehouseUpgrade()
     {

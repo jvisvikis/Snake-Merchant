@@ -1160,6 +1160,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &208591017 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5554703822392241010, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+  m_PrefabInstance: {fileID: 982661924602051481}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &215593210
 GameObject:
   m_ObjectHideFlags: 0
@@ -1655,6 +1666,10 @@ MonoBehaviour:
   currentDayText: {fileID: 673856875}
   endDayPanel: {fileID: 1115803440}
   nextDayButton: {fileID: 969294276}
+  timeLeftText: {fileID: 977614579}
+  totalBonusText: {fileID: 677517436}
+  itemsCollectedText: {fileID: 1886614332}
+  coinsCollectedText: {fileID: 1469916452}
   warehouseLevelText: {fileID: 591604348}
   warehouseSizeText: {fileID: 888195313}
   warehouseMaxCoinsText: {fileID: 1744381565}
@@ -1670,6 +1685,10 @@ MonoBehaviour:
   livesUpgradePriceText: {fileID: 1824896981}
   totalCoinsText: {fileID: 26256007}
   livesText: {fileID: 1866895053}
+  itemImages:
+  - {fileID: 208591017}
+  - {fileID: 314199927}
+  - {fileID: 455527447}
 --- !u!114 &301925219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1757,6 +1776,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &314199927 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5554703822392241010, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+  m_PrefabInstance: {fileID: 1131866588}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &441561213
 GameObject:
   m_ObjectHideFlags: 0
@@ -1890,6 +1920,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 441561213}
   m_CullTransparentMesh: 1
+--- !u!114 &455527447 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5554703822392241010, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+  m_PrefabInstance: {fileID: 1349105899}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &478271129
 GameObject:
   m_ObjectHideFlags: 0
