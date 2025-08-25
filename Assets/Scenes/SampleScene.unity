@@ -210,7 +210,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 17.7
+  m_fontSize: 16.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1144,7 +1144,7 @@ MonoBehaviour:
   minScore: 100
   maxScore: 9999
   scoreModifier: 1.1
-  instantWin: 1
+  instantWin: 0
 --- !u!4 &196152557
 Transform:
   m_ObjectHideFlags: 0
@@ -2800,7 +2800,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.15
+  m_fontSize: 27.6
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8476,7 +8476,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 17.7
+  m_fontSize: 16.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8588,7 +8588,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 46429c6350a3a04409c5f0b49b362d18, type: 2}
   - {fileID: 11400000, guid: 727ca08977a05dd408579f119487a508, type: 2}
   - {fileID: 11400000, guid: d093b64e46b47ae4580d868184d38b87, type: 2}
-  cellSize: 0.75
+  cellSize: 1
   onlyCollectSpecificItem: 0
   mustHaveExactLengthToCollectItem: 0
   snakeGetsSmallerOnDelivery: 0

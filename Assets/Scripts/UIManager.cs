@@ -178,6 +178,22 @@ public class UIManager : MonoBehaviour
             text = "";
         livesUpgradePriceText.text = text;
     }
+    public void SetTimeLeftText(string text)
+    {
+        timeLeftText.text = text;
+    }
+    public void SetBonusText(string text)
+    {
+        totalBonusText.text = text;
+    }
+    public void SetItemsCollectedText(string text)
+    {
+        itemsCollectedText.text = text;
+    }
+    public void SetCoinsCollectedText(string text)
+    {
+        coinsCollectedText.text = text;
+    }
 
     public void SetWarehouseInfo(LevelData current, LevelData next)
     {

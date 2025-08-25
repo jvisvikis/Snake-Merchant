@@ -34,6 +34,7 @@ public class DayManager : MonoBehaviour
     private int currentTargetScore;
     private int currentTotalScore;
     private float dayTimeLimit;
+    private float timeLeft;
 
     private void Awake()
     {
@@ -71,6 +72,7 @@ public class DayManager : MonoBehaviour
         {
             currentTime += Time.deltaTime;
             UIManager.Instance.SetTimeSliderValue(1 - currentTime / dayTimeLimit);
+            timeLeft = currentTime;
             yield return null;
         }
         if(currentTime > dayTimeLimit)
@@ -81,6 +83,18 @@ public class DayManager : MonoBehaviour
     {
         currentTotalScore += currentDayScore;
         isPlaying = false;
+        UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(timeLeft)}s");
+        UIManager.Instance.EndDay();
+    }
+
+    public void EndDay(int currentDayScore, int bonusScore, int coins, int itemsCollected)
+    {
+        currentTotalScore += currentDayScore;
+        isPlaying = false;
+        UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(timeLeft)}s");
+        UIManager.Instance.SetBonusText($"Total Bonus: {bonusScore}");
+        UIManager.Instance.SetCoinsCollectedText($"Coins Collected: {coins}");
+        UIManager.Instance.SetItemsCollectedText($"Items Collected: {itemsCollected}");
         UIManager.Instance.EndDay();
     }
 

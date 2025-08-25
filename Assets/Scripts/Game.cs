@@ -52,6 +52,7 @@ public class Game : MonoBehaviour
     private ItemsManager itemsManager;
     private float timeToMove;
     private ItemController specificItem;
+    private int bonus = 0;
     private int coins = 0;
     private int itemsSold = 0;
     private int coinSpawnCountdown;
@@ -220,7 +221,7 @@ public class Game : MonoBehaviour
 
         if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
-            DayManager.Instance.EndDay(currentDayScore);
+            DayManager.Instance.EndDay(currentDayScore,bonus,coins,itemsCollected);
             return;
         }
 
