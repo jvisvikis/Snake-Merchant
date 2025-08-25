@@ -221,7 +221,7 @@ public class Game : MonoBehaviour
 
         if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
-            DayManager.Instance.EndDay(currentDayScore,bonus,coins,itemsCollected);
+            DayManager.Instance.EndDay(currentDayScore,bonus,coins,itemsSold);
             return;
         }
 
