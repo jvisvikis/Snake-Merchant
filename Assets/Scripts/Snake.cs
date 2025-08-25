@@ -7,6 +7,29 @@ public class Snake : MonoBehaviour
     [SerializeField]
     private SnakePart partPrefab;
 
+    [Header("Body rendering")]
+    [SerializeField, Range(0.5f, 1)]
+    private float snakeWidth = 0.8f;
+
+    [SerializeField, Range(0f, 0.5f)]
+    private float borderWidth = 0.2f;
+
+    [SerializeField]
+    private SnakeLineRenderer borderRenderer;
+
+    [SerializeField]
+    private SnakeLineRenderer fillRenderer;
+
+    [Header("Eye rendering")]
+    [SerializeField]
+    private GameObject eyes;
+
+    [SerializeField]
+    private SnakeEye leftEye;
+
+    [SerializeField]
+    private SnakeEye rightEye;
+
     public Vector2Int Head => ToVector2Int(parts[0].transform.localPosition);
     public int Length => parts.Count;
 
@@ -16,8 +39,9 @@ public class Snake : MonoBehaviour
     private int targetParts = 0;
     private Vector2Int newDirOnNextMove = Vector2Int.zero;
     private Vector2Int queuedDir = Vector2Int.zero;
-    private ItemData carryingItem = null;
+    private List<ItemData> carryingItems = new();
     private ItemController insideItem = null;
+    private List<SnakeLineRenderer> lineRenderers;
 
     private void Awake()
     {
@@ -25,6 +49,11 @@ public class Snake : MonoBehaviour
         parts = new(GetComponentsInChildren<SnakePart>());
         Debug.Assert(parts.Count == 1);
         targetParts = game.startNumParts;
+
+        // Rendering
+        borderRenderer.SetWidth(snakeWidth);
+        fillRenderer.SetWidth(snakeWidth - borderWidth);
+        lineRenderers = new List<SnakeLineRenderer> { borderRenderer, fillRenderer };
     }
 
     private void OnDestroy()
@@ -42,6 +71,9 @@ public class Snake : MonoBehaviour
     {
         parts[0].transform.localPosition = new Vector3(pos.x, pos.y);
 
+        foreach (var lineRenderer in lineRenderers)
+            lineRenderer.Init(game.Grid, pos, 0);
+
         while (parts.Count < targetParts)
         {
             if (!Move())
@@ -53,14 +85,32 @@ public class Snake : MonoBehaviour
         }
     }
 
-    public bool ContainsCell(Vector2Int cell)
+    public void SetMoveOffset(float offset)
+    {
+        foreach (var lineRenderer in lineRenderers)
+            lineRenderer.SetRenderOffset(offset);
+    }
+
+    public bool ContainsCell(Vector2Int cell, out SnakePart containsPart)
     {
         foreach (var part in parts)
         {
             if (cell == ToVector2Int(part.transform.localPosition))
+            {
+                containsPart = part;
                 return true;
+            }
         }
+        containsPart = null;
         return false;
+    }
+
+    public Vector2Int NextMoveCell()
+    {
+        if (newDirOnNextMove == Vector2Int.zero)
+            return Head + dir;
+
+        return Head + newDirOnNextMove;
     }
 
     public bool CanConsumeOrCollect(ItemController item)
@@ -68,8 +118,14 @@ public class Snake : MonoBehaviour
         if (item.RItemData.IsConsumable)
             return Head == item.ItemGridCells[0];
 
-        if (carryingItem)
+        if (!game.canCarryMultipleItems && carryingItems.Count > 0)
             return false;
+
+        if (game.canCarryMultipleItems)
+        {
+            if (CarryingItemsCellCount() + item.RItemData.CellCount > parts.Count)
+                return false;
+        }
 
         if (game.mustHaveExactLengthToCollectItem && parts.Count != item.RItemData.CellCount)
             return false;
@@ -80,7 +136,7 @@ public class Snake : MonoBehaviour
         // can only consume if all squares of the item are filled.
         for (int i = 0; i < item.ItemGridCells.Count; i++)
         {
-            if (!ContainsCell(item.ItemGridCells[i]))
+            if (!ContainsCell(item.ItemGridCells[i], out var _))
                 return false;
         }
 
@@ -153,7 +209,7 @@ public class Snake : MonoBehaviour
         if (!game.Grid.InGrid(newPos.x, newPos.y))
             return false;
 
-        if (ContainsCell(newPos))
+        if (ContainsCell(newPos, out var containsPart) && containsPart != parts[^1])
             return false;
 
         var moveInsideItem = game.ItemsManager.GetItemAtCell(newPos, out var moveInsideCellType);
@@ -169,7 +225,7 @@ public class Snake : MonoBehaviour
             // Moving from outside => inside an item.
             if (!CanEnterFromDirection(moveInsideCellType, dir))
                 return false;
-            if (carryingItem != null)
+            if (!game.canCarryMultipleItems && carryingItems.Count > 0)
                 return false;
             insideItem = moveInsideItem;
         }
@@ -204,38 +260,42 @@ public class Snake : MonoBehaviour
 
         parts[0].transform.localPosition += FromVector2Int(dir);
 
+        foreach (var lineRenderer in lineRenderers)
+            lineRenderer.MoveForward(newPos);
+
         if (targetParts > parts.Count)
         {
             var part = GameObject.Instantiate(partPrefab, transform);
             part.transform.localPosition = tailPosition;
             parts.Add(part);
+
+            foreach (var lineRenderer in lineRenderers)
+                lineRenderer.AddTail(game.Grid.GetCellPos(part.transform.position));
         }
 
-        if (Head == Vector2Int.zero && carryingItem != null)
+        if (Head == Vector2Int.zero && carryingItems.Count > 0)
         {
             // Reached goal while carrying an item.
-            game.OnItemCollected();
+            game.OnItemsSold(carryingItems);
             foreach (var snakePart in parts)
                 snakePart.ResetColor();
-            if (game.snakeGetsSmallerOnDelivery)
-                SetNumParts(Mathf.Max(game.startNumParts, parts.Count - carryingItem.CellCount));
-            carryingItem = null;
-            game.ItemsManager.SpawnRandomNonExistentCollectibleItem();
-            game.ItemsManager.SpawnMunchies(); // they were despawned when the item was picked up
+
+            foreach (var lr in lineRenderers)
+                lr.SetCarryItemPercent(0);
+            carryingItems.Clear();
         }
 
         return true;
     }
 
-    private void SetNumParts(int numParts)
+    private int CarryingItemsCellCount()
     {
-        targetParts = numParts;
-
-        for (int i = parts.Count - 1; i >= numParts; i--)
+        int allCellCount = 0;
+        foreach (var carryingItem in carryingItems)
         {
-            Destroy(parts[i].gameObject);
-            parts.RemoveAt(i);
+            allCellCount += carryingItem.CellCount;
         }
+        return allCellCount;
     }
 
     private static Vector2Int ToVector2Int(Vector3 v)
@@ -278,9 +338,31 @@ public class Snake : MonoBehaviour
 
     public void CarryItem(ItemData itemData)
     {
-        carryingItem = itemData;
+        int currentCarryingCellCount = CarryingItemsCellCount();
+        Debug.Assert(currentCarryingCellCount + itemData.CellCount <= parts.Count);
 
-        foreach (var snakePart in parts)
-            snakePart.SetColor(itemData.debugColor);
+        carryingItems.Add(itemData);
+
+        for (int i = currentCarryingCellCount; i < parts.Count && i < currentCarryingCellCount + itemData.CellCount; i++)
+            parts[i].SetColor(itemData.debugColor);
+
+        foreach (var lr in lineRenderers)
+            lr.SetCarryItemPercent((float)CarryingItemsCellCount() / (float)parts.Count);
+    }
+
+    private void UpdateEyePosition()
+    {
+        var headPosition = borderRenderer.GetHeadPosition(out var headDirection);
+        eyes.transform.position = headPosition;
+        eyes.transform.rotation = Quaternion.LookRotation(Vector3.forward, headDirection.normalized);
+
+        var nextMovePosition = game.Grid.GetWorldPos(NextMoveCell()) + game.Grid.CellCenterOffset();
+        leftEye.SetLookDirection(nextMovePosition - headPosition);
+        rightEye.SetLookDirection(nextMovePosition - headPosition);
+    }
+
+    private void Update()
+    {
+        UpdateEyePosition();
     }
 }

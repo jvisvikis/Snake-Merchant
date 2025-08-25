@@ -305,7 +305,10 @@ public class ItemsManager : MonoBehaviour
                         return false;
                 }
 
-                if (game.Snake.ContainsCell(checkCell))
+                if (game.Snake.ContainsCell(checkCell, out var _))
+                    return false;
+
+                if (checkCell == game.Snake.NextMoveCell())
                     return false;
             }
         }
@@ -329,10 +332,7 @@ public class ItemsManager : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Returns true if a collectible item was consumed.
-    /// </summary>
-    public bool SnakeMoved(ItemData specificItem)
+    public void SnakeMoved(ItemData specificItem)
     {
         ItemData didConsume = null;
 
@@ -358,15 +358,20 @@ public class ItemsManager : MonoBehaviour
             if (didConsume.IsCollectible)
             {
                 game.Snake.CarryItem(didConsume);
-                DespawnMunchies();
+
+                if (game.canCarryMultipleItems)
+                {
+                    // respawn and regenerate target item each collected item.
+                    // TODO: don't spawn in front of the snake!
+                    SpawnRandomNonExistentCollectibleItem();
+                    game.RefreshSpecificItem();
+                }
             }
             else if (didConsume.IsMunchie)
             {
                 SpawnItem(didConsume);
             }
         }
-
-        return false;
     }
 
     public void SpawnMunchies()

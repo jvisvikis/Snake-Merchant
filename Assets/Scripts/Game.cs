@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
@@ -24,8 +23,8 @@ public class Game : MonoBehaviour
     [Header("Game variation")]
     public bool onlyCollectSpecificItem = false;
     public bool mustHaveExactLengthToCollectItem = false;
-    public bool snakeGetsSmallerOnDelivery = false;
     public bool canExitAtAnyCell = false;
+    public bool canCarryMultipleItems = false;
 
     [Header("Game feel/settings")]
     public float initTimeToMove = 0.5f;
@@ -54,7 +53,7 @@ public class Game : MonoBehaviour
     private float timeToMove;
     private ItemController specificItem;
     private int coins = 0;
-    private int itemsCollected = 0;
+    private int itemsSold = 0;
     private int coinSpawnCountdown;
     private int currentDayScore;
     //private int currentLevelIndex = 0;
@@ -119,12 +118,17 @@ public class Game : MonoBehaviour
         // set up before starting to move the snake.
         yield return null;
 
-        MaybeSpawnSpecificItem();
+        RefreshSpecificItem();
 
         while (DayManager.Instance.IsPlaying)
         {
-            yield return new WaitForSeconds(timeToMove);
+            for (float t = 0; t < timeToMove; t += Time.deltaTime)
+            {
+                snake.SetMoveOffset(t / timeToMove);
+                yield return null;
+            }
 
+            snake.SetMoveOffset(1);
             bool didMove = snake.Move();
 
             // allow grace time if snake is about to die for player to avoid death.
@@ -138,9 +142,9 @@ public class Game : MonoBehaviour
             {
                 Die();
             }
-            else if (itemsManager.SnakeMoved(specificItem?.RItemData?.ItemData))
+            else
             {
-                OnItemCollected();
+                itemsManager.SnakeMoved(specificItem?.RItemData?.ItemData);
             }
 
             coinSpawnCountdown--;
@@ -153,7 +157,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    private void MaybeSpawnSpecificItem()
+    public void RefreshSpecificItem()
     {
         if (specificItem != null)
             GameObject.Destroy(specificItem.gameObject);
@@ -202,24 +206,37 @@ public class Game : MonoBehaviour
         EconomyManager.Instance.AddCoins(1);
     }
 
-    public void OnItemCollected()
+    public void OnItemsSold(List<ItemData> items)
     {
-        itemsCollected++;
         Debug.Assert(specificItem != null);
         Debug.Assert(specificItem.RItemData != null);
-        currentDayScore += specificItem.RItemData.Value;
+
+        itemsSold += items.Count;
+
+        foreach (var item in items)
+            currentDayScore += item.Value;
+
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
+
         if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
             DayManager.Instance.EndDay(currentDayScore);
             return;
         }
+
+        if (!canCarryMultipleItems)
+        {
+            // If only carrying a single item, respawn that item when it's sold.
+            Debug.Assert(items.Count == 1);
+            ItemsManager.SpawnRandomNonExistentCollectibleItem();
+            RefreshSpecificItem();
+        }
+
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
-        MaybeSpawnSpecificItem();
     }
 
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 500, 500), $"Coins: {coins}\nItems: {itemsCollected}\nSpeed: {timeToMove:F3}s");
+        GUI.Label(new Rect(10, 10, 500, 500), $"Coins: {coins}\nItems: {itemsSold}\nSpeed: {timeToMove:F3}s");
     }
 }

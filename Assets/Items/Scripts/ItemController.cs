@@ -193,7 +193,7 @@ public class ItemController : MonoBehaviour
         {
             var itemCell = itemGridCells[i];
 
-            if (game.Snake.ContainsCell(itemCell) && attachedToGrid)
+            if (game.Snake.ContainsCell(itemCell, out var _) && attachedToGrid)
                 continue;
 
             var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;

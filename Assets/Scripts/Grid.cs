@@ -8,7 +8,6 @@ public class Grid
     private int width;
     private int height;
     private float cellSize;
-    private int[,] gridArray;
     private Vector3 orig;
 
     public float CellSize => cellSize;
@@ -21,10 +20,12 @@ public class Grid
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
-        gridArray = new int[width, height];
         this.orig = orig;
-        
-       
+    }
+
+    public Vector3 CellCenterOffset()
+    {
+        return new Vector3(cellSize / 2, cellSize / 2);
     }
 
     public Vector3 GetWorldPos(int x, int y)
@@ -35,6 +36,12 @@ public class Grid
     public Vector3 GetWorldPos(Vector2Int pos)
     {
         return GetWorldPos(pos.x, pos.y);
+    }
+
+    public Vector2Int GetCellPos(Vector3 worldPos)
+    {
+        worldPos -= orig;
+        return new Vector2Int((int)Mathf.Round(worldPos.x / cellSize), (int)Mathf.Round(worldPos.y / cellSize));
     }
 
     public bool InGrid(int x, int y)

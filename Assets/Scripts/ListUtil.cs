@@ -14,6 +14,22 @@ public class ListUtil
         }
     }
 
+    public static string ArrayToString<T>(T[] list, string delim = ",")
+    {
+        StringBuilder s = new StringBuilder();
+        s.Append($"[");
+        foreach (var elem in list)
+        {
+            if (s.Length == 1)
+                s.Append($"{list.Length}:");
+            else
+                s.Append(delim);
+            s.Append(elem.ToString());
+        }
+        s.Append("]");
+        return s.ToString();
+    }
+
     public static string ListToString<T>(List<T> list, string delim = ",")
     {
         StringBuilder s = new StringBuilder();
