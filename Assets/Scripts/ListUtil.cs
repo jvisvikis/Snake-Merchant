@@ -8,10 +8,16 @@ public class ListUtil
     {
         for (int i = 0; i < list.Count - 1; i++)
         {
-            var r = Random.Range(i, list.Count);
+            var r = UnityEngine.Random.Range(i, list.Count);
             if (i != r)
                 (list[i], list[r]) = (list[r], list[i]);
         }
+    }
+
+    public static T Random<T>(List<T> list)
+    {
+        Debug.Assert(list.Count > 0);
+        return list[UnityEngine.Random.Range(0, list.Count)];
     }
 
     public static string ArrayToString<T>(T[] list, string delim = ",")

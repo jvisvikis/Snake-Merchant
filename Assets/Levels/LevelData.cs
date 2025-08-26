@@ -17,6 +17,7 @@ public class LevelData : ScriptableObject
     public int NumRandomObstacles = 0;
     public bool Mushrooms = false;
     public ItemDataCollection Items;
+    public ItemDataCollection RandomObstacles;
 
     public List<Vector2Int> Obstacles => GetObstacles();
 

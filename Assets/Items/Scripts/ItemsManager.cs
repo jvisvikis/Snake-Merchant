@@ -8,7 +8,6 @@ public class ItemsManager : MonoBehaviour
     [SerializeField]
     private ItemController itemControllerPrefab;
 
-    [SerializeField]
     private ItemData obstacleItemData;
 
     [SerializeField]
@@ -59,7 +58,12 @@ public class ItemsManager : MonoBehaviour
         }
 
         for (int i = 0; i < game.CurrentLevel.NumRandomObstacles; i++)
-            SpawnItem(obstacleItemData);
+        {
+            var randomObstacleItemData = obstacleItemData;
+            if (game.CurrentLevel.RandomObstacles && game.CurrentLevel.RandomObstacles.Items.Count > 0)
+                randomObstacleItemData = ListUtil.Random(game.CurrentLevel.RandomObstacles.Items);
+            SpawnItem(randomObstacleItemData);
+        }
     }
 
     private void SpawnCollectibles()
