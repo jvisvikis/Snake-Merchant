@@ -38,7 +38,7 @@ public class Grid
         return GetWorldPos(pos.x, pos.y);
     }
 
-    public Vector2Int GetCellPos(Vector3 worldPos)
+    public Vector2Int GetCell(Vector3 worldPos)
     {
         worldPos -= orig;
         return new Vector2Int((int)Mathf.Round(worldPos.x / cellSize), (int)Mathf.Round(worldPos.y / cellSize));

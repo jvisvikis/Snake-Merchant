@@ -210,7 +210,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.75
+  m_fontSize: 16.8
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2800,7 +2800,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 27.6
+  m_fontSize: 27.65
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8476,7 +8476,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.75
+  m_fontSize: 16.8
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8591,8 +8591,8 @@ MonoBehaviour:
   cellSize: 1
   onlyCollectSpecificItem: 0
   mustHaveExactLengthToCollectItem: 0
-  snakeGetsSmallerOnDelivery: 0
   canExitAtAnyCell: 1
+  canCarryMultipleItems: 1
   initTimeToMove: 0.4
   minTimeToMove: 0.15
   timeToMoveReduction: 0.025
@@ -8600,7 +8600,7 @@ MonoBehaviour:
   collectionWalkDelay: 3
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
-  startNumParts: 1
+  startNumParts: 2
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0

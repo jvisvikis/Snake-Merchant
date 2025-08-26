@@ -12,70 +12,31 @@ public class SnakeLineRenderer : MonoBehaviour
     [SerializeField]
     private LineRenderer lineRenderer;
 
-    [SerializeField]
-    private Color headColor = Color.yellow;
-
-    [SerializeField]
-    private Color tailColor = Color.red;
-
-    [SerializeField]
-    private Color carryItemHeadColor = Color.blue;
-
-    [SerializeField]
-    private Color carryItemTailColor = Color.green;
-
     private Grid grid;
     private List<Vector2Int> cells = new();
     private NativeArray<Vector3> positions; // drawn from tail to head
     private float renderOffset;
     private bool hasExtraTail = false;
 
-    public void Init(Grid grid, Vector2Int startCell, int offset)
+    public float RenderOffset => renderOffset;
+
+    public void Init(Grid grid, Vector2Int startCell)
     {
         this.grid = grid;
         cells = new List<Vector2Int> { startCell };
-        renderOffset = offset;
+        renderOffset = 0;
 
         // the snake renderer needs to know about its tail before moving forward so that the offset
         // can draw backwards. however it won't always have it - e.g. when adding a new tail.
         hasExtraTail = false;
 
         GenerateLineRendererPositions();
-        SetCarryItemPercent(0);
     }
 
     private void OnDestroy()
     {
         if (positions.IsCreated)
             positions.Dispose();
-    }
-
-    public void SetCarryItemPercent(float carryItemPercent)
-    {
-        carryItemPercent = Mathf.Clamp01(carryItemPercent);
-
-        GradientColorKey[] colorKeys;
-
-        if (carryItemPercent == 0)
-        {
-            colorKeys = new[] { new GradientColorKey(tailColor, 0), new GradientColorKey(headColor, 1), };
-        }
-        else if (carryItemPercent == 1)
-        {
-            colorKeys = new[] { new GradientColorKey(carryItemTailColor, 0), new GradientColorKey(carryItemHeadColor, 1), };
-        }
-        else
-        {
-            colorKeys = new[]
-            {
-                new GradientColorKey(carryItemTailColor, 0),
-                new GradientColorKey(Color.Lerp(carryItemTailColor, carryItemHeadColor, carryItemPercent), carryItemPercent),
-                new GradientColorKey(Color.Lerp(tailColor, headColor, carryItemPercent), carryItemPercent + float.Epsilon),
-                new GradientColorKey(headColor, 1),
-            };
-        }
-
-        lineRenderer.colorGradient = new Gradient { colorKeys = colorKeys };
     }
 
     public void SetWidth(float width)
