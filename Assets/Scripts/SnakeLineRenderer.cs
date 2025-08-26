@@ -27,12 +27,14 @@ public class SnakeLineRenderer : MonoBehaviour
     private Vector3 gCellVsOnTurnDirection;
 
     public float RenderOffset => renderOffset;
+    public Vector2Int BehindExtraTailCell => behindExtraTailCell;
 
-    public void Init(Grid grid, Vector2Int startCell)
+    public void Init(Grid grid, Vector2Int startCell, Vector2Int behindStartCell)
     {
         this.grid = grid;
         cells = new List<Vector2Int> { startCell };
         renderOffset = 0;
+        behindExtraTailCell = behindStartCell;
 
         // the snake renderer needs to know about its tail before moving forward so that the offset
         // can draw backwards. however it won't always have it - e.g. when adding a new tail.

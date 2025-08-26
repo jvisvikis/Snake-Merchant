@@ -17,6 +17,7 @@ public class SnakeRenderer : MonoBehaviour
     private SnakeLineRenderer bodyLine;
 
     public float RenderOffset => borderLine.RenderOffset;
+    public Vector2Int BehindExtraTailCell => borderLine.BehindExtraTailCell;
 
     private void Start()
     {
@@ -24,10 +25,10 @@ public class SnakeRenderer : MonoBehaviour
         bodyLine.SetWidth(snakeWidth - borderWidth);
     }
 
-    public void Init(Grid grid, Vector2Int startCell)
+    public void Init(Grid grid, Vector2Int startCell, Vector2Int behindStartCell)
     {
-        borderLine.Init(grid, startCell);
-        bodyLine.Init(grid, startCell);
+        borderLine.Init(grid, startCell, behindStartCell);
+        bodyLine.Init(grid, startCell, behindStartCell);
     }
 
     public void MoveForward(Vector2Int startCell)

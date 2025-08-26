@@ -67,7 +67,7 @@ public class Snake : MonoBehaviour
     public void Init(Vector2Int pos)
     {
         parts[0].transform.localPosition = new Vector3(pos.x, pos.y);
-        snakeRenderer.Init(game.Grid, pos);
+        snakeRenderer.Init(game.Grid, pos, pos);
 
         while (parts.Count < targetParts)
         {
@@ -357,6 +357,12 @@ public class Snake : MonoBehaviour
         // At the end, we'll move the item forward into its correct place.
         var startCell = GetPartCellPos(startIndex + 1);
 
+        Vector2Int behindStartCell;
+        if (startIndex + 2 < parts.Count)
+            behindStartCell = GetPartCellPos(startIndex + 2);
+        else
+            behindStartCell = snakeRenderer.BehindExtraTailCell;
+
         var carryingItem = new CarryingItem
         {
             ItemData = itemData,
@@ -364,7 +370,7 @@ public class Snake : MonoBehaviour
             Renderer = GameObject.Instantiate(itemRendererPrefab, transform),
         };
 
-        carryingItem.Renderer.Init(game.Grid, startCell);
+        carryingItem.Renderer.Init(game.Grid, startCell, behindStartCell);
         carryingItem.Renderer.SetRenderOffset(snakeRenderer.RenderOffset);
 
         for (int i = 0; i < itemData.CellCount; i++)
@@ -380,8 +386,8 @@ public class Snake : MonoBehaviour
 
     private Vector2Int GetPartCellPos(int partIndex)
     {
-        // if (partIndex == -1)
-        //     return Head + dir;
+        if (partIndex == -1)
+            return Head + dir;
         if (partIndex == parts.Count)
             return behindTailCell;
         return game.Grid.GetCell(parts[partIndex].transform.position);
@@ -390,8 +396,12 @@ public class Snake : MonoBehaviour
     private void UpdateEyePosition()
     {
         var headPosition = snakeRenderer.GetHeadPosition(out var headDirection);
-        eyes.transform.position = headPosition;
-        eyes.transform.rotation = Quaternion.LookRotation(Vector3.forward, headDirection.normalized);
+
+        if (headPosition != eyes.transform.position)
+        {
+            eyes.transform.position = headPosition;
+            eyes.transform.rotation = Quaternion.LookRotation(Vector3.forward, headDirection.normalized);
+        }
 
         var nextMovePosition = game.Grid.GetWorldPos(NextMoveCell()) + game.Grid.CellCenterOffset();
         leftEye.SetLookDirection(nextMovePosition - headPosition);
