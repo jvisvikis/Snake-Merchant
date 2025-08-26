@@ -95,8 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b3ffc7db11f4826be75e1888aaf046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cornerVertices: 10
+  cornerVertices: 21
   lineRenderer: {fileID: 3817188809908094689}
+  drawGizmos: 0
 --- !u!120 &3817188809908094689
 LineRenderer:
   serializedVersion: 2
@@ -246,8 +247,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b3ffc7db11f4826be75e1888aaf046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cornerVertices: 10
+  cornerVertices: 20
   lineRenderer: {fileID: 587723098930711433}
+  drawGizmos: 0
 --- !u!120 &587723098930711433
 LineRenderer:
   serializedVersion: 2

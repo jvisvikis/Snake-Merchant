@@ -12,11 +12,19 @@ public class SnakeLineRenderer : MonoBehaviour
     [SerializeField]
     private LineRenderer lineRenderer;
 
+    [SerializeField]
+    private bool drawGizmos = false;
+
     private Grid grid;
     private List<Vector2Int> cells = new();
     private NativeArray<Vector3> positions; // drawn from tail to head
     private float renderOffset;
     private bool hasExtraTail = false;
+    private Vector2Int behindExtraTailCell;
+
+    private Vector3 gPivotCenter;
+    private Vector3 gCellOnTurnVsBeforeDirection;
+    private Vector3 gCellVsOnTurnDirection;
 
     public float RenderOffset => renderOffset;
 
@@ -53,6 +61,7 @@ public class SnakeLineRenderer : MonoBehaviour
 
         if (hasExtraTail)
         {
+            behindExtraTailCell = cells[^1];
             // move cells forward and drop the tail
             for (int i = cells.Count - 1; i > 0; i--)
                 cells[i] = cells[i - 1];
@@ -92,6 +101,31 @@ public class SnakeLineRenderer : MonoBehaviour
         Draw();
     }
 
+    private void OnDrawGizmos()
+    {
+        if (!drawGizmos)
+            return;
+
+        Gizmos.color = Color.blue;
+        foreach (var cell in cells)
+        {
+            Gizmos.DrawWireSphere(grid.GetWorldPos(cell) + grid.CellCenterOffset(), grid.CellSize / 4f);
+        }
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(grid.GetWorldPos(behindExtraTailCell) + grid.CellCenterOffset(), grid.CellSize / 8f);
+
+        if (gPivotCenter != Vector3.zero)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(gPivotCenter, grid.CellSize / 8f);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(gPivotCenter + gCellOnTurnVsBeforeDirection, grid.CellSize / 8f);
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(gPivotCenter + gCellVsOnTurnDirection, grid.CellSize / 8f);
+        }
+    }
+
     private void Draw()
     {
         var centerOffset = grid.CellCenterOffset();
@@ -100,7 +134,9 @@ public class SnakeLineRenderer : MonoBehaviour
         positions[0] = grid.GetWorldPos(cells[^1]) + centerOffset;
 
         var positionCount = 1;
-        var prevDir = Vector2Int.zero;
+        var prevDir = cells[^1] - behindExtraTailCell;
+        var tailIsTurn = false;
+        var afterTailIsTurn = false;
 
         for (int i = cells.Count - 2; i >= 0; i--)
         {
@@ -116,19 +152,13 @@ public class SnakeLineRenderer : MonoBehaviour
             }
             else
             {
-                // snake has turned a corner... this logic is unnecessarily complicated and not that
-                // great since it only gives a smoothness of 1. though TBH that looks cool in its own way.
-                // better: step back position count, then generate a quarter-circle.
-
+                // turns a corner, so generate a curve that connects this cell to the cell 2 back.
                 var cellOnTurnPos = grid.GetWorldPos(cells[i + 1]) + centerOffset;
-                var cellBeforeTurnPos = grid.GetWorldPos(cells[i + 2]) + centerOffset;
+                var cellBeforeTurnPos = cellOnTurnPos - new Vector3(prevDir.x, prevDir.y);
 
                 var midpointCellOnTurnVsBefore = Avg(cellOnTurnPos, cellBeforeTurnPos);
                 var midpointCellVsOnTurn = Avg(cellPos, cellOnTurnPos);
 
-                // this is the tricky one - the midpoint that forms a circular curve around the
-                // pivot point of the current cell's bottom left corner. maybe it would be better to
-                // make this generalised to n "midpoints" using trig but eh.
                 var pivotCenter = Avg(cellPos, cellBeforeTurnPos);
                 var cellOnTurnVsBeforeDirection = (midpointCellOnTurnVsBefore - pivotCenter).normalized;
                 var cellVsOnTurnDirection = (midpointCellVsOnTurn - pivotCenter).normalized;
@@ -136,7 +166,21 @@ public class SnakeLineRenderer : MonoBehaviour
                 // go back to the previous cell to generate the curve around it.
                 positionCount--;
 
-                for (int p = 0; p < cornerVertices; p++)
+                int startVertices = 0;
+
+                if (i == cells.Count - 2)
+                {
+                    startVertices += cornerVertices / 2;
+                    tailIsTurn = true;
+                    gPivotCenter = pivotCenter;
+                    gCellOnTurnVsBeforeDirection = cellOnTurnVsBeforeDirection;
+                    gCellVsOnTurnDirection = cellVsOnTurnDirection;
+                }
+
+                if (i == cells.Count - 3)
+                    afterTailIsTurn = true;
+
+                for (int p = startVertices; p < cornerVertices; p++)
                 {
                     var t = p / (float)(cornerVertices - 1);
                     var interpolatedDir = Vector3.Slerp(cellOnTurnVsBeforeDirection, cellVsOnTurnDirection, t);
@@ -174,7 +218,12 @@ public class SnakeLineRenderer : MonoBehaviour
             }
         }
 
-        var dropTailLength = Mathf.Lerp(0, grid.CellSize, renderOffset);
+        var dropTailSize = grid.CellSize;
+
+        if (tailIsTurn || afterTailIsTurn)
+            dropTailSize = grid.CellSize / 2f + grid.CellSize * Mathf.PI / 8f;
+
+        var dropTailLength = Mathf.Lerp(0, dropTailSize, renderOffset);
         int droppedTailPositions = 0;
 
         while (hasExtraTail && dropTailLength > 0 && positionCount > 1)
