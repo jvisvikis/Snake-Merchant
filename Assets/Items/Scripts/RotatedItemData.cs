@@ -19,6 +19,7 @@ public class RotatedItemData
     public bool IsApple => ItemData.IsApple;
     public bool IsMushroom => ItemData.IsMushroom;
     public bool IsCoin => ItemData.IsCoin;
+    public bool IsObstacle => ItemData.IsObstacle;
     public Color DebugColor => ItemData.debugColor;
     public int CellCount => ItemData.GetCellCount();
     public bool IsMunchie => ItemData.IsMunchie;

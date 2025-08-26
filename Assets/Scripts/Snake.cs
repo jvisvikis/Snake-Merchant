@@ -124,9 +124,6 @@ public class Snake : MonoBehaviour
                 return false;
         }
 
-        if (game.mustHaveExactLengthToCollectItem && parts.Count != item.RItemData.CellCount)
-            return false;
-
         if (parts.Count < item.RItemData.CellCount)
             return false;
 
@@ -168,8 +165,11 @@ public class Snake : MonoBehaviour
         }
     }
 
-    private static bool CanEnterFromDirection(ItemData.CellType cellType, Vector2Int direction)
+    private bool CanEnterFromDirection(ItemData.CellType cellType, Vector2Int direction)
     {
+        if (game.canEnterAtAnyCell)
+            return true;
+
         switch (cellType)
         {
             case ItemData.CellType.EntryOrExit:
@@ -217,6 +217,9 @@ public class Snake : MonoBehaviour
             moveInsideItem = null;
         }
 
+        if (moveInsideItem && moveInsideItem.RItemData.IsObstacle)
+            return false;
+
         if (insideItem == null && moveInsideItem != null)
         {
             // Moving from outside => inside an item.
@@ -230,6 +233,8 @@ public class Snake : MonoBehaviour
         {
             // Moving from inside item => outside, but only if the item is incomplete. If the item
             // was completed then the snake would be holding it and insideItem would be null.
+            if (game.mustCompleteItemAfterEntering)
+                return false;
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
             Debug.Assert(itemAtCell == insideItem);
             if (!CanExit(currentyInsideCellType))
@@ -238,9 +243,11 @@ public class Snake : MonoBehaviour
         }
         else if (insideItem != null && moveInsideItem != null && insideItem != moveInsideItem)
         {
+            // Moving between items, err, this would be pretty rare but handle it anyway?
+            if (game.mustCompleteItemAfterEntering)
+                return false;
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
             Debug.Assert(itemAtCell == insideItem);
-            // Moving between items, err, this would be pretty rare but handle it anyway?
             if (!CanEnterFromDirection(moveInsideCellType, dir) || !CanExit(currentyInsideCellType))
                 return false;
             insideItem = moveInsideItem;

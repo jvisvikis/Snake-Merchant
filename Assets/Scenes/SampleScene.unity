@@ -8590,17 +8590,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d093b64e46b47ae4580d868184d38b87, type: 2}
   cellSize: 1
   onlyCollectSpecificItem: 0
-  mustHaveExactLengthToCollectItem: 0
   canExitAtAnyCell: 1
+  canEnterAtAnyCell: 1
   canCarryMultipleItems: 1
-  initTimeToMove: 0.4
+  mustCompleteItemAfterEntering: 1
+  initTimeToMove: 0.5
   minTimeToMove: 0.15
   timeToMoveReduction: 0.025
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
-  startNumParts: 2
+  startNumParts: 5
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0

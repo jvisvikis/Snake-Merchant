@@ -22,9 +22,10 @@ public class Game : MonoBehaviour
 
     [Header("Game variation")]
     public bool onlyCollectSpecificItem = false;
-    public bool mustHaveExactLengthToCollectItem = false;
     public bool canExitAtAnyCell = false;
+    public bool canEnterAtAnyCell = false;
     public bool canCarryMultipleItems = false;
+    public bool mustCompleteItemAfterEntering = false;
 
     [Header("Game feel/settings")]
     public float initTimeToMove = 0.5f;
