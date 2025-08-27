@@ -20,5 +20,5 @@ MonoBehaviour:
   IsCoin: 0
   IsObstacle: 0
   cells: '#'
-  sprite: {fileID: 21300000, guid: f9160f10109474dd58489e0fc8b3ee67, type: 3}
+  sprite: {fileID: 21300000, guid: 291ad66773236494080aded8129f69ae, type: 3}
   debugColor: {r: 0.9339623, g: 0, b: 0.056550726, a: 1}

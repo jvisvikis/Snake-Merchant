@@ -51,13 +51,14 @@ public class ItemController : MonoBehaviour
         {
             spriteRenderer.sprite = itemData.Sprite;
 
-            var spriteOffset = itemData.Sprite.bounds.size / 2;
+            var spriteOffset = itemData.Sprite.bounds.size / 2 * game.Grid.CellSize;
 
             if (itemData.Rotation == ItemRotation.Right || itemData.Rotation == ItemRotation.Left)
                 (spriteOffset.x, spriteOffset.y) = (spriteOffset.y, spriteOffset.x);
 
             spriteRenderer.transform.localPosition = spriteOffset;
             spriteRenderer.transform.localRotation = itemData.RotationQuaternion();
+            spriteRenderer.transform.localScale = game.Grid.CellSize * Vector3.one;
         }
     }
 
@@ -199,32 +200,31 @@ public class ItemController : MonoBehaviour
             var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;
             var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
 
-            if (itemData.Sprite == null)
-            {
-                Gizmos.color = itemData.DebugColor;
-                Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
-            }
+            var clr = itemData.DebugColor;
+            clr.a = 0.5f;
+            Gizmos.color = clr;
+            Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
 
-            Gizmos.color = Color.black;
-            switch (itemGridCellTypes[i])
-            {
-                case ItemData.CellType.Middle:
-                    if (!itemData.IsConsumable && !game.canExitAtAnyCell)
-                        Gizmos.DrawLine(cellPosition, cellPosition + cellSize * Vector3.one);
-                    break;
-                case ItemData.CellType.LeftEntry:
-                    DrawArrow(cellPosition + halfCellSize * Vector3.one, -90f, halfCellSize);
-                    break;
-                case ItemData.CellType.RightEntry:
-                    DrawArrow(cellPosition + halfCellSize * Vector3.one, 90, halfCellSize);
-                    break;
-                case ItemData.CellType.UpEntry:
-                    DrawArrow(cellPosition + halfCellSize * Vector3.one, 180, halfCellSize);
-                    break;
-                case ItemData.CellType.DownEntry:
-                    DrawArrow(cellPosition + halfCellSize * Vector3.one, 0, halfCellSize);
-                    break;
-            }
+            // Gizmos.color = Color.black;
+            // switch (itemGridCellTypes[i])
+            // {
+            //     case ItemData.CellType.Middle:
+            //         if (!itemData.IsConsumable && !game.canExitAtAnyCell)
+            //             Gizmos.DrawLine(cellPosition, cellPosition + cellSize * Vector3.one);
+            //         break;
+            //     case ItemData.CellType.LeftEntry:
+            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, -90f, halfCellSize);
+            //         break;
+            //     case ItemData.CellType.RightEntry:
+            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, 90, halfCellSize);
+            //         break;
+            //     case ItemData.CellType.UpEntry:
+            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, 180, halfCellSize);
+            //         break;
+            //     case ItemData.CellType.DownEntry:
+            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, 0, halfCellSize);
+            //         break;
+            // }
         }
     }
 
