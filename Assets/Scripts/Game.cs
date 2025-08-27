@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Progress;
 
 public class Game : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Game : MonoBehaviour
     public Snake snakePrefab;
     public GameObject specificItemParent;
     public ItemController itemControllerPrefab;
+    public CollectionWorldUI collectionUIPrefab;
 
     [Header("Levels")]
     [SerializeField]
@@ -237,9 +239,16 @@ public class Game : MonoBehaviour
         Debug.Assert(specificItem.RItemData != null);
 
         itemsSold += items.Count;
-
+        int currentCollectionTotal = 0;
         foreach (var item in items)
+        {
             currentDayScore += item.Value;
+            currentCollectionTotal += item.Value;
+        }
+        CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
+        collectionUI.SetProfitText($"${currentCollectionTotal}");
+        collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + new Vector2Int(0,1));
+        Destroy(collectionUI.gameObject, 1);
 
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
 

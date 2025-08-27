@@ -210,7 +210,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.8
+  m_fontSize: 16.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2800,7 +2800,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 27.65
+  m_fontSize: 27.6
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5993,7 +5993,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchorMin.x
@@ -6001,15 +6001,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 169.05
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6041,11 +6041,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 499.21283
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -219.05
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6070,6 +6070,10 @@ PrefabInstance:
     - target: {fileID: 7902266483094790227, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_Name
       value: 2ndShapeQueueUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7902266483094790227, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9149033634889958906, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_Name
@@ -6501,7 +6505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchorMin.x
@@ -6509,15 +6513,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 169.05
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6549,11 +6553,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 499.21283
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -418.1
       objectReference: {fileID: 0}
     - target: {fileID: 4471388465670431, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6578,6 +6582,10 @@ PrefabInstance:
     - target: {fileID: 7902266483094790227, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_Name
       value: 3rdShapeQueueUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7902266483094790227, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8476,7 +8484,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.8
+  m_fontSize: 16.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8580,6 +8588,7 @@ MonoBehaviour:
   snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
   specificItemParent: {fileID: 292428359}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
+  collectionUIPrefab: {fileID: 2357230250612766462, guid: 7dd54c28aa19ecb4a9a75f79aa37f32f, type: 3}
   levels:
   - {fileID: 11400000, guid: d013e2b92fd7f6e4a81c21a0cd9bf0d8, type: 2}
   - {fileID: 11400000, guid: d6914d8b6e214ca49a588113ca0748fb, type: 2}
@@ -8676,7 +8685,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
-  obstacleItemData: {fileID: 11400000, guid: 994e06dc89f2048208e82aa39b87bd0c, type: 2}
   appleItemData: {fileID: 11400000, guid: 7493c34985a4d496999cf45b44aaf219, type: 2}
   mushroomItemData: {fileID: 11400000, guid: 005d311c830104fa3aa78a43943ea554, type: 2}
   coinItemData: {fileID: 11400000, guid: f7dd73656caaa437381e3e0df8774fdb, type: 2}
