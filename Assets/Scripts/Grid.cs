@@ -54,14 +54,13 @@ public class Grid
     /// blockHeight, within the spawnable area. The position is returned as a Vector2Int of the
     /// minimum value i.e. the bottom-left corner conceptually in Unity.
     /// </summary>
-    public Vector2Int RandomSpawnCell(int blockWidth, int blockHeight, bool borderOk = false)
+    public Vector2Int RandomSpawnCell(int blockWidth, int blockHeight)
     {
         Debug.Assert(blockWidth > 0);
         Debug.Assert(blockWidth <= width);
         Debug.Assert(blockHeight > 0);
         Debug.Assert(blockHeight <= height);
-        var border = borderOk ? 0 : 1;
-        return new Vector2Int(Random.Range(border, width - blockWidth - border), Random.Range(border, height - blockHeight - border));
+        return new Vector2Int(Random.Range(0, width - blockWidth), Random.Range(0, height - blockHeight));
     }
 
     public void DrawGrid()

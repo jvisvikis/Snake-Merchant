@@ -160,16 +160,14 @@ public class ItemsManager : MonoBehaviour
         //
         // It's OK to spawn apples and coins around the border of the grid, since those can always
         // be consumed. But don't spawn items since that can create impossible-to-solve boards.
-        var spawnBorderOk = itemData.IsApple || itemData.IsCoin;
-        var spawnBorder = spawnBorderOk ? 0 : 1;
-        var candidateCell = game.Grid.RandomSpawnCell(itemData.Width, itemData.Height, spawnBorderOk);
+        var candidateCell = game.Grid.RandomSpawnCell(itemData.Width, itemData.Height);
 
         var itemBounds = new BoundsInt((Vector3Int)candidateCell, new Vector3Int(itemData.Width, itemData.Height));
         var borderBounds = new BoundsInt(itemBounds.position, itemBounds.size);
 
-        if (itemData.HasLeftEntryOrExit)
+        if (itemData.HasLeftEntryOrExit && !itemData.IsConsumable)
         {
-            if (borderBounds.min.x > spawnBorder)
+            if (borderBounds.min.x > 0)
             {
                 borderBounds.min += Vector3Int.left;
             }
@@ -181,9 +179,9 @@ public class ItemsManager : MonoBehaviour
             }
         }
 
-        if (itemData.HasRightEntryOrExit)
+        if (itemData.HasRightEntryOrExit && !itemData.IsConsumable)
         {
-            if (xExtent(borderBounds) < game.Grid.Width - spawnBorder - 1)
+            if (xExtent(borderBounds) < game.Grid.Width - 1)
             {
                 borderBounds.max += Vector3Int.right;
             }
@@ -195,9 +193,9 @@ public class ItemsManager : MonoBehaviour
             }
         }
 
-        if (itemData.HasUpEntryOrExit)
+        if (itemData.HasUpEntryOrExit && !itemData.IsConsumable)
         {
-            if (yExtent(borderBounds) < game.Grid.Height - spawnBorder - 1)
+            if (yExtent(borderBounds) < game.Grid.Height - 1)
             {
                 borderBounds.max += Vector3Int.up;
             }
@@ -209,9 +207,9 @@ public class ItemsManager : MonoBehaviour
             }
         }
 
-        if (itemData.HasDownEntryOrExit)
+        if (itemData.HasDownEntryOrExit && !itemData.IsConsumable)
         {
-            if (borderBounds.min.y > spawnBorder)
+            if (borderBounds.min.y > 0)
             {
                 borderBounds.min += Vector3Int.down;
             }
@@ -232,20 +230,13 @@ public class ItemsManager : MonoBehaviour
             borderBounds.position += Vector3Int.right;
             itemBounds.position += Vector3Int.right;
 
-            if (xExtent(borderBounds) >= game.Grid.Width - spawnBorder)
+            if (xExtent(borderBounds) >= game.Grid.Width)
             {
                 var prevBorderPosition = borderBounds.position;
-                borderBounds.position = new Vector3Int(spawnBorder, borderBounds.position.y + 1);
+                borderBounds.position = new Vector3Int(0, borderBounds.position.y + 1);
 
-                if (yExtent(borderBounds) >= game.Grid.Height - spawnBorder)
-                {
-                    borderBounds.position = new Vector3Int(spawnBorder, spawnBorder);
-                    if (borderBounds.position == Vector3Int.zero)
-                    {
-                        // oops. this is the delivery point.
-                        borderBounds.position = new Vector3Int(spawnBorder, 1);
-                    }
-                }
+                if (yExtent(borderBounds) >= game.Grid.Height)
+                    borderBounds.position = Vector3Int.zero;
 
                 itemBounds.position += borderBounds.position - prevBorderPosition;
             }
@@ -302,6 +293,10 @@ public class ItemsManager : MonoBehaviour
             for (int y = 0; y < itemHeight; y++)
             {
                 var checkCell = gridCell + new Vector2Int(x, y);
+
+                // don't spawn in the same row/column as the spawn point
+                if (checkCell.x == game.CurrentLevelSpawn.x || checkCell.y == game.CurrentLevelSpawn.y)
+                    return false;
 
                 foreach (var item in items)
                 {

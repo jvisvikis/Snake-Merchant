@@ -20,24 +20,28 @@ public class LevelData : ScriptableObject
     public ItemDataCollection RandomObstacles;
 
     public List<Vector2Int> Obstacles => GetObstacles();
+    public bool HasSpawnPoint => spawnPoint.x != -1;
+    public Vector2Int SpawnPoint => spawnPoint;
 
     [TextArea(20, 40), SerializeField]
     private string layout;
 
     private const string EmptyCellChar = "_";
     private const string ObstacleCellChar = "O";
+    private const string SpawnCellChar = "+";
 
     [System.NonSerialized]
     private List<Vector2Int> obstacles;
 
+    [System.NonSerialized]
+    private Vector2Int spawnPoint = new Vector2Int(-1, 0);
+
     private List<Vector2Int> GetObstacles()
     {
-        if (obstacles == null)
-            ParseLayout();
         return obstacles;
     }
 
-    private void ParseLayout()
+    public void ParseLayout()
     {
         obstacles = new();
 
@@ -63,6 +67,10 @@ public class LevelData : ScriptableObject
                 if (cells[x] == ObstacleCellChar)
                 {
                     obstacles.Add(new Vector2Int(x, y));
+                }
+                if (cells[x] == SpawnCellChar)
+                {
+                    spawnPoint = new Vector2Int(x, y);
                 }
                 else if (cells[x] != EmptyCellChar)
                 {

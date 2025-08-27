@@ -280,7 +280,7 @@ public class Snake : MonoBehaviour
             snakeRenderer.AddTail(game.Grid.GetCell(part.transform.position));
         }
 
-        if (Head == Vector2Int.zero && carryingItems.Count > 0)
+        if (Head == game.CurrentLevelSpawn && carryingItems.Count > 0)
         {
             // Reached goal while carrying an item.
             var carryingItemsData = new List<ItemData>();

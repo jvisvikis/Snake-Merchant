@@ -47,6 +47,7 @@ public class Game : MonoBehaviour
     public int Coins => coins;
     public int CoinSpawnCountdown => coinSpawnCountdown;
     public LevelData CurrentLevel => levels[EconomyManager.Instance.WarehouseLevel];
+    public Vector2Int CurrentLevelSpawn => currentLevelSpawn;
 
     private Snake snake;
     private Grid grid;
@@ -58,6 +59,8 @@ public class Game : MonoBehaviour
     private int itemsSold = 0;
     private int coinSpawnCountdown;
     private int currentDayScore;
+    private Vector2Int currentLevelSpawn = Vector2Int.zero;
+
     //private int currentLevelIndex = 0;
 
     // Start is called before the first frame update
@@ -70,16 +73,27 @@ public class Game : MonoBehaviour
     void Start()
     {
         var chosenLevel = levels[EconomyManager.Instance.WarehouseLevel];
+        chosenLevel.ParseLayout();
         EconomyManager.Instance.SetupWarehouses(levels);
         var orig = new Vector2(chosenLevel.Width, chosenLevel.Height) * cellSize / -2f;
         grid = new Grid(chosenLevel.Width, chosenLevel.Height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
         startNumParts += EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
+        currentLevelSpawn = GetSpawnPoint(chosenLevel);
         SpawnSnake();
         itemsManager.LoadLevel();
         StartCoroutine(MoveSnake());
         StartCoroutine(DayManager.Instance.StartDay());
+    }
+
+    private Vector2Int GetSpawnPoint(LevelData levelData)
+    {
+        if (levelData.HasSpawnPoint)
+            return levelData.SpawnPoint;
+        // only randomly spawn in the left half of the board so that the snake doesn't immediately
+        // spawn next to the right wall and die.
+        return new Vector2Int(Random.Range(1, grid.Width / 2 - 1), Random.Range(1, grid.Height - 1));
     }
 
     private void Update()
@@ -91,7 +105,7 @@ public class Game : MonoBehaviour
     {
         snake = Instantiate(snakePrefab, grid.Orig, Quaternion.identity, null);
         snake.SetSize(cellSize);
-        snake.Init(new Vector2Int(0, 0));
+        snake.Init(currentLevelSpawn);
     }
 
     private void OnEnable()
@@ -112,6 +126,15 @@ public class Game : MonoBehaviour
         controls.PlayerInput.MoveHorizontal.performed -= MoveHorizontal;
         controls.PlayerInput.Reset.performed -= OnReset;
         controls.PlayerInput.Pause.performed -= OnPause;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (grid != null)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawCube(grid.GetWorldPos(currentLevelSpawn) + grid.CellCenterOffset(), Vector2.one * cellSize);
+        }
     }
 
     public IEnumerator MoveSnake()
@@ -222,7 +245,7 @@ public class Game : MonoBehaviour
 
         if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
-            DayManager.Instance.EndDay(currentDayScore,bonus,coins,itemsSold);
+            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold);
             return;
         }
 
