@@ -156,7 +156,7 @@ public class SnakeLineRenderer : MonoBehaviour
             {
                 // turns a corner, so generate a curve that connects this cell to the cell 2 back.
                 var cellOnTurnPos = grid.GetWorldPos(cells[i + 1]) + centerOffset;
-                var cellBeforeTurnPos = cellOnTurnPos - new Vector3(prevDir.x, prevDir.y);
+                var cellBeforeTurnPos = cellOnTurnPos - (new Vector3(prevDir.x, prevDir.y)).normalized * grid.CellSize;
 
                 var midpointCellOnTurnVsBefore = Avg(cellOnTurnPos, cellBeforeTurnPos);
                 var midpointCellVsOnTurn = Avg(cellPos, cellOnTurnPos);

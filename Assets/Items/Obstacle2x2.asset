@@ -23,4 +23,4 @@ MonoBehaviour:
 
     @ @'
   sprite: {fileID: 0}
-  debugColor: {r: 0.9056604, g: 0.35457456, b: 0.35457456, a: 0.27058825}
+  debugColor: {r: 0, g: 0, b: 0, a: 1}

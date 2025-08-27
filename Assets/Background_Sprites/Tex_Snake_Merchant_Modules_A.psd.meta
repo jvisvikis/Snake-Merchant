@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 674
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -93,17 +93,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WARE_Module_Top_Left_A
+      name: Tex_Snake_Merchant_Modules_A_0
       rect:
         serializedVersion: 2
-        x: 52
-        y: 1373
-        width: 625
-        height: 625
+        x: 0
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ee6767765e934334a93b0196dec9fe65
-      internalID: 2011333764
+      spriteID: 77f73a263e1b846cdbbe25a5aad5e66e
+      internalID: -495784357
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Top_Middle_A
+      name: Tex_Snake_Merchant_Modules_A_1
       rect:
         serializedVersion: 2
-        x: 687
-        y: 1374
-        width: 674
-        height: 625
+        x: 682
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +145,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e08f7657e1a4624393b279511ea6748
-      internalID: -1842618207
+      spriteID: 0004bbdb74456454e8ffe53539a9551d
+      internalID: 1383139970
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Top_Right_A
+      name: Tex_Snake_Merchant_Modules_A_2
       rect:
         serializedVersion: 2
-        x: 1372
-        y: 1374
-        width: 625
-        height: 625
+        x: 1364
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +166,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2b817421528a591438e6ace1dd031bae
-      internalID: 973516349
+      spriteID: 2aaef24e580184f24af700cb2cf3cd73
+      internalID: -1383546903
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Left_A
+      name: Tex_Snake_Merchant_Modules_A_3
       rect:
         serializedVersion: 2
-        x: 51
-        y: 690
-        width: 625
-        height: 674
+        x: 0
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +187,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac1ed5feaa0d70046be57391ccdfe2a0
-      internalID: 912867242
+      spriteID: eebf30fd2b923476a84a4fc0162d230e
+      internalID: 136659239
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Middle
+      name: Tex_Snake_Merchant_Modules_A_4
       rect:
         serializedVersion: 2
-        x: 687
-        y: 690
-        width: 674
-        height: 674
+        x: 682
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +208,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4f813f29c691cbb42b8cba695c59f6cd
-      internalID: 1664924887
+      spriteID: aeb3543f10dde4cb1a7d14ecb571028a
+      internalID: 353382197
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Right_A
+      name: Tex_Snake_Merchant_Modules_A_5
       rect:
         serializedVersion: 2
-        x: 1372
-        y: 690
-        width: 625
-        height: 675
+        x: 1364
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -216,20 +229,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0aaaef6b23a48db459f7318ce2a672de
-      internalID: -1343757603
+      spriteID: db08614d258a7412eb60c36e7fb81993
+      internalID: 1479171914
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Bottom_Left_A
+      name: Tex_Snake_Merchant_Modules_A_6
       rect:
         serializedVersion: 2
-        x: 51
-        y: 44
-        width: 625
-        height: 631
+        x: 0
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -237,20 +250,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f0bfdad231de5a44dbd6c73472b50611
-      internalID: -1035177618
+      spriteID: e257f2bce9ab7423cb5eb2d3cdbd8132
+      internalID: 922570072
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Bottom_Middle_A
+      name: Tex_Snake_Merchant_Modules_A_7
       rect:
         serializedVersion: 2
-        x: 687
-        y: 44
-        width: 674
-        height: 630
+        x: 682
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,20 +271,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4f108e06542b8b94f8f80794b3993cb3
-      internalID: -344296703
+      spriteID: 1f3ce175c9a204785b8ea46b685faa65
+      internalID: 787744062
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WARE_Module_Bottom_Right_A
+      name: Tex_Snake_Merchant_Modules_A_8
       rect:
         serializedVersion: 2
-        x: 1372
-        y: 44
-        width: 625
-        height: 630
+        x: 1364
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,8 +292,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1b52f55b649591a44aa588dc732f63f2
-      internalID: -91210584
+      spriteID: 878c9f4991fcb4056ba173d2720c1084
+      internalID: -2097337512
       vertices: []
       indices: 
       edges: []
@@ -296,15 +309,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      WARE_Module_Bottom_Left_A: -1035177618
-      WARE_Module_Bottom_Middle_A: -344296703
-      WARE_Module_Bottom_Right_A: -91210584
-      WARE_Module_Left_A: 912867242
-      WARE_Module_Middle: 1664924887
-      WARE_Module_Right_A: -1343757603
-      WARE_Module_Top_Left_A: 2011333764
-      WARE_Module_Top_Middle_A: -1842618207
-      WARE_Module_Top_Right_A: 973516349
+      Tex_Snake_Merchant_Modules_A_0: -495784357
+      Tex_Snake_Merchant_Modules_A_1: 1383139970
+      Tex_Snake_Merchant_Modules_A_2: -1383546903
+      Tex_Snake_Merchant_Modules_A_3: 136659239
+      Tex_Snake_Merchant_Modules_A_4: 353382197
+      Tex_Snake_Merchant_Modules_A_5: 1479171914
+      Tex_Snake_Merchant_Modules_A_6: 922570072
+      Tex_Snake_Merchant_Modules_A_7: 787744062
+      Tex_Snake_Merchant_Modules_A_8: -2097337512
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

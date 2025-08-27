@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Value: 20
   Width: 3
-  Height: 2
+  Height: 3
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 0
-  cells: '_ # X
+  cells: '_ U _
 
-    L # _'
-  sprite: {fileID: 21300000, guid: fd4b5762cec824be69c97fddbc2d19fc, type: 3}
+    # # #
+
+    @ # #'
+  sprite: {fileID: 21300000, guid: 225ad33c1f99ad942a02b54be33d645e, type: 3}
   debugColor: {r: 1, g: 0.5481836, b: 0, a: 1}

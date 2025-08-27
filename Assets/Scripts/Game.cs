@@ -10,6 +10,7 @@ public class Game : MonoBehaviour
     public Snake snakePrefab;
     public GameObject specificItemParent;
     public ItemController itemControllerPrefab;
+    public GridSquare gridSquarePrefab;
 
     [Header("Levels")]
     [SerializeField]
@@ -60,6 +61,7 @@ public class Game : MonoBehaviour
     private int coinSpawnCountdown;
     private int currentDayScore;
     private Vector2Int currentLevelSpawn = Vector2Int.zero;
+    private GameObject gridParent;
 
     //private int currentLevelIndex = 0;
 
@@ -81,6 +83,7 @@ public class Game : MonoBehaviour
         startNumParts += EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
         currentLevelSpawn = GetSpawnPoint(chosenLevel);
+        SpawnGrid();
         SpawnSnake();
         itemsManager.LoadLevel();
         StartCoroutine(MoveSnake());
@@ -99,6 +102,43 @@ public class Game : MonoBehaviour
     private void Update()
     {
         grid.DrawGrid();
+    }
+
+    private void SpawnGrid()
+    {
+        if (gridParent != null)
+            GameObject.Destroy(gridParent);
+
+        gridParent = new GameObject("Grid parent");
+        gridParent.transform.parent = transform;
+
+        for (int x = 0; x < grid.Width; x++)
+        {
+            for (int y = 0; y < grid.Height; y++)
+            {
+                var gridSquare = GameObject.Instantiate(gridSquarePrefab, gridParent.transform);
+                gridSquare.transform.position = grid.GetWorldPos(x, y) + grid.CellCenterOffset();
+                gridSquare.transform.localScale = cellSize * Vector3.one;
+                var gridSquareType = GridSquare.Type.Middle;
+                if (x == 0 && y == 0)
+                    gridSquareType = GridSquare.Type.BottomLeft;
+                else if (x == 0 && y == grid.Height - 1)
+                    gridSquareType = GridSquare.Type.TopLeft;
+                else if (x == 0)
+                    gridSquareType = GridSquare.Type.Left;
+                else if (y == 0 && x == grid.Width - 1)
+                    gridSquareType = GridSquare.Type.BottomRight;
+                else if (y == 0)
+                    gridSquareType = GridSquare.Type.Bottom;
+                else if (x == grid.Width - 1 && y == grid.Height - 1)
+                    gridSquareType = GridSquare.Type.TopRight;
+                else if (x == grid.Width - 1)
+                    gridSquareType = GridSquare.Type.Right;
+                else if (y == grid.Height - 1)
+                    gridSquareType = GridSquare.Type.Top;
+                gridSquare.Init(gridSquareType, grid);
+            }
+        }
     }
 
     void SpawnSnake()

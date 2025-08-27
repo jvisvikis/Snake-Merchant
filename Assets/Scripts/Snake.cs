@@ -404,7 +404,7 @@ public class Snake : MonoBehaviour
     {
         var headPosition = snakeRenderer.GetHeadPosition(out var headDirection);
 
-        if (headPosition != eyes.transform.position)
+        if (headDirection != Vector3.zero && headPosition != eyes.transform.position)
         {
             eyes.transform.position = headPosition;
             eyes.transform.rotation = Quaternion.LookRotation(Vector3.forward, headDirection.normalized);
