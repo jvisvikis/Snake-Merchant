@@ -28,6 +28,12 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject endDayPanel;
     [SerializeField]
+    private GameObject overviewHolder;
+    [SerializeField]
+    private GameObject upgradesHolder;
+    [SerializeField]
+    private Button nextPanelButton;
+    [SerializeField]
     private Button nextDayButton;
 
     [Header("OverviewTextUI")]
@@ -270,6 +276,19 @@ public class UIManager : MonoBehaviour
     public void EndDay()
     {
         SetEndDayPanelActive(true);
+        overviewHolder.gameObject.SetActive(true);
+        upgradesHolder.gameObject.SetActive(false);
+        nextPanelButton.gameObject.SetActive(true);
+        nextDayButton.gameObject.SetActive(false);
+    }
+
+    public void OpenUpgradesPanel()
+    {
+        overviewHolder.gameObject.SetActive(false);
+        upgradesHolder.gameObject.SetActive(true);
+        nextPanelButton.gameObject.SetActive(false);
+        nextDayButton.gameObject.SetActive(true);
+
     }
     public void StartNextDay()
     {
