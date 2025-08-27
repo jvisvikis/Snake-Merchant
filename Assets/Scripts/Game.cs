@@ -35,6 +35,7 @@ public class Game : MonoBehaviour
     public float timeToMoveReduction = 0.01f;
     public float timeToDieGrace = 0.1f;
     public int collectionWalkDelay = 3;
+    public Vector2Int collectionUIOffset = new Vector2Int(0,1);
 
     [Header("Coins")]
     public int coinsSpawnTurns = 15;
@@ -247,7 +248,7 @@ public class Game : MonoBehaviour
         }
         CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
         collectionUI.SetProfitText($"${currentCollectionTotal}");
-        collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + new Vector2Int(0,1));
+        collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + collectionUIOffset);
         Destroy(collectionUI.gameObject, 1);
 
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
