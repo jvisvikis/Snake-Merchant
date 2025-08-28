@@ -24,5 +24,5 @@ MonoBehaviour:
     # _
 
     # R'
-  sprite: {fileID: 21300000, guid: 5bfff35214e674041b580bc2e3bdc461, type: 3}
+  sprite: {fileID: 21300000, guid: f59bd04a8f53d244ba450b99aef16f29, type: 3}
   debugColor: {r: 0.045033827, g: 0.18733285, b: 0.41509432, a: 1}

@@ -134,12 +134,15 @@ public class Snake : MonoBehaviour
                 return false;
         }
 
-        // can only consume if it's an exit square, otherwise snake must have filled item but be
-        // somewhere in the middle of it. (unless canExitAtAnyCell flag is set).
-        game.ItemsManager.GetItemAtCell(Head, out var cellType);
+        if (!game.canExitAtAnyCell)
+        {
+            // can only consume if it's an exit square, otherwise snake must have filled item but be
+            // somewhere in the middle of it. (unless canExitAtAnyCell flag is set).
+            game.ItemsManager.GetItemAtCell(Head, out var cellType);
 
-        if (!game.canExitAtAnyCell && !ItemData.IsAnyExit(cellType))
-            return false;
+            if (!ItemData.IsAnyExit(cellType))
+                return false;
+        }
 
         return true;
     }
@@ -228,6 +231,7 @@ public class Snake : MonoBehaviour
             if (!game.canCarryMultipleItems && carryingItems.Count > 0)
                 return false;
             insideItem = moveInsideItem;
+            CameraController.Instance.Focus(game.Grid.GetWorldPos(newPos));
         }
         else if (insideItem != null && moveInsideItem == null)
         {

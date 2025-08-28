@@ -283,4 +283,12 @@ public class SnakeLineRenderer : MonoBehaviour
 
         return head;
     }
+
+    public float TotalLength()
+    {
+        float length = 0;
+        for (int i = 1; i < lineRenderer.positionCount; i++)
+            length += Vector3.Distance(lineRenderer.GetPosition(i - 1), lineRenderer.GetPosition(i));
+        return length;
+    }
 }

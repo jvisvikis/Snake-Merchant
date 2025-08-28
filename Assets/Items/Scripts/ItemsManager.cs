@@ -348,6 +348,7 @@ public class ItemsManager : MonoBehaviour
                 Destroy(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
+                CameraController.Instance.ClearFocus();
                 break; // can only consume 1 item
             }
         }
