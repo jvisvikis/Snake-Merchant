@@ -234,7 +234,7 @@ public class Game : MonoBehaviour
             if (!didMove)
             {
                 // TODO: (re)spawn animation here
-                yield return CameraController.Instance.Shake();
+                yield return CameraController.Instance.BigShake();
                 Die();
             }
             else

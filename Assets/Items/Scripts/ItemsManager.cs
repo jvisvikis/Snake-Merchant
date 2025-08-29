@@ -295,7 +295,9 @@ public class ItemsManager : MonoBehaviour
                 var checkCell = gridCell + new Vector2Int(x, y);
 
                 // don't spawn in the same row as the spawn point
-                if (checkCell.x == game.CurrentLevelSpawn.x /* || checkCell.y == game.CurrentLevelSpawn.y */)
+                if (
+                    checkCell.x == game.CurrentLevelSpawn.x /* || checkCell.y == game.CurrentLevelSpawn.y */
+                )
                     return false;
 
                 foreach (var item in items)
@@ -348,7 +350,8 @@ public class ItemsManager : MonoBehaviour
                 Destroy(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
-                CameraController.Instance.ClearFocus(game.focusItem);
+                if (!itemData.IsConsumable)
+                    CameraController.Instance.ClearFocus(game.focusItem);
                 break; // can only consume 1 item
             }
         }

@@ -90,7 +90,7 @@ public class CameraController : MonoBehaviour
         busy = false;
     }
 
-    public Coroutine Shake()
+    public Coroutine BigShake()
     {
         if (busy)
         {
@@ -99,23 +99,35 @@ public class CameraController : MonoBehaviour
         }
 
         busy = true;
-        return StartCoroutine(ShakeCoroutine());
+        return StartCoroutine(ShakeCoroutine(1, 1f));
     }
 
-    private IEnumerator ShakeCoroutine()
+    public Coroutine LittleShake()
+    {
+        if (busy)
+        {
+            Reset();
+            return StartCoroutine(NullCoroutine());
+        }
+
+        busy = true;
+        return StartCoroutine(ShakeCoroutine(0.5f, 0.25f));
+    }
+
+    private IEnumerator ShakeCoroutine(float scaleDuration, float scaleSize)
     {
         var startPosition = transform.position;
 
-        for (float t = 0; t < shakeDuration; t += Time.deltaTime)
+        for (float t = 0; t < shakeDuration * scaleDuration; t += Time.deltaTime)
         {
-            var progress = t / shakeDuration;
+            var progress = t / (shakeDuration * scaleDuration);
             if (progress > 0.5f)
                 progress = 0.5f - progress;
             progress *= 2;
 
-            var r = Mathf.PerlinNoise1D(t * shakeJitter);
+            var r = Mathf.PerlinNoise1D(t * shakeJitter * scaleSize);
             float angleRadians = Mathf.Lerp(0, 2 * Mathf.PI, r) * progress;
-            transform.position = startPosition + new Vector3(Mathf.Cos(angleRadians), Mathf.Sin(angleRadians), 0f).normalized * shakeSize;
+            transform.position = startPosition + new Vector3(Mathf.Cos(angleRadians), Mathf.Sin(angleRadians), 0f).normalized * shakeSize * scaleSize;
 
             yield return null;
         }

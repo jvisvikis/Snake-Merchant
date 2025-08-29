@@ -348,6 +348,7 @@ public class Snake : MonoBehaviour
         if (itemData.IsApple)
         {
             targetParts++;
+            CameraController.Instance.LittleShake();
         }
         else if (itemData.IsMushroom)
         {
