@@ -2699,10 +2699,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b79cf9ce6c254a7d8c2a7e0fb32d741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focusZoom: 0.98
-  focusPosition: 0.05
-  setFocusDuration: 0.5
-  clearFocusDuration: 0.25
+  shakeJitter: 100
+  shakeDuration: 0.25
+  shakeSize: 0.1
 --- !u!1 &553343415
 GameObject:
   m_ObjectHideFlags: 0
@@ -9859,6 +9858,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 727ca08977a05dd408579f119487a508, type: 2}
   - {fileID: 11400000, guid: d093b64e46b47ae4580d868184d38b87, type: 2}
   cellSize: 1.5
+  gridAutoSizeScale: 0.85
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
@@ -9872,6 +9872,23 @@ MonoBehaviour:
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
   startNumParts: 5
+  spawnPause: 0.5
+  sellPause: 0.5
+  focusSpawn:
+    FocusZoom: 0.607
+    FocusPosition: 1
+    SetFocusDuration: 0
+    ClearFocusDuration: 2
+  focusItem:
+    FocusZoom: 0.852
+    FocusPosition: 0.074
+    SetFocusDuration: 0.5
+    ClearFocusDuration: 0.5
+  focusSell:
+    FocusZoom: 0.8
+    FocusPosition: 0.9
+    SetFocusDuration: 0.5
+    ClearFocusDuration: 0.5
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0

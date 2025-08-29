@@ -19,6 +19,9 @@ public class Game : MonoBehaviour
     [Header("Grid")]
     public float cellSize = 1;
 
+    [Range(0f, 1f)]
+    public float gridAutoSizeScale = 1f;
+
     // public Vector3 orig;
 
     [Header("Game variation")]
@@ -41,6 +44,16 @@ public class Game : MonoBehaviour
 
     [Header("Snake")]
     public int startNumParts = 3;
+
+    [Header("Camera")]
+    [Min(0f)]
+    public float spawnPause;
+
+    [Min(0f)]
+    public float sellPause;
+    public CameraController.FocusOptions focusSpawn = CameraController.DefaultFocusOptions;
+    public CameraController.FocusOptions focusItem = CameraController.DefaultFocusOptions;
+    public CameraController.FocusOptions focusSell = CameraController.DefaultFocusOptions;
 
     public Grid Grid => grid;
     public Snake Snake => snake;
@@ -86,7 +99,8 @@ public class Game : MonoBehaviour
         SpawnGrid();
         SpawnSnake();
         itemsManager.LoadLevel();
-        StartCoroutine(MoveSnake());
+        CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
+        StartCoroutine(MoveSnake(currentLevelSpawn));
         StartCoroutine(DayManager.Instance.StartDay());
     }
 
@@ -172,18 +186,22 @@ public class Game : MonoBehaviour
     {
         if (grid != null)
         {
-            Gizmos.color = Color.white;
+            Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
             Gizmos.DrawCube(grid.GetWorldPos(currentLevelSpawn) + grid.CellCenterOffset(), Vector2.one * cellSize);
         }
     }
 
-    public IEnumerator MoveSnake()
+    public IEnumerator MoveSnake(Vector2Int spawn)
     {
-        // Gross hack to make sure that all of the Start() stuff - e.g. items and so on - has been
-        // set up before starting to move the snake.
-        yield return null;
-
         RefreshSpecificItem();
+
+        yield return CameraController.Instance.SetFocus(focusSpawn, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
+        yield return new WaitForSeconds(spawnPause);
+        yield return CameraController.Instance.ClearFocus(focusSpawn);
+
+        snake.ApplyQueuedDirection();
+
+        bool didSellPreviousIteration = false;
 
         while (DayManager.Instance.IsPlaying)
         {
@@ -194,17 +212,29 @@ public class Game : MonoBehaviour
             }
 
             snake.SetMoveOffset(1);
-            bool didMove = snake.Move();
+
+            if (didSellPreviousIteration)
+            {
+                yield return CameraController.Instance.SetFocus(focusSell, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
+                yield return new WaitForSeconds(spawnPause);
+                while (snake.DespawnNextCarryingItem())
+                    yield return new WaitForSeconds(spawnPause);
+                yield return CameraController.Instance.ClearFocus(focusSell);
+            }
+
+            bool didMove = snake.Move(out didSellPreviousIteration);
 
             // allow grace time if snake is about to die for player to avoid death.
             for (float t = 0; t < timeToDieGrace && !didMove; t += Time.deltaTime)
             {
                 yield return null;
-                didMove = snake.Move();
+                didMove = snake.Move(out didSellPreviousIteration);
             }
 
             if (!didMove)
             {
+                // TODO: (re)spawn animation here
+                yield return CameraController.Instance.Shake();
                 Die();
             }
             else
@@ -236,6 +266,8 @@ public class Game : MonoBehaviour
     public void Die()
     {
         //This will need a revist
+        // TODO and when it does, i.e. because snake has more lives, move the camera slowly back to the spawn point.
+        // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
         DayManager.Instance.ResetDay();
     }
 
@@ -298,6 +330,7 @@ public class Game : MonoBehaviour
         }
 
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+        CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);
     }
 
     void OnGUI()

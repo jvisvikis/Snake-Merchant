@@ -69,15 +69,15 @@ public class Snake : MonoBehaviour
         parts[0].transform.localPosition = new Vector3(pos.x, pos.y);
         snakeRenderer.Init(game.Grid, pos, pos);
 
-        while (parts.Count < targetParts)
-        {
-            if (!Move())
-            {
-                // the snake was so big there is nowhere for it to spawn.
-                // uhh, at least don't freeze.
-                break;
-            }
-        }
+        // while (parts.Count < targetParts)
+        // {
+        //     if (!Move())
+        //     {
+        //         // the snake was so big there is nowhere for it to spawn.
+        //         // uhh, at least don't freeze.
+        //         break;
+        //     }
+        // }
     }
 
     public void SetMoveOffset(float offset)
@@ -147,6 +147,15 @@ public class Snake : MonoBehaviour
         return true;
     }
 
+    public void ApplyQueuedDirection()
+    {
+        if (newDirOnNextMove != Vector2Int.zero)
+        {
+            dir = newDirOnNextMove;
+            newDirOnNextMove = queuedDir;
+        }
+    }
+
     public void QueueDirection(Vector2Int dir)
     {
         if (newDirOnNextMove == Vector2Int.zero)
@@ -194,8 +203,10 @@ public class Snake : MonoBehaviour
         return game.canExitAtAnyCell || ItemData.IsAnyExit(cellType);
     }
 
-    public bool Move()
+    public bool Move(out bool didSell)
     {
+        didSell = false;
+
         if (newDirOnNextMove != Vector2Int.zero)
         {
             if (dir != -newDirOnNextMove)
@@ -231,7 +242,7 @@ public class Snake : MonoBehaviour
             if (!game.canCarryMultipleItems && carryingItems.Count > 0)
                 return false;
             insideItem = moveInsideItem;
-            CameraController.Instance.Focus(game.Grid.GetWorldPos(newPos));
+            CameraController.Instance.SetFocus(game.focusItem, game.Grid.GetWorldPos(newPos));
         }
         else if (insideItem != null && moveInsideItem == null)
         {
@@ -287,22 +298,25 @@ public class Snake : MonoBehaviour
         if (Head == game.CurrentLevelSpawn && carryingItems.Count > 0)
         {
             // Reached goal while carrying an item.
-            var carryingItemsData = new List<ItemData>();
+            var sellCarryingItemsData = new List<ItemData>();
 
             foreach (var carryingItem in carryingItems)
-            {
-                carryingItemsData.Add(carryingItem.ItemData);
-                GameObject.Destroy(carryingItem.Renderer.gameObject);
-            }
+                sellCarryingItemsData.Add(carryingItem.ItemData);
 
-            carryingItems.Clear();
-
-            game.OnItemsSold(carryingItemsData);
-
-            foreach (var snakePart in parts)
-                snakePart.ResetColor();
+            game.OnItemsSold(sellCarryingItemsData);
+            didSell = true;
         }
 
+        return true;
+    }
+
+    public bool DespawnNextCarryingItem()
+    {
+        if (carryingItems.Count == 0)
+            return false;
+
+        GameObject.Destroy(carryingItems[^1].Renderer.gameObject);
+        carryingItems.RemoveAt(carryingItems.Count - 1);
         return true;
     }
 

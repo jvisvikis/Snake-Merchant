@@ -201,7 +201,10 @@ public class ItemController : MonoBehaviour
             var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
 
             var clr = itemData.DebugColor;
-            clr.a = 0.5f;
+
+            if (!itemData.IsObstacle)
+                clr.a = 0.5f;
+
             Gizmos.color = clr;
             Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
 

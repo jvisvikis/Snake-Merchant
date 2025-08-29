@@ -1,45 +1,53 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
 public class CameraController : MonoBehaviour
 {
+    [Serializable]
+    public struct FocusOptions
+    {
+        [Range(0f, 1f)]
+        public float FocusZoom;
+
+        [Range(0f, 1f)]
+        public float FocusPosition;
+
+        public float SetFocusDuration;
+
+        public float ClearFocusDuration;
+    }
+
+    public static FocusOptions DefaultFocusOptions =
+        new()
+        {
+            FocusZoom = 0.9f,
+            FocusPosition = 1f,
+            SetFocusDuration = 1f,
+            ClearFocusDuration = 0.5f,
+        };
+
     public static CameraController Instance => instance;
 
     [Header("Shake")]
-    [SerializeField]
-    private float shakeDuration = 1f;
-
-    [SerializeField]
-    private float shakeSize = 1f;
-
-    [Header("Focus")]
     [SerializeField, Min(0f)]
-    private float focusPulseDuration = 1f;
+    private float shakeJitter = 1f;
 
     [SerializeField, Min(0f)]
-    private float focusZoom = 0.5f;
-
-    [SerializeField, Range(0f, 1f)]
-    private float focusPosition = 1f;
+    private float shakeDuration = 0.1f;
 
     [SerializeField, Min(0f)]
-    private float setFocusDuration = 0.3f;
-
-    [SerializeField, Min(0f)]
-    private float clearFocusDuration = 0.1f;
+    private float shakeSize = 0.1f;
 
     private static CameraController instance = null;
     private Camera cam;
-
-    // Defaults
-    private Vector3 defaultPosition;
-    private float defaultOrthoSize;
+    private bool busy;
+    private float focusSpeedScale = 1f;
 
     // Focus
-    private Vector3 targetFocusDelta;
-    private Vector3 currentFocusDelta;
+    private Vector3 defaultPosition;
+    private float defaultOrthoSize;
 
     void Awake()
     {
@@ -60,110 +68,130 @@ public class CameraController : MonoBehaviour
             instance = null;
     }
 
+    public void Init(float orthoSize)
+    {
+        defaultOrthoSize = orthoSize;
+        Reset();
+    }
+
+    public void SetFocusSpeedScale(float scale)
+    {
+        focusSpeedScale = scale;
+    }
+
     public void Reset()
     {
+        Debug.Log("Resetting camera");
         StopAllCoroutines();
 
-        if (currentFocusDelta != Vector3.zero)
+        transform.position = defaultPosition;
+        cam.orthographicSize = defaultOrthoSize;
+
+        busy = false;
+    }
+
+    public Coroutine Shake()
+    {
+        if (busy)
         {
-            transform.position -= currentFocusDelta;
-            currentFocusDelta = Vector3.zero;
-            targetFocusDelta = Vector3.zero;
+            Reset();
+            return StartCoroutine(NullCoroutine());
         }
 
-        cam.orthographicSize = defaultOrthoSize;
+        busy = true;
+        return StartCoroutine(ShakeCoroutine());
     }
 
-    public void Shake()
+    private IEnumerator ShakeCoroutine()
     {
-    }
+        var startPosition = transform.position;
 
-    public void PulseFocus(Vector3 focusPosition)
-    {
-        StopAllCoroutines();
-        StartCoroutine(PulseFocusCoroutine(focusPosition));
-    }
-
-    private IEnumerator PulseFocusCoroutine(Vector3 focusPosition)
-    {
-        var targetPosition = new Vector3(focusPosition.x, focusPosition.y, defaultPosition.z);
-        targetFocusDelta = targetPosition - transform.position;
-
-        Coroutine positionCoroutine = null;
-        Coroutine orthoCoroutine = null;
-        var targetOrthoSize = cam.orthographicSize * focusZoom;
-
-        if (currentFocusDelta != targetFocusDelta)
-            positionCoroutine = StartCoroutine(FocusPositionCoroutine(setFocusDuration, targetFocusDelta));
-
-        if (cam.orthographicSize != targetOrthoSize)
-            orthoCoroutine = StartCoroutine(FocusOrthoSizeCoroutine(setFocusDuration, targetOrthoSize));
-
-        yield return positionCoroutine;
-        yield return orthoCoroutine;
-
-        yield return new WaitForSeconds(focusPulseDuration - setFocusDuration - clearFocusDuration);
-
-        StartCoroutine(FocusPositionCoroutine(clearFocusDuration, ));
-
-        if (cam.orthographicSize != targetOrthoSize)
-            StartCoroutine(FocusOrthoSizeCoroutine(clearFocusDuration, targetOrthoSize));
-    }
-
-    public void Focus(Vector3 focusPosition)
-    {
-        StopAllCoroutines();
-
-        var targetPosition = new Vector3(focusPosition.x, focusPosition.y, defaultPosition.z);
-        targetFocusDelta = targetPosition - transform.position;
-        var targetOrthoSize = cam.orthographicSize * focusZoom;
-
-        if (currentFocusDelta != targetFocusDelta)
-            StartCoroutine(FocusPositionCoroutine(setFocusDuration, targetFocusDelta));
-
-        if (cam.orthographicSize != targetOrthoSize)
-            StartCoroutine(FocusOrthoSizeCoroutine(setFocusDuration, targetOrthoSize));
-    }
-
-    public void ClearFocus()
-    {
-        StopAllCoroutines();
-
-        var targetPosition = defaultPosition;
-        targetFocusDelta = targetPosition - transform.position;
-        var targetOrthoSize = defaultOrthoSize;
-
-        if (currentFocusDelta != targetFocusDelta)
-            StartCoroutine(FocusPositionCoroutine(clearFocusDuration, targetFocusDelta));
-
-        if (cam.orthographicSize != targetOrthoSize)
-            StartCoroutine(FocusOrthoSizeCoroutine(clearFocusDuration, targetOrthoSize));
-    }
-
-    private IEnumerator FocusPositionCoroutine(float focusDuration, Vector3 focusDelta)
-    {
-        yield return null;
-        // var prevDelta = Vector3.zero;
-
-        // for (float elapsedTime = 0; elapsedTime < focusDuration; elapsedTime += Time.deltaTime)
-        // {
-        //     transform.position += Vector3.Slerp(Vector3.zero, focusDelta, elapsedTime / focusDuration) - prevDelta;
-        //     yield return null;
-        // }
-
-        // transform.position += focusDelta - prevDelta;
-    }
-
-    private IEnumerator FocusOrthoSizeCoroutine(float focusDuration, float targetOrthoSize)
-    {
-        var startOrthoSize = cam.orthographicSize;
-
-        for (float elapsedTime = 0; elapsedTime < focusDuration; elapsedTime += Time.deltaTime)
+        for (float t = 0; t < shakeDuration; t += Time.deltaTime)
         {
-            cam.orthographicSize = Mathf.SmoothStep(startOrthoSize, targetOrthoSize, elapsedTime / focusDuration);
+            var progress = t / shakeDuration;
+            if (progress > 0.5f)
+                progress = 0.5f - progress;
+            progress *= 2;
+
+            var r = Mathf.PerlinNoise1D(t * shakeJitter);
+            float angleRadians = Mathf.Lerp(0, 2 * Mathf.PI, r) * progress;
+            transform.position = startPosition + new Vector3(Mathf.Cos(angleRadians), Mathf.Sin(angleRadians), 0f).normalized * shakeSize;
+
             yield return null;
         }
 
+        transform.position = defaultPosition;
+        busy = false;
+    }
+
+    public Coroutine SetFocus(FocusOptions opts, Vector3 focusPosition)
+    {
+        if (busy)
+        {
+            Reset();
+            return StartCoroutine(NullCoroutine());
+        }
+
+        var targetPosition = new Vector3(focusPosition.x, focusPosition.y, transform.position.z);
+        var targetPositionDelta = targetPosition - transform.position;
+        targetPosition = transform.position + targetPositionDelta * opts.FocusPosition;
+        var targetOrthoSize = cam.orthographicSize * opts.FocusZoom;
+
+        if (opts.SetFocusDuration == 0)
+        {
+            transform.position = targetPosition;
+            cam.orthographicSize = targetOrthoSize;
+            return StartCoroutine(NullCoroutine());
+        }
+
+        busy = true;
+
+        StopAllCoroutines();
+        return StartCoroutine(FocusCoroutine(opts.SetFocusDuration, targetPosition, targetOrthoSize));
+    }
+
+    private IEnumerator NullCoroutine()
+    {
+        yield return null;
+    }
+
+    public Coroutine ClearFocus(FocusOptions opts)
+    {
+        if (busy)
+        {
+            Reset();
+            return StartCoroutine(NullCoroutine());
+        }
+
+        if (opts.ClearFocusDuration == 0)
+        {
+            transform.position = defaultPosition;
+            cam.orthographicSize = defaultOrthoSize;
+            return StartCoroutine(NullCoroutine());
+        }
+
+        busy = true;
+
+        StopAllCoroutines();
+        return StartCoroutine(FocusCoroutine(opts.ClearFocusDuration, defaultPosition, defaultOrthoSize));
+    }
+
+    private IEnumerator FocusCoroutine(float focusDuration, Vector3 targetPosition, float targetOrthoSize)
+    {
+        var startPosition = transform.position;
+        var startOrthoSize = cam.orthographicSize;
+
+        for (float t = 0; t < focusDuration * focusSpeedScale; t += Time.deltaTime)
+        {
+            var progress = t / (focusDuration * focusSpeedScale);
+            transform.position = VectorUtil.SmoothStep(startPosition, targetPosition, progress);
+            cam.orthographicSize = Mathf.SmoothStep(startOrthoSize, targetOrthoSize, progress);
+            yield return null;
+        }
+
+        transform.position = targetPosition;
         cam.orthographicSize = targetOrthoSize;
+
+        busy = false;
     }
 }
