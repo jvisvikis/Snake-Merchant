@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GridSquare : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class GridSquare : MonoBehaviour
     {
         public Type Type;
         public Sprite Sprite;
+        public Vector2 Offset;
     }
 
     [SerializeField]
@@ -44,6 +46,7 @@ public class GridSquare : MonoBehaviour
             if (typeSprite.Type == type)
             {
                 spriteRenderer.sprite = typeSprite.Sprite;
+                spriteRenderer.transform.localPosition += (Vector3)typeSprite.Offset;
                 break;
             }
         }
