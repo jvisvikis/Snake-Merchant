@@ -9891,6 +9891,8 @@ MonoBehaviour:
   specificItemParent: {fileID: 292428359}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
   gridSquarePrefab: {fileID: 3737257346154662979, guid: 3922ada05e03d4e789369f8fa73c3b17, type: 3}
+  collectionUIPrefab: {fileID: 0}
+  collectionUIOffset: {x: -1, y: 1}
   levels:
   - {fileID: 11400000, guid: d013e2b92fd7f6e4a81c21a0cd9bf0d8, type: 2}
   - {fileID: 11400000, guid: d6914d8b6e214ca49a588113ca0748fb, type: 2}

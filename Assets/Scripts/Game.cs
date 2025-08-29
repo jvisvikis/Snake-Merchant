@@ -11,6 +11,8 @@ public class Game : MonoBehaviour
     public GameObject specificItemParent;
     public ItemController itemControllerPrefab;
     public GridSquare gridSquarePrefab;
+    public CollectionWorldUI collectionUIPrefab;
+    public Vector2Int collectionUIOffset;
 
     [Header("Levels")]
     [SerializeField]
@@ -309,9 +311,16 @@ public class Game : MonoBehaviour
         Debug.Assert(specificItem.RItemData != null);
 
         itemsSold += items.Count;
+        float collectionSold = 0;
 
         foreach (var item in items)
+        {
             currentDayScore += item.Value;
+            collectionSold += item.Value;
+        }
+        CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
+        collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + collectionUIOffset);
+        collectionUI.SetProfitText($"${collectionSold}");
 
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
 
