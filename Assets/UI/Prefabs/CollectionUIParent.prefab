@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profitText: {fileID: 760051471362701531}
+  animator: {fileID: 3359347829884821800}
 --- !u!1001 &6850794861481424611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142,8 +143,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3600516360042866961, guid: 6ae5f90848e09194885984442476178e, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -162,5 +162,10 @@ MonoBehaviour:
 --- !u!224 &3242196753010557311 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8353176091643705244, guid: 6ae5f90848e09194885984442476178e, type: 3}
+  m_PrefabInstance: {fileID: 6850794861481424611}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &3359347829884821800 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8181954945770608587, guid: 6ae5f90848e09194885984442476178e, type: 3}
   m_PrefabInstance: {fileID: 6850794861481424611}
   m_PrefabAsset: {fileID: 0}

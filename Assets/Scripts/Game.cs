@@ -321,6 +321,7 @@ public class Game : MonoBehaviour
         CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
         collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + collectionUIOffset);
         collectionUI.SetProfitText($"${collectionSold}");
+        Destroy(collectionUI.gameObject,collectionUI.ClipLength);
 
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
 

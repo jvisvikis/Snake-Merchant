@@ -7,6 +7,9 @@ public class CollectionWorldUI : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI profitText;
+    [SerializeField]
+    private Animator animator;
+    public float ClipLength => animator.GetCurrentAnimatorClipInfo(0).Length;
 
     public void SetProfitText(string text)
     {
