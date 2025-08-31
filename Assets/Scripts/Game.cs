@@ -52,7 +52,11 @@ public class Game : MonoBehaviour
     public float spawnPause;
 
     [Min(0f)]
+    public float sellFadeTime = 0.5f;
+
+    [Min(0f)]
     public float sellPause;
+
     public CameraController.FocusOptions focusSpawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusItem = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusSell = CameraController.DefaultFocusOptions;
@@ -64,9 +68,11 @@ public class Game : MonoBehaviour
     public int CoinSpawnCountdown => coinSpawnCountdown;
     public LevelData CurrentLevel => levels[EconomyManager.Instance.WarehouseLevel];
     public Vector2Int CurrentLevelSpawn => currentLevelSpawn;
+    public Dictionary<Vector2Int, GridSquare> GridSquares => gridSquares;
 
     private Snake snake;
     private Grid grid;
+    private Dictionary<Vector2Int, GridSquare> gridSquares = new();
     private ItemsManager itemsManager;
     private float timeToMove;
     private ItemController specificItem;
@@ -76,7 +82,6 @@ public class Game : MonoBehaviour
     private int coinSpawnCountdown;
     private int currentDayScore;
     private Vector2Int currentLevelSpawn = Vector2Int.zero;
-    private GameObject gridParent;
 
     //private int currentLevelIndex = 0;
 
@@ -99,6 +104,7 @@ public class Game : MonoBehaviour
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
         currentLevelSpawn = GetSpawnPoint(chosenLevel);
         SpawnGrid();
+        gridSquares[currentLevelSpawn].SetIsSpawn(true);
         SpawnSnake();
         itemsManager.LoadLevel();
         CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
@@ -122,17 +128,13 @@ public class Game : MonoBehaviour
 
     private void SpawnGrid()
     {
-        if (gridParent != null)
-            GameObject.Destroy(gridParent);
-
-        gridParent = new GameObject("Grid parent");
-        gridParent.transform.parent = transform;
+        Debug.Assert(gridSquares.Count == 0);
 
         for (int x = 0; x < grid.Width; x++)
         {
             for (int y = 0; y < grid.Height; y++)
             {
-                var gridSquare = GameObject.Instantiate(gridSquarePrefab, gridParent.transform);
+                var gridSquare = GameObject.Instantiate(gridSquarePrefab, transform);
                 gridSquare.transform.position = grid.GetWorldPos(x, y) + grid.CellCenterOffset();
                 gridSquare.transform.localScale = cellSize * Vector3.one;
                 var gridSquareType = GridSquare.Type.Middle;
@@ -152,7 +154,9 @@ public class Game : MonoBehaviour
                     gridSquareType = GridSquare.Type.Right;
                 else if (y == grid.Height - 1)
                     gridSquareType = GridSquare.Type.Top;
-                gridSquare.Init(gridSquareType, grid);
+                var cell = new Vector2Int(x, y);
+                gridSquare.Init(cell, gridSquareType);
+                gridSquares[cell] = gridSquare;
             }
         }
     }
@@ -184,15 +188,6 @@ public class Game : MonoBehaviour
         controls.PlayerInput.Pause.performed -= OnPause;
     }
 
-    private void OnDrawGizmos()
-    {
-        if (grid != null)
-        {
-            Gizmos.color = new Color(1f, 1f, 1f, 0.5f);
-            Gizmos.DrawCube(grid.GetWorldPos(currentLevelSpawn) + grid.CellCenterOffset(), Vector2.one * cellSize);
-        }
-    }
-
     public IEnumerator MoveSnake(Vector2Int spawn)
     {
         RefreshSpecificItem();
@@ -218,9 +213,9 @@ public class Game : MonoBehaviour
             if (didSellPreviousIteration)
             {
                 yield return CameraController.Instance.SetFocus(focusSell, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
-                yield return new WaitForSeconds(spawnPause);
-                while (snake.DespawnNextCarryingItem())
-                    yield return new WaitForSeconds(spawnPause);
+                yield return new WaitForSeconds(sellPause);
+                while (snake.DespawnNextCarryingItem(sellFadeTime))
+                    yield return new WaitForSeconds(sellPause);
                 yield return CameraController.Instance.ClearFocus(focusSell);
             }
 
@@ -236,7 +231,7 @@ public class Game : MonoBehaviour
             if (!didMove)
             {
                 // TODO: (re)spawn animation here
-                yield return CameraController.Instance.BigShake();
+                yield return CameraController.Instance.Shake();
                 Die();
             }
             else
@@ -321,7 +316,7 @@ public class Game : MonoBehaviour
         CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
         collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + collectionUIOffset);
         collectionUI.SetProfitText($"${collectionSold}");
-        Destroy(collectionUI.gameObject,collectionUI.ClipLength);
+        Destroy(collectionUI.gameObject, collectionUI.ClipLength);
 
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
 

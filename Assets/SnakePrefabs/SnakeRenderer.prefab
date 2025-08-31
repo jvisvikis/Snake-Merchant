@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snakeWidth: 0.8
-  borderWidth: 0.2
+  borderWidth: 0.07
   borderLine: {fileID: 7983242075693033144}
   bodyLine: {fileID: 1557058890701738087}
 --- !u!1 &4870039305249919381
@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cornerVertices: 21
+  straightVertices: 21
   lineRenderer: {fileID: 3817188809908094689}
   drawGizmos: 0
 --- !u!120 &3817188809908094689
@@ -180,7 +181,7 @@ LineRenderer:
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 64186
+      atime1: 65535
       atime2: 65535
       atime3: 0
       atime4: 0
@@ -190,7 +191,7 @@ LineRenderer:
       m_Mode: 0
       m_ColorSpace: 0
       m_NumColorKeys: 2
-      m_NumAlphaKeys: 3
+      m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 10
     alignment: 0
@@ -247,7 +248,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b3ffc7db11f4826be75e1888aaf046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cornerVertices: 20
+  cornerVertices: 21
+  straightVertices: 21
   lineRenderer: {fileID: 587723098930711433}
   drawGizmos: 0
 --- !u!120 &587723098930711433
@@ -332,7 +334,7 @@ LineRenderer:
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 64186
+      atime1: 65535
       atime2: 65535
       atime3: 0
       atime4: 0
@@ -342,7 +344,7 @@ LineRenderer:
       m_Mode: 0
       m_ColorSpace: 0
       m_NumColorKeys: 2
-      m_NumAlphaKeys: 3
+      m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 10
     alignment: 0

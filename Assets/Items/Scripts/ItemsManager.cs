@@ -141,7 +141,7 @@ public class ItemsManager : MonoBehaviour
                 return item;
         }
 
-        Debug.Assert(false);
+        Debug.Assert(false, "no collectible items available");
         return null;
     }
 
@@ -351,7 +351,11 @@ public class ItemsManager : MonoBehaviour
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
                 if (!itemData.IsConsumable)
+                {
                     CameraController.Instance.ClearFocus(game.focusItem);
+                    foreach (var gridSq in game.GridSquares.Values)
+                        gridSq.SetInvertItemColor(false);
+                }
                 break; // can only consume 1 item
             }
         }

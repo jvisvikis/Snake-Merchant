@@ -73,6 +73,10 @@ MonoBehaviour:
   - Type: 8
     Sprite: {fileID: 19245706, guid: 26ade72650241db4d87ec2d067cf9ff4, type: 3}
     Offset: {x: 0.45, y: -0.45}
+  obstacleColor: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 1}
+  itemColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
+  snakeColor: {r: 1, g: 0.9137255, b: 0.6784314, a: 1}
+  spawnColor: {r: 0.35686275, g: 0.63529414, b: 0.23921569, a: 1}
 --- !u!1 &6995625846188708849
 GameObject:
   m_ObjectHideFlags: 0

@@ -71,11 +71,17 @@ public class ItemController : MonoBehaviour
         borderGridCells = GetBorderGridCells();
 
         spriteRenderer.transform.localPosition += (itemBounds.min - borderBounds.min);
+        SetGridSquares(false);
 
         // Debug.Log(
         //     $"[{itemData.Name}] itemBounds: {itemBounds}, borderBounds: {borderBounds}, itemGridCells: {ListUtil.ListToString(itemGridCells)}, borderGridCells: {ListUtil.ListToString(borderGridCells)}",
         //     gameObject
         // );
+    }
+
+    private void OnDestroy()
+    {
+        SetGridSquares(true);
     }
 
     public void SetFloating()
@@ -166,96 +172,22 @@ public class ItemController : MonoBehaviour
         return cells;
     }
 
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
+    private void SetGridSquares(bool clear)
     {
-        if (itemData == null)
-            return;
-
-        var cellSize = game.Grid.CellSize;
-        var halfCellSize = cellSize / 2f;
-
-        var cubeSize = cellSize * Vector3.one;
-        if (itemData.IsMunchie || itemData.IsCoin)
-            cubeSize *= 0.5f;
-
-        // if (borderGridCells != null)
-        // {
-        //     foreach (var borderCell in borderGridCells)
-        //     {
-        //         var relativeBorderCell = borderCell - (Vector2Int)borderBounds.position;
-        //         var cellPosition = transform.position + new Vector3(relativeBorderCell.x * cellSize, relativeBorderCell.y * cellSize);
-        //         Gizmos.color = new Color(0.1f, 0.1f, 0.1f, 1f);
-        //         Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
-        //     }
-        // }
-
         for (int i = 0; i < itemGridCells.Count; i++)
         {
             var itemCell = itemGridCells[i];
+            game.GridSquares[itemCell].SetItemData(clear ? null : itemData.ItemData);
+            // var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;
+            // var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
 
-            if (game.Snake.ContainsCell(itemCell, out var _) && attachedToGrid)
-                continue;
+            // var clr = itemData.DebugColor;
 
-            var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;
-            var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
+            // if (!itemData.IsObstacle)
+            //     clr.a = 0.5f;
 
-            var clr = itemData.DebugColor;
-
-            if (!itemData.IsObstacle)
-                clr.a = 0.5f;
-
-            Gizmos.color = clr;
-            Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
-
-            // Gizmos.color = Color.black;
-            // switch (itemGridCellTypes[i])
-            // {
-            //     case ItemData.CellType.Middle:
-            //         if (!itemData.IsConsumable && !game.canExitAtAnyCell)
-            //             Gizmos.DrawLine(cellPosition, cellPosition + cellSize * Vector3.one);
-            //         break;
-            //     case ItemData.CellType.LeftEntry:
-            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, -90f, halfCellSize);
-            //         break;
-            //     case ItemData.CellType.RightEntry:
-            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, 90, halfCellSize);
-            //         break;
-            //     case ItemData.CellType.UpEntry:
-            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, 180, halfCellSize);
-            //         break;
-            //     case ItemData.CellType.DownEntry:
-            //         DrawArrow(cellPosition + halfCellSize * Vector3.one, 0, halfCellSize);
-            //         break;
-            // }
+            // Gizmos.color = clr;
+            // Gizmos.DrawCube(cellPosition + new Vector3(halfCellSize, halfCellSize), cubeSize);
         }
     }
-
-    /// <summary>
-    /// Draws a 2D arrow on the XY plane, centered at pos, rotated around Z by angleDeg.
-    /// CHAT GPT WROTE THIS, DELETE BEFORE SUBMISSION
-    /// </summary>
-    public static void DrawArrow(Vector3 pos, float angleDeg, float length)
-    {
-        float half = length * 0.5f;
-
-        // Forward direction in XY plane
-        Vector3 dir = Quaternion.Euler(0, 0, angleDeg) * Vector3.up;
-
-        // Shaft endpoints
-        Vector3 start = pos - dir * half;
-        Vector3 end = pos + dir * half;
-
-        Gizmos.DrawLine(start, end);
-
-        // Arrowhead
-        float headSize = length * 0.5f;
-        Vector3 right = Quaternion.Euler(0, 0, 150) * dir;
-        Vector3 left = Quaternion.Euler(0, 0, -150) * dir;
-
-        Gizmos.DrawLine(end, end + right * headSize);
-        Gizmos.DrawLine(end, end + left * headSize);
-    }
-
-#endif
 }

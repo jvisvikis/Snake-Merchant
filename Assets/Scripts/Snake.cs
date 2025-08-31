@@ -42,6 +42,7 @@ public class Snake : MonoBehaviour
     private Vector2Int queuedDir = Vector2Int.zero;
     private List<CarryingItem> carryingItems = new();
     private ItemController insideItem = null;
+    private bool didEatApple;
 
     private void Awake()
     {
@@ -49,8 +50,6 @@ public class Snake : MonoBehaviour
         parts = new(GetComponentsInChildren<SnakePart>());
         Debug.Assert(parts.Count == 1);
         targetParts = game.startNumParts;
-
-        // allLineRenderers = new List<SnakeLineRenderer> { borderRenderer, fillRenderer, itemCarryFillRenderer };
     }
 
     private void OnDestroy()
@@ -68,16 +67,6 @@ public class Snake : MonoBehaviour
     {
         parts[0].transform.localPosition = new Vector3(pos.x, pos.y);
         snakeRenderer.Init(game.Grid, pos, pos);
-
-        // while (parts.Count < targetParts)
-        // {
-        //     if (!Move())
-        //     {
-        //         // the snake was so big there is nowhere for it to spawn.
-        //         // uhh, at least don't freeze.
-        //         break;
-        //     }
-        // }
     }
 
     public void SetMoveOffset(float offset)
@@ -86,6 +75,12 @@ public class Snake : MonoBehaviour
 
         foreach (var carryingItem in carryingItems)
             carryingItem.Renderer.SetRenderOffset(offset);
+
+        if (didEatApple)
+            snakeRenderer.SetLumpProgress(offset);
+
+        if (offset == 1)
+            didEatApple = false;
     }
 
     public bool ContainsCell(Vector2Int cell, out SnakePart containsPart)
@@ -243,6 +238,8 @@ public class Snake : MonoBehaviour
                 return false;
             insideItem = moveInsideItem;
             CameraController.Instance.SetFocus(game.focusItem, game.Grid.GetWorldPos(newPos));
+            foreach (var gridSq in game.GridSquares.Values)
+                gridSq.SetInvertItemColor(true);
         }
         else if (insideItem != null && moveInsideItem == null)
         {
@@ -272,6 +269,9 @@ public class Snake : MonoBehaviour
 
         var tailPosition = parts[^1].transform.position;
         behindTailCell = game.Grid.GetCell(tailPosition);
+
+        game.GridSquares[behindTailCell].SetHasSnake(false);
+        game.GridSquares[Head + dir].SetHasSnake(true);
 
         for (int i = parts.Count - 1; i > 0; i--)
         {
@@ -310,14 +310,21 @@ public class Snake : MonoBehaviour
         return true;
     }
 
-    public bool DespawnNextCarryingItem()
+    public bool DespawnNextCarryingItem(float fadeDuration)
     {
         if (carryingItems.Count == 0)
             return false;
 
-        GameObject.Destroy(carryingItems[^1].Renderer.gameObject);
+        var item = carryingItems[^1];
         carryingItems.RemoveAt(carryingItems.Count - 1);
+        StartCoroutine(FadeOutItemThenDestroy(item, fadeDuration));
         return true;
+    }
+
+    private IEnumerator FadeOutItemThenDestroy(CarryingItem item, float fadeDuration)
+    {
+        yield return item.Renderer.FadeOut(fadeDuration);
+        GameObject.Destroy(item.Renderer.gameObject);
     }
 
     private int CarryingItemsCellCount()
@@ -348,6 +355,7 @@ public class Snake : MonoBehaviour
         if (itemData.IsApple)
         {
             targetParts++;
+            didEatApple = true;
             CameraController.Instance.LittleShake();
         }
         else if (itemData.IsMushroom)
@@ -407,6 +415,7 @@ public class Snake : MonoBehaviour
             carryingItem.Renderer.MoveForward(nextCell);
         }
 
+        carryingItem.Renderer.FadeIn(0.1f);
         carryingItems.Add(carryingItem);
     }
 

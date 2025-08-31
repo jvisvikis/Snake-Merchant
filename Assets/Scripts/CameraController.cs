@@ -30,18 +30,13 @@ public class CameraController : MonoBehaviour
 
     public static CameraController Instance => instance;
 
-    [Header("Shake")]
-    [SerializeField, Min(0f)]
-    private float shakeJitter = 1f;
+    [SerializeField]
+    private Camera cam;
 
-    [SerializeField, Min(0f)]
-    private float shakeDuration = 0.1f;
-
-    [SerializeField, Min(0f)]
-    private float shakeSize = 0.1f;
+    [SerializeField]
+    private Shaker camShaker;
 
     private static CameraController instance = null;
-    private Camera cam;
     private bool busy;
     private float focusSpeedScale = 1f;
 
@@ -53,7 +48,6 @@ public class CameraController : MonoBehaviour
     {
         if (instance == null)
             instance = this;
-        cam = GetComponent<Camera>();
     }
 
     void Start()
@@ -79,60 +73,23 @@ public class CameraController : MonoBehaviour
         focusSpeedScale = scale;
     }
 
+    public Coroutine Shake()
+    {
+        return camShaker.Shake();
+    }
+
+    public Coroutine LittleShake()
+    {
+        return camShaker.LittleShake();
+    }
+
     public void Reset()
     {
-        Debug.Log("Resetting camera");
         StopAllCoroutines();
 
         transform.position = defaultPosition;
         cam.orthographicSize = defaultOrthoSize;
 
-        busy = false;
-    }
-
-    public Coroutine BigShake()
-    {
-        if (busy)
-        {
-            Reset();
-            return StartCoroutine(NullCoroutine());
-        }
-
-        busy = true;
-        return StartCoroutine(ShakeCoroutine(1, 1f));
-    }
-
-    public Coroutine LittleShake()
-    {
-        if (busy)
-        {
-            Reset();
-            return StartCoroutine(NullCoroutine());
-        }
-
-        busy = true;
-        return StartCoroutine(ShakeCoroutine(0.5f, 0.25f));
-    }
-
-    private IEnumerator ShakeCoroutine(float scaleDuration, float scaleSize)
-    {
-        var startPosition = transform.position;
-
-        for (float t = 0; t < shakeDuration * scaleDuration; t += Time.deltaTime)
-        {
-            var progress = t / (shakeDuration * scaleDuration);
-            if (progress > 0.5f)
-                progress = 0.5f - progress;
-            progress *= 2;
-
-            var r = Mathf.PerlinNoise1D(t * shakeJitter * scaleSize);
-            float angleRadians = Mathf.Lerp(0, 2 * Mathf.PI, r) * progress;
-            transform.position = startPosition + new Vector3(Mathf.Cos(angleRadians), Mathf.Sin(angleRadians), 0f).normalized * shakeSize * scaleSize;
-
-            yield return null;
-        }
-
-        transform.position = defaultPosition;
         busy = false;
     }
 

@@ -9,6 +9,9 @@ public class SnakeLineRenderer : MonoBehaviour
     [SerializeField, Min(1)]
     private int cornerVertices = 3;
 
+    [SerializeField, Min(1)]
+    private int straightVertices = 3;
+
     [SerializeField]
     private LineRenderer lineRenderer;
 
@@ -19,8 +22,11 @@ public class SnakeLineRenderer : MonoBehaviour
     private List<Vector2Int> cells = new();
     private NativeArray<Vector3> positions; // drawn from tail to head
     private float renderOffset;
+
+    // private float renderProgress;
     private bool hasExtraTail = false;
     private Vector2Int behindExtraTailCell;
+    private float opacity = 1;
 
     private Vector3 gPivotCenter;
     private Vector3 gCellOnTurnVsBeforeDirection;
@@ -34,6 +40,7 @@ public class SnakeLineRenderer : MonoBehaviour
         this.grid = grid;
         cells = new List<Vector2Int> { startCell };
         renderOffset = 0;
+        // renderProgress = 1;
         behindExtraTailCell = behindStartCell;
 
         // the snake renderer needs to know about its tail before moving forward so that the offset
@@ -41,6 +48,12 @@ public class SnakeLineRenderer : MonoBehaviour
         hasExtraTail = false;
 
         GenerateLineRendererPositions();
+    }
+
+    public void SetOpacity(float opacity)
+    {
+        lineRenderer.startColor = VectorUtil.SetAlpha(lineRenderer.startColor, opacity);
+        lineRenderer.endColor = VectorUtil.SetAlpha(lineRenderer.endColor, opacity);
     }
 
     private void OnDestroy()
@@ -54,6 +67,21 @@ public class SnakeLineRenderer : MonoBehaviour
         width = Mathf.Clamp01(width);
         lineRenderer.startWidth = width;
         lineRenderer.endWidth = width;
+    }
+
+    public void SetWidthCurve(AnimationCurve curve)
+    {
+        lineRenderer.widthCurve = curve;
+    }
+
+    public float LineLength()
+    {
+        float lineLength = 0;
+        for (int i = 1; i < lineRenderer.positionCount; i++)
+        {
+            lineLength += Vector3.Distance(lineRenderer.GetPosition(i), lineRenderer.GetPosition(i - 1));
+        }
+        return lineLength;
     }
 
     public void MoveForward(Vector2Int startCell)
@@ -93,6 +121,13 @@ public class SnakeLineRenderer : MonoBehaviour
         Draw();
     }
 
+    // public void SetRenderProgress(float rp)
+    // {
+    //     Debug.Assert(rp >= 0 && rp <= 1);
+    //     renderProgress = Mathf.Clamp01(rp);
+    //     Draw();
+    // }
+
     private void GenerateLineRendererPositions()
     {
         // Allow for every cell of the snake to be a turn, plus an extra at the end as a fence post,
@@ -103,30 +138,30 @@ public class SnakeLineRenderer : MonoBehaviour
         Draw();
     }
 
-    private void OnDrawGizmos()
-    {
-        if (!drawGizmos)
-            return;
+    // private void OnDrawGizmos()
+    // {
+    //     if (!drawGizmos)
+    //         return;
 
-        Gizmos.color = Color.blue;
-        foreach (var cell in cells)
-        {
-            Gizmos.DrawWireSphere(grid.GetWorldPos(cell) + grid.CellCenterOffset(), grid.CellSize / 4f);
-        }
+    //     Gizmos.color = Color.blue;
+    //     foreach (var cell in cells)
+    //     {
+    //         Gizmos.DrawWireSphere(grid.GetWorldPos(cell) + grid.CellCenterOffset(), grid.CellSize / 4f);
+    //     }
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(grid.GetWorldPos(behindExtraTailCell) + grid.CellCenterOffset(), grid.CellSize / 8f);
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawSphere(grid.GetWorldPos(behindExtraTailCell) + grid.CellCenterOffset(), grid.CellSize / 8f);
 
-        if (gPivotCenter != Vector3.zero)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(gPivotCenter, grid.CellSize / 8f);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(gPivotCenter + gCellOnTurnVsBeforeDirection, grid.CellSize / 8f);
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(gPivotCenter + gCellVsOnTurnDirection, grid.CellSize / 8f);
-        }
-    }
+    //     if (gPivotCenter != Vector3.zero)
+    //     {
+    //         Gizmos.color = Color.green;
+    //         Gizmos.DrawSphere(gPivotCenter, grid.CellSize / 8f);
+    //         Gizmos.color = Color.yellow;
+    //         Gizmos.DrawSphere(gPivotCenter + gCellOnTurnVsBeforeDirection, grid.CellSize / 8f);
+    //         Gizmos.color = Color.magenta;
+    //         Gizmos.DrawSphere(gPivotCenter + gCellVsOnTurnDirection, grid.CellSize / 8f);
+    //     }
+    // }
 
     private void Draw()
     {
@@ -144,7 +179,8 @@ public class SnakeLineRenderer : MonoBehaviour
         {
             var cell = cells[i];
             var cellPos = grid.GetWorldPos(cell) + centerOffset;
-            var dir = cell - cells[i + 1];
+            var prevCell = cells[i + 1];
+            var dir = cell - prevCell;
 
             if (prevDir == Vector2Int.zero || dir == prevDir)
             {
@@ -203,6 +239,7 @@ public class SnakeLineRenderer : MonoBehaviour
 
         // Smooth snake movement - remember that the positions are drawn from the tail to the head,
         // so positions[0] is the tail and positions[positionCount-1] is the head.
+
         var dropHeadLength = Mathf.Lerp(grid.CellSize, 0, renderOffset);
 
         while (dropHeadLength > 0 && positionCount > 1)
@@ -227,6 +264,9 @@ public class SnakeLineRenderer : MonoBehaviour
 
         var dropTailLength = Mathf.Lerp(0, dropTailSize, renderOffset);
         int droppedTailPositions = 0;
+
+        // if (renderProgress < 1)
+        //     dropTailLength += (1f - renderProgress) * TotalLength();
 
         while (hasExtraTail && dropTailLength > 0 && positionCount > 1)
         {
