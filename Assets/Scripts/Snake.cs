@@ -310,20 +310,20 @@ public class Snake : MonoBehaviour
         return true;
     }
 
-    public bool DespawnNextCarryingItem(float fadeDuration)
+    public bool DespawnNextCarryingItem()
     {
         if (carryingItems.Count == 0)
             return false;
 
         var item = carryingItems[^1];
         carryingItems.RemoveAt(carryingItems.Count - 1);
-        StartCoroutine(FadeOutItemThenDestroy(item, fadeDuration));
+        StartCoroutine(BloopOutItemThenDestroy(item));
         return true;
     }
 
-    private IEnumerator FadeOutItemThenDestroy(CarryingItem item, float fadeDuration)
+    private IEnumerator BloopOutItemThenDestroy(CarryingItem item)
     {
-        yield return item.Renderer.FadeOut(fadeDuration);
+        yield return item.Renderer.BloopOut(1f, game.itemBloopTime);
         GameObject.Destroy(item.Renderer.gameObject);
     }
 
@@ -415,7 +415,7 @@ public class Snake : MonoBehaviour
             carryingItem.Renderer.MoveForward(nextCell);
         }
 
-        carryingItem.Renderer.FadeIn(0.1f);
+        carryingItem.Renderer.BloopIn(1f, game.itemBloopTime);
         carryingItems.Add(carryingItem);
     }
 

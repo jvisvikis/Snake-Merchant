@@ -52,10 +52,12 @@ public class Game : MonoBehaviour
     public float spawnPause;
 
     [Min(0f)]
-    public float sellFadeTime = 0.5f;
-
-    [Min(0f)]
     public float sellPause;
+
+    [Header("Animations")]
+    [Min(0f)]
+    public float itemBloopTime = 0.2f;
+
 
     public CameraController.FocusOptions focusSpawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusItem = CameraController.DefaultFocusOptions;
@@ -214,7 +216,7 @@ public class Game : MonoBehaviour
             {
                 yield return CameraController.Instance.SetFocus(focusSell, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
                 yield return new WaitForSeconds(sellPause);
-                while (snake.DespawnNextCarryingItem(sellFadeTime))
+                while (snake.DespawnNextCarryingItem())
                     yield return new WaitForSeconds(sellPause);
                 yield return CameraController.Instance.ClearFocus(focusSell);
             }

@@ -16,6 +16,7 @@ public class SnakeRenderer : MonoBehaviour
     [SerializeField]
     private SnakeLineRenderer bodyLine;
 
+    public float Width => snakeWidth;
     public float RenderOffset => borderLine.RenderOffset;
     public Vector2Int BehindExtraTailCell => borderLine.BehindExtraTailCell;
 
@@ -141,5 +142,41 @@ public class SnakeRenderer : MonoBehaviour
         }
         borderLine.SetOpacity(to);
         bodyLine.SetOpacity(to);
+    }
+
+    public Coroutine BloopIn(float max, float duration)
+    {
+        borderLine.SetWidth(borderWidth);
+        bodyLine.SetWidth(0);
+        StartCoroutine(BloopFromTo(borderLine, borderWidth, max, snakeWidth, duration));
+        return StartCoroutine(BloopFromTo(bodyLine, 0, max - borderWidth, snakeWidth - borderWidth, duration));
+    }
+
+    public Coroutine BloopOut(float max, float duration)
+    {
+        StartCoroutine(BloopFromTo(borderLine, snakeWidth, max, borderWidth, duration));
+        return StartCoroutine(BloopFromTo(bodyLine, snakeWidth - borderWidth, max - borderWidth, 0, duration));
+    }
+
+    public IEnumerator BloopFromTo(SnakeLineRenderer r, float from, float max, float final, float duration)
+    {
+        float totalLength = (max - from) + (max - final);
+        float inTime = duration * ((max - from) / totalLength);
+        float outTime = duration - inTime;
+        float t;
+
+        for (t = 0; t < inTime; t += Time.deltaTime)
+        {
+            r.SetWidth(Mathf.SmoothStep(from, max, t / inTime));
+            yield return null;
+        }
+
+        for (t = 0; t < outTime; t += Time.deltaTime)
+        {
+            r.SetWidth(Mathf.SmoothStep(max, final, t / outTime));
+            yield return null;
+        }
+
+        r.SetWidth(final);
     }
 }
