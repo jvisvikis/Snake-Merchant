@@ -19,5 +19,11 @@ public class DialogueBox : MonoBehaviour
     public void SetText(string text)
     {
         this.text = text;
+        SetTextBox();
+    }
+
+    public void SetTextBox()
+    {
+        textBox.text = text;
     }
 }

@@ -2066,7 +2066,7 @@ MonoBehaviour:
   livesText: {fileID: 1866895053}
   itemImages:
   - {fileID: 208591017}
-  DialogueBox: {fileID: 982661924602051482}
+  dialogueBox: {fileID: 982661924602051482}
 --- !u!114 &301925219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10620,6 +10620,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902972209878411322, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3917935574266010606, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4559361346975776857, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}

@@ -283,18 +283,21 @@ public class Game : MonoBehaviour
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
         }
-        UIManager.Instance.SetFirstItemImage(items[indexToCollect].sprite);
-
+        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText);
     }
 
     public void ConsumeItem(ItemData itemConsumed)
     {
+        if (itemConsumed.IsConsumable)
+            return;
+
         ItemsManager.SpawnCollectibles();
         items.Remove(itemConsumed);
         if (items.Count == 0)
             return;
         indexToCollect = Random.Range(0, items.Count);
-        UIManager.Instance.SetFirstItemImage(items[indexToCollect].sprite);
+        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText);
+        UIManager.Instance.DialogueBox.ResetAnimation();
     }
 
     public void Die(string whyDie)

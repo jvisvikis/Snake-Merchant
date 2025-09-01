@@ -15,6 +15,7 @@ MonoBehaviour:
   Value: 10
   Width: 2
   Height: 2
+  flavourText: Me needs some new boots!
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

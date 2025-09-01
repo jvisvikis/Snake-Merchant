@@ -92,6 +92,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private DialogueBox dialogueBox;
 
+    public DialogueBox DialogueBox => dialogueBox;
+
     private void Awake()
     {
         if (instance == null)
@@ -224,11 +226,10 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     #region Set Images
-    public void SetFirstItemImage(Sprite sprite)
+    public void SetFirstItem(Sprite sprite, string text)
     {
         itemImages[0].sprite = sprite;
-        dialogueBox.ResetAnimation();
-        dialogueBox.SetText("YEEEEEEEEEE!");
+        dialogueBox.SetText(text);
     }
 
     public void SetAllItemImages(Sprite[] sprites)
