@@ -74,7 +74,7 @@ public class Game : MonoBehaviour
     public Vector2Int CurrentLevelSpawn => currentLevelSpawn;
     public Dictionary<Vector2Int, GridSquare> GridSquares => gridSquares;
     public int CurrentNumParts => currentNumParts;
-    public ItemData CurrentItem => items[indexToCollect];
+    public ItemData CurrentItem => items[indexToCollect] ? items[indexToCollect] : null;
 
     private Snake snake;
     private Grid grid;

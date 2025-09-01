@@ -353,20 +353,17 @@ public class ItemsManager : MonoBehaviour
             {
                 game.Snake.ConsumeOrCollect(item);
                 didConsume = itemData.ItemData;
-                if((game.CurrentItem == itemData.ItemData && didConsume.IsCollectible) || didConsume.IsCoin || didConsume.IsApple)
+                DestroyImmediate(item.gameObject);
+                items[i] = items[^1];
+                items.RemoveAt(items.Count - 1);
+                game.ConsumeItem(didConsume);
+                if (!itemData.IsConsumable)
                 {
-                    DestroyImmediate(item.gameObject);
-                    items[i] = items[^1];
-                    items.RemoveAt(items.Count - 1);
-                    game.ConsumeItem(didConsume);
-                    if (!itemData.IsConsumable)
-                    {
-                        CameraController.Instance.ClearFocus(game.focusItem);
-                        foreach (var gridSq in game.GridSquares.Values)
-                            gridSq.SetInvertItemColor(false);
-                    }
-                    break; // can only consume 1 item
+                    CameraController.Instance.ClearFocus(game.focusItem);
+                    foreach (var gridSq in game.GridSquares.Values)
+                        gridSq.SetInvertItemColor(false);
                 }
+                break; // can only consume 1 item
             }
         }
 
