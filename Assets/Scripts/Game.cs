@@ -390,9 +390,4 @@ public class Game : MonoBehaviour
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);
     }
-
-    void OnGUI()
-    {
-        GUI.Label(new Rect(10, 10, 500, 500), $"Coins: {coins}\nItems: {itemsSold}\nSpeed: {timeToMove:F3}s");
-    }
 }

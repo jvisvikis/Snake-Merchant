@@ -215,8 +215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d53b0a7c918407c9fc244abcf9eb0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  borderSize: 0.1
-  pupilSize: 0.1
+  borderSize: 0.08
+  pupilSize: 0.16
   lookDirectionRange: 0.3
   lookDirectionTime: 0.1
   border: {fileID: 6228024778183700822}

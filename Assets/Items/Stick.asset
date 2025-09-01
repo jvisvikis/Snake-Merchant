@@ -19,7 +19,7 @@ MonoBehaviour:
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 0
-  cells: 'X
+  cells: 'U
 
     #
 
@@ -27,6 +27,6 @@ MonoBehaviour:
 
     #
 
-    D'
+    #'
   sprite: {fileID: 0}
   debugColor: {r: 0.73043567, g: 0, b: 0.8962264, a: 1}
