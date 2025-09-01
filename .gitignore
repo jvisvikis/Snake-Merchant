@@ -97,3 +97,5 @@ fmod_editor.log
 /[Aa]ssets/Plugins/FMOD/**/*.unsaved
 
 .DS_Store
+FMOD/Snake-Merchant/.cache/
+.idea
