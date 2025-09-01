@@ -108,17 +108,13 @@ public class ItemsManager : MonoBehaviour
             {
                 if (item.RItemData.ItemData == itemData)
                 {
-                    Debug.Log($"already spawned: {itemData.name}");
                     spawnItem = null;
                     break;
                 }
             }
 
             if (spawnItem != null)
-            {
-                Debug.Log($"spawning: {spawnItem.name}");
                 SpawnItem(spawnItem);
-            }
 
             if (NumCollectibleItems() >= game.CurrentLevel.NumItems)
                 break;
