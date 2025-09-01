@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -41,7 +42,7 @@ public class ItemData : ScriptableObject
     /// </summary>
     [Min(1)]
     public int Height = 1;
-    public string flavourText;
+    public List<string> flavourText;
 
     [Header("Special items")]
     public bool IsApple = false;

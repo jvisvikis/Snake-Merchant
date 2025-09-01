@@ -283,7 +283,7 @@ public class Game : MonoBehaviour
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
         }
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText);
+        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
     }
 
     public void ConsumeItem(ItemData itemConsumed)
@@ -296,7 +296,7 @@ public class Game : MonoBehaviour
         if (items.Count == 0)
             return;
         indexToCollect = Random.Range(0, items.Count);
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText);
+        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
         UIManager.Instance.DialogueBox.ResetAnimation();
     }
 
