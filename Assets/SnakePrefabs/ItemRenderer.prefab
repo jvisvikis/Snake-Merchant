@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5065976928335306118, guid: 2b329173270864afab591a3b4a638056, type: 3}
       propertyPath: borderWidth
-      value: 0.16
+      value: 0.11
       objectReference: {fileID: 0}
     - target: {fileID: 7322036225657567993, guid: 2b329173270864afab591a3b4a638056, type: 3}
       propertyPath: m_LocalPosition.x
