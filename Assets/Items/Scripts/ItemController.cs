@@ -177,7 +177,7 @@ public class ItemController : MonoBehaviour
         for (int i = 0; i < itemGridCells.Count; i++)
         {
             var itemCell = itemGridCells[i];
-            game.GridSquares[itemCell].SetItemData(clear ? null : itemData.ItemData);
+            game.GridSquares[itemCell].SetItemData(clear ? null : itemData);
             // var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;
             // var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
 

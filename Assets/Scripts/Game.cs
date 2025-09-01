@@ -32,7 +32,7 @@ public class Game : MonoBehaviour
     public bool onlyCollectSpecificItem = false;
     public bool canExitAtAnyCell = false;
     public bool canEnterAtAnyCell = false;
-    public bool canCarryMultipleItems = false;
+    // public bool canCarryMultipleItems = false;
     public bool mustCompleteItemAfterEntering = false;
 
     [Header("Game feel/settings")]
@@ -97,16 +97,12 @@ public class Game : MonoBehaviour
 
     void Start()
     {
-        var chosenLevel = levels[EconomyManager.Instance.WarehouseLevel];
-        chosenLevel.ParseLayout();
+        CurrentLevel.ParseLayout();
         EconomyManager.Instance.SetupWarehouses(levels);
-        var orig = new Vector2(chosenLevel.Width, chosenLevel.Height) * cellSize / -2f;
-        grid = new Grid(chosenLevel.Width, chosenLevel.Height, cellSize, orig);
-        coinSpawnCountdown = coinsFirstSpawnTurns;
+        var orig = new Vector2(CurrentLevel.Width, CurrentLevel.Height) * cellSize / -2f;
+        grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, cellSize, orig);
         currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
-        currentLevelSpawn = GetSpawnPoint(chosenLevel);
-        SpawnGrid();
         SpawnPerRoundObjects(true);
         StartCoroutine(MoveSnake(currentLevelSpawn));
         StartCoroutine(DayManager.Instance.StartDay());
@@ -119,20 +115,20 @@ public class Game : MonoBehaviour
 
     private void SpawnPerRoundObjects(bool isStart)
     {
-        if (isStart)
+        if (!isStart)
         {
-            CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
+            DestroyImmediate(snake.gameObject);
+            DestroyImmediate(itemsManager.gameObject);
+            foreach (var gridSquare in gridSquares.Values)
+                DestroyImmediate(gridSquare.gameObject);
+            gridSquares.Clear();
         }
-        else
-        {
-            CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
-            Destroy(snake.gameObject);
-            Destroy(itemsManager.gameObject);
-        }
+        SpawnGrid();
+        coinSpawnCountdown = coinsFirstSpawnTurns;
+        CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
+        currentLevelSpawn = GetSpawnPoint(CurrentLevel);
         SpawnSnake();
         SpawnItemsManager();
-        foreach (var gridSquare in gridSquares.Values)
-            gridSquare.Reset();
         itemsManager.LoadLevel(this);
         gridSquares[currentLevelSpawn].SetIsSpawn(true);
     }
@@ -242,20 +238,21 @@ public class Game : MonoBehaviour
                 yield return CameraController.Instance.ClearFocus(focusSell);
             }
 
-            bool didMove = snake.Move(out didSellPreviousIteration);
+            string whyFail = "";
+            bool didMove = snake.Move(out didSellPreviousIteration, out whyFail);
 
             // allow grace time if snake is about to die for player to avoid death.
             for (float t = 0; t < timeToDieGrace && !didMove; t += Time.deltaTime)
             {
                 yield return null;
-                didMove = snake.Move(out didSellPreviousIteration);
+                didMove = snake.Move(out didSellPreviousIteration, out whyFail);
             }
 
             if (!didMove)
             {
                 // TODO: (re)spawn animation here
                 yield return CameraController.Instance.Shake();
-                Die();
+                Die(whyFail);
             }
             else
             {
@@ -283,8 +280,9 @@ public class Game : MonoBehaviour
     //     UIManager.Instance.SetFirstItemImage(specificItem.RItemData.Sprite);
     // }
 
-    public void Die()
+    public void Die(string whyDie)
     {
+        Debug.Log($"DYING: {whyDie}");
         //This will need a revist
         // TODO and when it does, i.e. because snake has more lives, move the camera slowly back to the spawn point.
         // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
@@ -307,8 +305,7 @@ public class Game : MonoBehaviour
 
     private void OnReset(InputAction.CallbackContext callbackContext)
     {
-        EconomyManager.Instance.Reset();
-        DayManager.Instance.Reset();
+        Die("manual reset");
     }
 
     private void OnPause(InputAction.CallbackContext callbackContext)
@@ -353,13 +350,15 @@ public class Game : MonoBehaviour
             return;
         }
 
-        if (!canCarryMultipleItems)
-        {
-            // If only carrying a single item, respawn that item when it's sold.
-            Debug.Assert(items.Count == 1);
-            ItemsManager.SpawnRandomNonExistentCollectibleItem();
-            // RefreshSpecificItem();
-        }
+        ItemsManager.SpawnCollectibles();
+
+        // if (!canCarryMultipleItems)
+        // {
+        //     // If only carrying a single item, respawn that item when it's sold.
+        //     Debug.Assert(items.Count == 1);
+        //     ItemsManager.SpawnRandomNonExistentCollectibleItem();
+        //     // RefreshSpecificItem();
+        // }
 
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);

@@ -213,8 +213,8 @@ public class ItemData : ScriptableObject
             }
         }
 
-        if (cellStructure.Length > 1 && numEnds < 2)
-            Debug.LogWarning($"Item {name} has {numEnds} ends, but it should have at least 2!");
+        // if (cellStructure.Length > 1 && numEnds < 2)
+        //     Debug.LogWarning($"Item {name} has {numEnds} ends, but it should have at least 2!");
 
         return cellStructure;
     }

@@ -36,7 +36,7 @@ public class ItemsManager : MonoBehaviour
     {
         foreach (var item in items)
         {
-            GameObject.Destroy(item.gameObject);
+            GameObject.DestroyImmediate(item.gameObject);
         }
         items.Clear();
     }
@@ -47,6 +47,7 @@ public class ItemsManager : MonoBehaviour
         {
             var obstacleItem = GameObject.Instantiate(itemControllerPrefab, transform);
             var bounds = new BoundsInt((Vector3Int)obstacleCell, new Vector3Int(1, 1));
+            obstacleItem.name = "Item.Obstacle";
             obstacleItem.transform.position = game.Grid.GetWorldPos(obstacleCell);
             obstacleItem.SetData(new RotatedItemData(obstacleItemData, ItemRotation.Up));
             obstacleItem.SetGridLocation(bounds, bounds);
@@ -62,24 +63,15 @@ public class ItemsManager : MonoBehaviour
         }
     }
 
-    private void SpawnCollectibles()
+    private int NumCollectibleItems()
     {
-        // weird copy/shuffle logic so that we (a) spawn random items and (b) don't spawn the same
-        // item more than once.
-        var shuffledItems = new List<ItemData>(game.CurrentLevel.Items.Items);
-        ListUtil.Shuffle(shuffledItems);
-
-        int numSpawned = 0;
-
-        foreach (var itemData in shuffledItems)
+        int num = 0;
+        foreach (var item in items)
         {
-            if (!itemData.IsCollectible)
-                continue;
-            if (SpawnItem(itemData))
-                numSpawned++;
-            if (numSpawned >= game.CurrentLevel.NumItems)
-                break;
+            if (item.RItemData.IsCollectible)
+                num++;
         }
+        return num;
     }
 
     public void RespawnCoins()
@@ -89,7 +81,7 @@ public class ItemsManager : MonoBehaviour
             var item = items[i];
             if (item.RItemData.IsCoin)
             {
-                Destroy(item.gameObject);
+                DestroyImmediate(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
                 i--;
@@ -100,7 +92,7 @@ public class ItemsManager : MonoBehaviour
             SpawnItem(coinItemData);
     }
 
-    public void SpawnRandomNonExistentCollectibleItem()
+    public void SpawnCollectibles()
     {
         var shuffledItems = new List<ItemData>(game.CurrentLevel.Items.Items);
         ListUtil.Shuffle(shuffledItems);
@@ -116,12 +108,19 @@ public class ItemsManager : MonoBehaviour
             {
                 if (item.RItemData.ItemData == itemData)
                 {
+                    Debug.Log($"already spawned: {itemData.name}");
                     spawnItem = null;
                     break;
                 }
             }
 
-            if (spawnItem != null && SpawnItem(spawnItem))
+            if (spawnItem != null)
+            {
+                Debug.Log($"spawning: {spawnItem.name}");
+                SpawnItem(spawnItem);
+            }
+
+            if (NumCollectibleItems() >= game.CurrentLevel.NumItems)
                 break;
         }
     }
@@ -239,7 +238,7 @@ public class ItemsManager : MonoBehaviour
 
             if (borderBounds.position == startCell)
             {
-                // Debug.LogWarning($"Can't find anywhere to spawn item: {itemData}");
+                Debug.LogWarning($"Can't find anywhere to spawn item: {itemData}");
                 return false;
             }
 
@@ -251,6 +250,7 @@ public class ItemsManager : MonoBehaviour
         }
 
         var item = GameObject.Instantiate(itemControllerPrefab, transform);
+        item.name = $"Item.{itemData.Name}@{rotation}";
         item.transform.position = game.Grid.GetWorldPos((Vector2Int)borderBounds.min);
         item.SetData(itemData);
         item.SetGridLocation(itemBounds, borderBounds);
@@ -290,11 +290,21 @@ public class ItemsManager : MonoBehaviour
             {
                 var checkCell = gridCell + new Vector2Int(x, y);
 
-                // don't spawn in the same row as the spawn point
-                if (
-                    checkCell.x == game.CurrentLevelSpawn.x /* || checkCell.y == game.CurrentLevelSpawn.y */
-                )
-                    return false;
+                // // don't spawn in the same row as the spawn point
+                // if (
+                //     checkCell.x == game.CurrentLevelSpawn.x /* || checkCell.y == game.CurrentLevelSpawn.y */
+                // )
+                //     return false;
+
+                // don't spawn next to the spawn point
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    for (int dy = -1; dy <= 1; dy++)
+                    {
+                        if (checkCell.x == game.CurrentLevelSpawn.x + dx && checkCell.y == game.CurrentLevelSpawn.y + dy)
+                            return false;
+                    }
+                }
 
                 foreach (var item in items)
                 {
@@ -342,7 +352,7 @@ public class ItemsManager : MonoBehaviour
             {
                 game.Snake.ConsumeOrCollect(item);
                 didConsume = itemData.ItemData;
-                Destroy(item.gameObject);
+                DestroyImmediate(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
                 if (!itemData.IsConsumable)
@@ -358,21 +368,11 @@ public class ItemsManager : MonoBehaviour
         if (didConsume != null)
         {
             if (didConsume.IsCollectible)
-            {
                 game.Snake.CarryItem(didConsume);
-
-                if (game.canCarryMultipleItems)
-                {
-                    // respawn and regenerate target item each collected item.
-                    // TODO: don't spawn in front of the snake!
-                    SpawnRandomNonExistentCollectibleItem();
-                    // game.RefreshSpecificItem();
-                }
-            }
             else if (didConsume.IsMunchie)
-            {
                 SpawnItem(didConsume);
-            }
+
+            SpawnCollectibles();
         }
     }
 
@@ -390,7 +390,7 @@ public class ItemsManager : MonoBehaviour
             var item = items[i];
             if (item.RItemData.IsApple || item.RItemData.IsMushroom)
             {
-                Destroy(item.gameObject);
+                DestroyImmediate(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
                 i--;

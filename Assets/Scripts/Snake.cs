@@ -108,14 +108,14 @@ public class Snake : MonoBehaviour
         if (item.RItemData.IsConsumable)
             return Head == item.ItemGridCells[0];
 
-        if (!game.canCarryMultipleItems && carryingItems.Count > 0)
-            return false;
+        // if (!game.canCarryMultipleItems && carryingItems.Count > 0)
+        //     return false;
 
-        if (game.canCarryMultipleItems)
-        {
-            if (CarryingItemsCellCount() + item.RItemData.CellCount > parts.Count)
-                return false;
-        }
+        // if (game.canCarryMultipleItems)
+        // {
+        if (CarryingItemsCellCount() + item.RItemData.CellCount > parts.Count)
+            return false;
+        // }
 
         if (parts.Count < item.RItemData.CellCount)
             return false;
@@ -196,7 +196,7 @@ public class Snake : MonoBehaviour
         return game.canExitAtAnyCell || ItemData.IsAnyExit(cellType);
     }
 
-    public bool Move(out bool didSell)
+    public bool Move(out bool didSell, out string whyFail)
     {
         didSell = false;
 
@@ -211,10 +211,16 @@ public class Snake : MonoBehaviour
         var newPos = Head + dir;
 
         if (!game.Grid.InGrid(newPos.x, newPos.y))
+        {
+            whyFail = "outside grid";
             return false;
+        }
 
         if (ContainsCell(newPos, out var containsPart) && containsPart != parts[^1])
+        {
+            whyFail = "hit self";
             return false;
+        }
 
         var moveInsideItem = game.ItemsManager.GetItemAtCell(newPos, out var moveInsideCellType);
 
@@ -225,15 +231,24 @@ public class Snake : MonoBehaviour
         }
 
         if (moveInsideItem && moveInsideItem.RItemData.IsObstacle)
+        {
+            whyFail = "hit obstacle";
             return false;
+        }
 
         if (insideItem == null && moveInsideItem != null)
         {
             // Moving from outside => inside an item.
             if (!CanEnterFromDirection(moveInsideCellType, dir))
+            {
+                whyFail = "cant enter from this direction";
                 return false;
-            if (!game.canCarryMultipleItems && carryingItems.Count > 0)
-                return false;
+            }
+            // if (!game.canCarryMultipleItems && carryingItems.Count > 0)
+            // {
+            //     whyFail = "already carrying item";
+            //     return false;
+            // }
             insideItem = moveInsideItem;
             CameraController.Instance.SetFocus(game.focusItem, game.Grid.GetWorldPos(newPos));
             foreach (var gridSq in game.GridSquares.Values)
@@ -244,22 +259,34 @@ public class Snake : MonoBehaviour
             // Moving from inside item => outside, but only if the item is incomplete. If the item
             // was completed then the snake would be holding it and insideItem would be null.
             if (game.mustCompleteItemAfterEntering)
+            {
+                whyFail = "havent completed this item";
                 return false;
+            }
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
             Debug.Assert(itemAtCell == insideItem);
             if (!CanExit(currentyInsideCellType))
+            {
+                whyFail = "not an item exit";
                 return false;
+            }
             insideItem = null;
         }
         else if (insideItem != null && moveInsideItem != null && insideItem != moveInsideItem)
         {
             // Moving between items, err, this would be pretty rare but handle it anyway?
             if (game.mustCompleteItemAfterEntering)
+            {
+                whyFail = "incomplete item";
                 return false;
+            }
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
             Debug.Assert(itemAtCell == insideItem);
             if (!CanEnterFromDirection(moveInsideCellType, dir) || !CanExit(currentyInsideCellType))
+            {
+                whyFail = "illegal crossed items";
                 return false;
+            }
             insideItem = moveInsideItem;
         }
 
@@ -305,6 +332,7 @@ public class Snake : MonoBehaviour
             didSell = true;
         }
 
+        whyFail = "";
         return true;
     }
 

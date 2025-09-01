@@ -45,7 +45,11 @@ public class LevelData : ScriptableObject
     {
         obstacles = new();
 
+        if (string.IsNullOrEmpty(layout))
+            return;
+
         var lines = layout.Split("\n", System.StringSplitOptions.RemoveEmptyEntries);
+
         if (lines.Length != Height)
             Debug.LogWarning($"Level {name} has height {Height}, but its layout has {lines.Length}");
 

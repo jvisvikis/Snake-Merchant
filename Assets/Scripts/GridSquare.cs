@@ -48,10 +48,11 @@ public class GridSquare : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Vector2Int cell;
-    private bool hasSnake;
-    private bool isSpawn;
-    private ItemData itemData;
-    private bool invertItemColor;
+    public bool hasSnake;
+    public bool isSpawn;
+    private RotatedItemData itemData;
+    public bool hasItem;
+    public bool invertItemColor;
 
     public void Init(Vector2Int cell, Type type)
     {
@@ -86,9 +87,10 @@ public class GridSquare : MonoBehaviour
         Render();
     }
 
-    public void SetItemData(ItemData itemData)
+    public void SetItemData(RotatedItemData itemData)
     {
         this.itemData = itemData;
+        hasItem = itemData != null;
         Render();
     }
 
@@ -131,7 +133,7 @@ public class GridSquare : MonoBehaviour
         isSpawn = false;
         itemData = null;
         invertItemColor = false;
-        Render();
+        Render(true);
     }
 
     public void SetIsSpawn(bool isSpawn)
