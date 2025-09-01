@@ -94,6 +94,7 @@ public class ItemsManager : MonoBehaviour
 
     public void SpawnCollectibles()
     {
+        Debug.Log("Spawn da collectibles");
         var shuffledItems = new List<ItemData>(game.CurrentLevel.Items.Items);
         ListUtil.Shuffle(shuffledItems);
 
@@ -343,7 +344,7 @@ public class ItemsManager : MonoBehaviour
         {
             var item = items[i];
             var itemData = item.RItemData;
-
+            Debug.Log(itemData.ItemData);
             if (game.Snake.CanConsumeOrCollect(item))
             {
                 game.Snake.ConsumeOrCollect(item);
@@ -351,6 +352,7 @@ public class ItemsManager : MonoBehaviour
                 DestroyImmediate(item.gameObject);
                 items[i] = items[^1];
                 items.RemoveAt(items.Count - 1);
+                game.ConsumeItem(didConsume);
                 if (!itemData.IsConsumable)
                 {
                     CameraController.Instance.ClearFocus(game.focusItem);
