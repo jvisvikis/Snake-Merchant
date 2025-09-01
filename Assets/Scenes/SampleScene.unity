@@ -9956,12 +9956,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 46429c6350a3a04409c5f0b49b362d18, type: 2}
   - {fileID: 11400000, guid: 727ca08977a05dd408579f119487a508, type: 2}
   - {fileID: 11400000, guid: d093b64e46b47ae4580d868184d38b87, type: 2}
-  cellSize: 1.5
+  cellSize: 1
   gridAutoSizeScale: 0.75
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
-  canCarryMultipleItems: 1
   mustCompleteItemAfterEntering: 1
   initTimeToMove: 0.5
   minTimeToMove: 0.15
