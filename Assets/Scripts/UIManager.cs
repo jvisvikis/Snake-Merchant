@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     [Header("TimerUI")]
     [SerializeField]
     private Slider timeSlider;
+    [SerializeField]
+    private TextMeshProUGUI timerText;
 
     [Header("ScoreUI")]
     [SerializeField]
@@ -127,6 +129,10 @@ public class UIManager : MonoBehaviour
     public void SetTimeSliderValue(float value)
     {
         timeSlider.value = value;
+    }
+    public void SetTimerText(string text)
+    {
+        timerText.text = text;
     }
     public void SetTargetText(string text)
     {

@@ -72,6 +72,7 @@ public class DayManager : MonoBehaviour
         {
             currentTime += Time.deltaTime;
             UIManager.Instance.SetTimeSliderValue(1 - currentTime / dayTimeLimit);
+            UIManager.Instance.SetTimerText($"{(int)(dayTimeLimit - currentTime)}");
             timeLeft = currentTime;
             yield return null;
         }

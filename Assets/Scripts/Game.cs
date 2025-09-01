@@ -289,6 +289,7 @@ public class Game : MonoBehaviour
 
     public void ConsumeItem(ItemData itemConsumed)
     {
+        ItemsManager.SpawnCollectibles();
         items.Remove(itemConsumed);
         if (items.Count == 0)
             return;
