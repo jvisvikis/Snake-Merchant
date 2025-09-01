@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
+  m_Name: _NotWorkWrongSprite_LongBoot
+  m_EditorClassIdentifier: 
+  Value: 20
+  Width: 2
+  Height: 3
+  flavourText: Me shoes are a bit worn. These will do nicely
+  IsApple: 0
+  IsMushroom: 0
+  IsCoin: 0
+  IsObstacle: 0
+  cells: 'R _
+
+    # _
+
+    # #'
+  sprite: {fileID: 21300000, guid: f59bd04a8f53d244ba450b99aef16f29, type: 3}
+  debugColor: {r: 0.045033827, g: 0.18733285, b: 0.41509432, a: 1}

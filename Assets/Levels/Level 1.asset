@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f00d66c4e8164a05982a9b3fc7b7a4c, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
-  Width: 7
-  Height: 7
+  Width: 15
+  Height: 15
   Cost: 0
   NumCoins: 1
   NumItems: 2
-  NumRandomObstacles: 1
+  NumRandomObstacles: 12
   Mushrooms: 0
   Items: {fileID: 11400000, guid: c7a825324a0e6ba468ca670fe1df2c8a, type: 2}
   RandomObstacles: {fileID: 11400000, guid: 143db1772930c49178a3808a6db1a2b1, type: 2}

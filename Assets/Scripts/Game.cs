@@ -127,14 +127,13 @@ public class Game : MonoBehaviour
                 DestroyImmediate(gridSquare.gameObject);
             gridSquares.Clear();
         }
+        currentLevelSpawn = GetSpawnPoint(CurrentLevel);
         SpawnGrid();
         coinSpawnCountdown = coinsFirstSpawnTurns;
         CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
-        currentLevelSpawn = GetSpawnPoint(CurrentLevel);
         SpawnSnake();
         SpawnItemsManager();
         itemsManager.LoadLevel(this);
-        gridSquares[currentLevelSpawn].SetIsSpawn(true);
     }
 
     private Vector2Int GetSpawnPoint(LevelData levelData)
@@ -162,6 +161,7 @@ public class Game : MonoBehaviour
                 var gridSquare = GameObject.Instantiate(gridSquarePrefab, transform);
                 gridSquare.transform.position = grid.GetWorldPos(x, y) + grid.CellCenterOffset();
                 gridSquare.transform.localScale = cellSize * Vector3.one;
+                var cell = new Vector2Int(x, y);
                 var gridSquareType = GridSquare.Type.Middle;
                 if (x == 0 && y == 0)
                     gridSquareType = GridSquare.Type.BottomLeft;
@@ -179,7 +179,8 @@ public class Game : MonoBehaviour
                     gridSquareType = GridSquare.Type.Right;
                 else if (y == grid.Height - 1)
                     gridSquareType = GridSquare.Type.Top;
-                var cell = new Vector2Int(x, y);
+                else if (cell == currentLevelSpawn)
+                    gridSquareType = GridSquare.Type.Spawn;
                 gridSquare.Init(cell, gridSquareType);
                 gridSquares[cell] = gridSquare;
             }
@@ -283,7 +284,7 @@ public class Game : MonoBehaviour
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
         }
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
+        // UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
     }
 
     public void ConsumeItem(ItemData itemConsumed)

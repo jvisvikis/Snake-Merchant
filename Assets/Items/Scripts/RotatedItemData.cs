@@ -16,6 +16,7 @@ public class RotatedItemData
     public int Width => GetWidth();
     public int Height => GetHeight();
     public Sprite Sprite => ItemData.sprite;
+    public float SpriteScale => ItemData.SpriteScale;
     public bool IsApple => ItemData.IsApple;
     public bool IsMushroom => ItemData.IsMushroom;
     public bool IsCoin => ItemData.IsCoin;

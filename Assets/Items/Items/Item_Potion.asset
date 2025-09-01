@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
+  m_Name: Item_Potion
+  m_EditorClassIdentifier: 
+  Value: 20
+  Width: 1
+  Height: 1
+  flavourText: []
+  IsApple: 0
+  IsMushroom: 0
+  IsCoin: 0
+  IsObstacle: 0
+  cells: '#'
+  sprite: {fileID: 21300000, guid: 96e521f3fcd8fe543a28c32b51b7abd4, type: 3}
+  SpriteScale: 0.5
+  debugColor: {r: 1, g: 0.5481836, b: 0, a: 1}

@@ -15,7 +15,8 @@ public class GridSquare : MonoBehaviour
         TopLeft,
         TopRight,
         BottomLeft,
-        BottomRight
+        BottomRight,
+        Spawn,
     }
 
     [System.Serializable]
@@ -38,9 +39,6 @@ public class GridSquare : MonoBehaviour
     [SerializeField]
     private Color snakeColor = Color.yellow;
 
-    [SerializeField]
-    private Color spawnColor = Color.green;
-
     [SerializeField, Min(0f)]
     private float setColorTime = 0.1f;
 
@@ -49,9 +47,7 @@ public class GridSquare : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Vector2Int cell;
     public bool hasSnake;
-    public bool isSpawn;
     private RotatedItemData itemData;
-    public bool hasItem;
     public bool invertItemColor;
 
     public void Init(Vector2Int cell, Type type)
@@ -90,8 +86,12 @@ public class GridSquare : MonoBehaviour
     public void SetItemData(RotatedItemData itemData)
     {
         this.itemData = itemData;
-        hasItem = itemData != null;
         Render();
+    }
+
+    private bool HasCollectibleItem()
+    {
+        return itemData != null && itemData.IsCollectible;
     }
 
     private void Render(bool immediate = false)
@@ -101,16 +101,10 @@ public class GridSquare : MonoBehaviour
 
         Color setColor;
 
-        if (invertItemColor && itemData == null)
+        if (invertItemColor && !HasCollectibleItem())
             setColor = hasSnake ? snakeColor : obstacleColor;
-        else if (itemData == null)
-            setColor = isSpawn
-                ? spawnColor
-                : hasSnake
-                    ? snakeColor
-                    : Color.white;
-        else if (itemData.IsObstacle)
-            setColor = obstacleColor;
+        else if (!HasCollectibleItem())
+            setColor = hasSnake ? snakeColor : Color.white;
         else if (itemData.IsCollectible && !invertItemColor)
             setColor = itemColor;
         else
@@ -130,16 +124,9 @@ public class GridSquare : MonoBehaviour
     public void Reset()
     {
         hasSnake = false;
-        isSpawn = false;
         itemData = null;
         invertItemColor = false;
         Render(true);
-    }
-
-    public void SetIsSpawn(bool isSpawn)
-    {
-        this.isSpawn = isSpawn;
-        Render();
     }
 
     private void Awake()

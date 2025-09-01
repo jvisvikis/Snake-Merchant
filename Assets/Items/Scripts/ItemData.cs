@@ -59,6 +59,8 @@ public class ItemData : ScriptableObject
     [Header("Rendering")]
     public Sprite sprite;
 
+    public float SpriteScale = 1f;
+
     [Header("Debug")]
     public Color debugColor = Color.white;
 

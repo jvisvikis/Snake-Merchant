@@ -56,9 +56,9 @@ public class ItemController : MonoBehaviour
             if (itemData.Rotation == ItemRotation.Right || itemData.Rotation == ItemRotation.Left)
                 (spriteOffset.x, spriteOffset.y) = (spriteOffset.y, spriteOffset.x);
 
-            spriteRenderer.transform.localPosition = spriteOffset;
+            spriteRenderer.transform.localPosition = spriteOffset * itemData.SpriteScale;
             spriteRenderer.transform.localRotation = itemData.RotationQuaternion();
-            spriteRenderer.transform.localScale = game.Grid.CellSize * Vector3.one;
+            spriteRenderer.transform.localScale = game.Grid.CellSize * Vector3.one * itemData.SpriteScale;
         }
     }
 
