@@ -125,6 +125,15 @@ public class GridSquare : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        hasSnake = false;
+        isSpawn = false;
+        itemData = null;
+        invertItemColor = false;
+        Render();
+    }
+
     public void SetIsSpawn(bool isSpawn)
     {
         this.isSpawn = isSpawn;

@@ -14,7 +14,7 @@ public class DayManager : MonoBehaviour
     public float minTimeLimit;
     public float maxTimeLimit;
     public float timeLimitModifier;
-    
+
     [Header("Score Modifiers")]
     public int minScore;
     public int maxScore;
@@ -103,12 +103,11 @@ public class DayManager : MonoBehaviour
         currentDay++;
         ModifyDayMaxTimeLimit();
         ModifyDayScore();
-        ReloadScene();
+        // ReloadScene();
     }
     public void ResetDay()
     {
         EconomyManager.Instance.RemoveLife();
-        ReloadScene();
     }
     public void Reset()
     {
@@ -116,7 +115,7 @@ public class DayManager : MonoBehaviour
         currentDay = 0;
         currentTargetScore = minScore;
         dayTimeLimit = maxTimeLimit;
-        ReloadScene();
+        // ReloadScene();
     }
 
     private void ModifyDayMaxTimeLimit()
@@ -143,8 +142,8 @@ public class DayManager : MonoBehaviour
         return number;
     }
 
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+    // public void ReloadScene()
+    // {
+    //     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    // }
 }

@@ -1735,37 +1735,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3556628902087119650, guid: 727ccb27021559d459156503a9669e7d, type: 3}
   m_PrefabInstance: {fileID: 247223344}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &292428359
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 292428360}
-  m_Layer: 0
-  m_Name: Specific item parent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &292428360
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 292428359}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &292454518
 GameObject:
   m_ObjectHideFlags: 0
@@ -9954,7 +9923,6 @@ GameObject:
   - component: {fileID: 1915158410}
   - component: {fileID: 1915158409}
   - component: {fileID: 1915158411}
-  - component: {fileID: 1915158412}
   m_Layer: 6
   m_Name: Test
   m_TagString: Untagged
@@ -9975,11 +9943,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snakePrefab: {fileID: 8349425266597007108, guid: 7791891555798b64db50daba85feafd4, type: 3}
-  specificItemParent: {fileID: 292428359}
   itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
   gridSquarePrefab: {fileID: 3737257346154662979, guid: 3922ada05e03d4e789369f8fa73c3b17, type: 3}
   collectionUIPrefab: {fileID: 2357230250612766462, guid: 7dd54c28aa19ecb4a9a75f79aa37f32f, type: 3}
   collectionUIOffset: {x: 0, y: 1}
+  itemsManagerPrefab: {fileID: 7085311104296680027, guid: 91f8b8b16c01946feb689ff910d2cfbc, type: 3}
   levels:
   - {fileID: 11400000, guid: d013e2b92fd7f6e4a81c21a0cd9bf0d8, type: 2}
   - {fileID: 11400000, guid: d6914d8b6e214ca49a588113ca0748fb, type: 2}
@@ -10004,8 +9972,8 @@ MonoBehaviour:
   coinsFirstSpawnTurns: 5
   startNumParts: 5
   spawnPause: 0.5
-  sellFadeTime: 0.25
   sellPause: 0.25
+  itemBloopTime: 0.2
   focusSpawn:
     FocusZoom: 0.607
     FocusPosition: 1
@@ -10082,22 +10050,6 @@ MonoBehaviour:
   m_DefaultActionMap: PlayerInput
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1915158412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1915158408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a92b5e4c825246598e77594ce952eb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemControllerPrefab: {fileID: 9188403999701584216, guid: 80621745093f940bfb049cb9d687c073, type: 3}
-  appleItemData: {fileID: 11400000, guid: 7493c34985a4d496999cf45b44aaf219, type: 2}
-  mushroomItemData: {fileID: 11400000, guid: 005d311c830104fa3aa78a43943ea554, type: 2}
-  coinItemData: {fileID: 11400000, guid: f7dd73656caaa437381e3e0df8774fdb, type: 2}
 --- !u!1 &1951958029
 GameObject:
   m_ObjectHideFlags: 0
@@ -11305,7 +11257,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1175238887}
   - {fileID: 1915158410}
-  - {fileID: 292428360}
   - {fileID: 301925222}
   - {fileID: 1961659202}
   - {fileID: 196152557}

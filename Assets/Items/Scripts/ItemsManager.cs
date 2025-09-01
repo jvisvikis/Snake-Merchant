@@ -23,13 +23,9 @@ public class ItemsManager : MonoBehaviour
 
     private List<ItemController> items = new();
 
-    private void Awake()
+    public void LoadLevel(Game game)
     {
-        game = GetComponent<Game>();
-    }
-
-    public void LoadLevel()
-    {
+        this.game = game;
         DespawnItems();
         SpawnObstacles();
         SpawnCollectibles();
@@ -333,7 +329,7 @@ public class ItemsManager : MonoBehaviour
         return null;
     }
 
-    public void SnakeMoved(ItemData specificItem)
+    public void SnakeMoved()
     {
         ItemData didConsume = null;
 
@@ -341,9 +337,8 @@ public class ItemsManager : MonoBehaviour
         {
             var item = items[i];
             var itemData = item.RItemData;
-            var canConsumeItem = itemData.IsConsumable || !game.onlyCollectSpecificItem || itemData.ItemData == specificItem;
 
-            if (canConsumeItem && game.Snake.CanConsumeOrCollect(item))
+            if (game.Snake.CanConsumeOrCollect(item))
             {
                 game.Snake.ConsumeOrCollect(item);
                 didConsume = itemData.ItemData;
@@ -371,7 +366,7 @@ public class ItemsManager : MonoBehaviour
                     // respawn and regenerate target item each collected item.
                     // TODO: don't spawn in front of the snake!
                     SpawnRandomNonExistentCollectibleItem();
-                    game.RefreshSpecificItem();
+                    // game.RefreshSpecificItem();
                 }
             }
             else if (didConsume.IsMunchie)

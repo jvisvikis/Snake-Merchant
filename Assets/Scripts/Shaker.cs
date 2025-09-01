@@ -18,7 +18,6 @@ public class Shaker : MonoBehaviour
 
     public Coroutine Shake()
     {
-        Debug.Log("SHAKE");
         if (busy)
             return StartCoroutine(NullCoroutine());
 

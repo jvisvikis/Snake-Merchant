@@ -37,7 +37,6 @@ public class Snake : MonoBehaviour
     private Vector2Int dir = Vector2Int.right;
     private List<SnakePart> parts;
     private Vector2Int behindTailCell;
-    private int targetParts = 0;
     private Vector2Int newDirOnNextMove = Vector2Int.zero;
     private Vector2Int queuedDir = Vector2Int.zero;
     private List<CarryingItem> carryingItems = new();
@@ -49,7 +48,6 @@ public class Snake : MonoBehaviour
         game = FindObjectOfType<Game>();
         parts = new(GetComponentsInChildren<SnakePart>());
         Debug.Assert(parts.Count == 1);
-        targetParts = game.startNumParts;
     }
 
     private void OnDestroy()
@@ -287,7 +285,7 @@ public class Snake : MonoBehaviour
             carryingItem.Renderer.MoveForward(GetPartCellPos(nextIndex));
         }
 
-        if (targetParts > parts.Count)
+        if (game.CurrentNumParts > parts.Count)
         {
             var part = GameObject.Instantiate(partPrefab, transform);
             part.transform.position = tailPosition;
@@ -354,21 +352,21 @@ public class Snake : MonoBehaviour
 
         if (itemData.IsApple)
         {
-            targetParts++;
+            game.SnakeDidEatApple();
             didEatApple = true;
             CameraController.Instance.LittleShake();
         }
-        else if (itemData.IsMushroom)
-        {
-            if (parts.Count <= 2)
-            {
-                game.Die();
-                return;
-            }
-            GameObject.Destroy(parts[^1].gameObject);
-            parts.RemoveAt(parts.Count - 1);
-            targetParts--;
-        }
+        // else if (itemData.IsMushroom)
+        // {
+        //     if (parts.Count <= 2)
+        //     {
+        //         game.Die();
+        //         return;
+        //     }
+        //     GameObject.Destroy(parts[^1].gameObject);
+        //     parts.RemoveAt(parts.Count - 1);
+        //     targetParts--;
+        // }
         else if (itemData.IsCoin)
         {
             game.AddCoin();

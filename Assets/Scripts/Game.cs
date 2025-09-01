@@ -8,11 +8,13 @@ public class Game : MonoBehaviour
     [Header("Friends")]
     public InputActions controls;
     public Snake snakePrefab;
-    public GameObject specificItemParent;
+
+    // public GameObject specificItemParent;
     public ItemController itemControllerPrefab;
     public GridSquare gridSquarePrefab;
     public CollectionWorldUI collectionUIPrefab;
     public Vector2Int collectionUIOffset;
+    public ItemsManager itemsManagerPrefab;
 
     [Header("Levels")]
     [SerializeField]
@@ -45,7 +47,8 @@ public class Game : MonoBehaviour
     public int coinsFirstSpawnTurns = 5;
 
     [Header("Snake")]
-    public int startNumParts = 3;
+    [SerializeField]
+    private int startNumParts = 3;
 
     [Header("Camera")]
     [Min(0f)]
@@ -57,7 +60,6 @@ public class Game : MonoBehaviour
     [Header("Animations")]
     [Min(0f)]
     public float itemBloopTime = 0.2f;
-
 
     public CameraController.FocusOptions focusSpawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusItem = CameraController.DefaultFocusOptions;
@@ -71,27 +73,26 @@ public class Game : MonoBehaviour
     public LevelData CurrentLevel => levels[EconomyManager.Instance.WarehouseLevel];
     public Vector2Int CurrentLevelSpawn => currentLevelSpawn;
     public Dictionary<Vector2Int, GridSquare> GridSquares => gridSquares;
+    public int CurrentNumParts => currentNumParts;
 
     private Snake snake;
     private Grid grid;
     private Dictionary<Vector2Int, GridSquare> gridSquares = new();
     private ItemsManager itemsManager;
     private float timeToMove;
-    private ItemController specificItem;
+
+    // private ItemController specificItem;
     private int bonus = 0;
     private int coins = 0;
     private int itemsSold = 0;
     private int coinSpawnCountdown;
     private int currentDayScore;
     private Vector2Int currentLevelSpawn = Vector2Int.zero;
+    private int currentNumParts;
 
-    //private int currentLevelIndex = 0;
-
-    // Start is called before the first frame update
-    private void Awake()
+    public void SnakeDidEatApple()
     {
-        itemsManager = GetComponent<ItemsManager>();
-        //timeToMove = initTimeToMove;
+        currentNumParts++;
     }
 
     void Start()
@@ -102,16 +103,38 @@ public class Game : MonoBehaviour
         var orig = new Vector2(chosenLevel.Width, chosenLevel.Height) * cellSize / -2f;
         grid = new Grid(chosenLevel.Width, chosenLevel.Height, cellSize, orig);
         coinSpawnCountdown = coinsFirstSpawnTurns;
-        startNumParts += EconomyManager.Instance.SnakeLengthLevel;
+        currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
         currentLevelSpawn = GetSpawnPoint(chosenLevel);
         SpawnGrid();
-        gridSquares[currentLevelSpawn].SetIsSpawn(true);
-        SpawnSnake();
-        itemsManager.LoadLevel();
-        CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
+        SpawnPerRoundObjects(true);
         StartCoroutine(MoveSnake(currentLevelSpawn));
         StartCoroutine(DayManager.Instance.StartDay());
+    }
+
+    private void SpawnItemsManager()
+    {
+        itemsManager = Instantiate(itemsManagerPrefab, transform);
+    }
+
+    private void SpawnPerRoundObjects(bool isStart)
+    {
+        if (isStart)
+        {
+            CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
+        }
+        else
+        {
+            CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
+            Destroy(snake.gameObject);
+            Destroy(itemsManager.gameObject);
+        }
+        SpawnSnake();
+        SpawnItemsManager();
+        foreach (var gridSquare in gridSquares.Values)
+            gridSquare.Reset();
+        itemsManager.LoadLevel(this);
+        gridSquares[currentLevelSpawn].SetIsSpawn(true);
     }
 
     private Vector2Int GetSpawnPoint(LevelData levelData)
@@ -192,8 +215,6 @@ public class Game : MonoBehaviour
 
     public IEnumerator MoveSnake(Vector2Int spawn)
     {
-        RefreshSpecificItem();
-
         yield return CameraController.Instance.SetFocus(focusSpawn, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
         yield return new WaitForSeconds(spawnPause);
         yield return CameraController.Instance.ClearFocus(focusSpawn);
@@ -238,7 +259,7 @@ public class Game : MonoBehaviour
             }
             else
             {
-                itemsManager.SnakeMoved(specificItem?.RItemData?.ItemData);
+                itemsManager.SnakeMoved(); // specificItem?.RItemData?.ItemData);
             }
 
             coinSpawnCountdown--;
@@ -251,23 +272,27 @@ public class Game : MonoBehaviour
         }
     }
 
-    public void RefreshSpecificItem()
-    {
-        if (specificItem != null)
-            GameObject.Destroy(specificItem.gameObject);
+    // public void RefreshSpecificItem()
+    // {
+    //     if (specificItem != null)
+    //         GameObject.Destroy(specificItem.gameObject);
 
-        specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
-        specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().RItemData);
-        specificItem.SetFloating();
-        UIManager.Instance.SetFirstItemImage(specificItem.RItemData.Sprite);
-    }
+    //     specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
+    //     specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().RItemData);
+    //     specificItem.SetFloating();
+    //     UIManager.Instance.SetFirstItemImage(specificItem.RItemData.Sprite);
+    // }
 
     public void Die()
     {
         //This will need a revist
         // TODO and when it does, i.e. because snake has more lives, move the camera slowly back to the spawn point.
         // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
+        StopAllCoroutines();
+        SpawnPerRoundObjects(false);
         DayManager.Instance.ResetDay();
+        StartCoroutine(MoveSnake(currentLevelSpawn));
+        StartCoroutine(DayManager.Instance.StartDay());
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
@@ -304,8 +329,8 @@ public class Game : MonoBehaviour
 
     public void OnItemsSold(List<ItemData> items)
     {
-        Debug.Assert(specificItem != null);
-        Debug.Assert(specificItem.RItemData != null);
+        // Debug.Assert(specificItem != null);
+        // Debug.Assert(specificItem.RItemData != null);
 
         itemsSold += items.Count;
         float collectionSold = 0;
@@ -333,7 +358,7 @@ public class Game : MonoBehaviour
             // If only carrying a single item, respawn that item when it's sold.
             Debug.Assert(items.Count == 1);
             ItemsManager.SpawnRandomNonExistentCollectibleItem();
-            RefreshSpecificItem();
+            // RefreshSpecificItem();
         }
 
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
