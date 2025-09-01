@@ -2066,8 +2066,7 @@ MonoBehaviour:
   livesText: {fileID: 1866895053}
   itemImages:
   - {fileID: 208591017}
-  - {fileID: 0}
-  - {fileID: 0}
+  DialogueBox: {fileID: 982661924602051482}
 --- !u!114 &301925219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3493,7 +3492,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.25
+  m_fontSize: 31.3
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10615,6 +10614,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3902972209878411322, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3902972209878411322, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4559361346975776857, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7902266483094790227, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
       propertyPath: m_Name
       value: 1stShapeQueueUI
@@ -10623,11 +10634,30 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9082261749450676960, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 9082261749450676960, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+--- !u!114 &982661924602051482 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4185503173658278487, guid: 15027bfc6b952874d8f457c5ec6357fa, type: 3}
+  m_PrefabInstance: {fileID: 982661924602051481}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfc8b57fd457a42439ce8fbe490f9b18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2953930733948647307
 GameObject:
   m_ObjectHideFlags: 0

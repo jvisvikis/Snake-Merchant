@@ -89,6 +89,8 @@ public class UIManager : MonoBehaviour
     [Header("ItemQueueUI")]
     [SerializeField]
     private Image [] itemImages;
+    [SerializeField]
+    private DialogueBox dialogueBox;
 
     private void Awake()
     {
@@ -225,6 +227,8 @@ public class UIManager : MonoBehaviour
     public void SetFirstItemImage(Sprite sprite)
     {
         itemImages[0].sprite = sprite;
+        dialogueBox.ResetAnimation();
+        dialogueBox.SetText("YEEEEEEEEEE!");
     }
 
     public void SetAllItemImages(Sprite[] sprites)
