@@ -72,7 +72,6 @@ public class DayManager : MonoBehaviour
         {
             currentTime += Time.deltaTime;
             UIManager.Instance.SetTimeSliderValue(1 - currentTime / dayTimeLimit);
-            UIManager.Instance.SetTimerText($"{(int)(dayTimeLimit - currentTime)}");
             timeLeft = currentTime;
             yield return null;
         }
@@ -85,9 +84,6 @@ public class DayManager : MonoBehaviour
         currentTotalScore += currentDayScore;
         isPlaying = false;
         UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(timeLeft)}s");
-        UIManager.Instance.SetBonusText($"Total Bonus: 0");
-        UIManager.Instance.SetCoinsCollectedText($"Coins Collected: 0");
-        UIManager.Instance.SetItemsCollectedText($"Items Collected: 0");
         UIManager.Instance.EndDay();
     }
 
@@ -107,7 +103,7 @@ public class DayManager : MonoBehaviour
         currentDay++;
         ModifyDayMaxTimeLimit();
         ModifyDayScore();
-        ReloadScene();
+        // ReloadScene();
     }
     public void ResetDay()
     {
@@ -146,8 +142,8 @@ public class DayManager : MonoBehaviour
         return number;
     }
 
-    public void ReloadScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+    // public void ReloadScene()
+    // {
+    //     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    // }
 }

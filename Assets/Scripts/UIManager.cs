@@ -13,8 +13,6 @@ public class UIManager : MonoBehaviour
     [Header("TimerUI")]
     [SerializeField]
     private Slider timeSlider;
-    [SerializeField]
-    private TextMeshProUGUI timerText;
 
     [Header("ScoreUI")]
     [SerializeField]
@@ -89,10 +87,6 @@ public class UIManager : MonoBehaviour
     [Header("ItemQueueUI")]
     [SerializeField]
     private Image [] itemImages;
-    [SerializeField]
-    private DialogueBox dialogueBox;
-
-    public DialogueBox DialogueBox => dialogueBox;
 
     private void Awake()
     {
@@ -133,10 +127,6 @@ public class UIManager : MonoBehaviour
     public void SetTimeSliderValue(float value)
     {
         timeSlider.value = value;
-    }
-    public void SetTimerText(string text)
-    {
-        timerText.text = text;
     }
     public void SetTargetText(string text)
     {
@@ -226,10 +216,9 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     #region Set Images
-    public void SetFirstItem(Sprite sprite, string text)
+    public void SetFirstItemImage(Sprite sprite)
     {
         itemImages[0].sprite = sprite;
-        dialogueBox.SetText(text);
     }
 
     public void SetAllItemImages(Sprite[] sprites)

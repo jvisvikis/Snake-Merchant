@@ -113,9 +113,6 @@ public class Snake : MonoBehaviour
 
         // if (game.canCarryMultipleItems)
         // {
-        if (game.CurrentItem != item.RItemData.ItemData)
-            return false;
-
         if (CarryingItemsCellCount() + item.RItemData.CellCount > parts.Count)
             return false;
         // }

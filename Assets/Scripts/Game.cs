@@ -74,7 +74,6 @@ public class Game : MonoBehaviour
     public Vector2Int CurrentLevelSpawn => currentLevelSpawn;
     public Dictionary<Vector2Int, GridSquare> GridSquares => gridSquares;
     public int CurrentNumParts => currentNumParts;
-    public ItemData CurrentItem => items[indexToCollect] ? items[indexToCollect] : null;
 
     private Snake snake;
     private Grid grid;
@@ -90,8 +89,6 @@ public class Game : MonoBehaviour
     private int currentDayScore;
     private Vector2Int currentLevelSpawn = Vector2Int.zero;
     private int currentNumParts;
-    public List<ItemData> items;
-    public int indexToCollect;
 
     public void SnakeDidEatApple()
     {
@@ -106,7 +103,6 @@ public class Game : MonoBehaviour
         grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, cellSize, orig);
         currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
-        SetItemList();
         SpawnPerRoundObjects(true);
         StartCoroutine(MoveSnake(currentLevelSpawn));
         StartCoroutine(DayManager.Instance.StartDay());
@@ -273,32 +269,16 @@ public class Game : MonoBehaviour
         }
     }
 
-    public void SetItemList()
-    {
-        items = new();
-        int currentValue = 0;
-        while (currentValue < DayManager.Instance.CurrentTargetScore)
-        {
-            int index = 2 + Random.Range(0, CurrentLevel.Items.Items.Count - 2);
-            items.Add(CurrentLevel.Items.Items[index]);
-            currentValue += CurrentLevel.Items.Items[index].Value;
-        }
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
-    }
+    // public void RefreshSpecificItem()
+    // {
+    //     if (specificItem != null)
+    //         GameObject.Destroy(specificItem.gameObject);
 
-    public void ConsumeItem(ItemData itemConsumed)
-    {
-        if (itemConsumed.IsConsumable)
-            return;
-
-        ItemsManager.SpawnCollectibles();
-        items.Remove(itemConsumed);
-        if (items.Count == 0)
-            return;
-        indexToCollect = Random.Range(0, items.Count);
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
-        UIManager.Instance.DialogueBox.ResetAnimation();
-    }
+    //     specificItem = Instantiate(itemControllerPrefab, specificItemParent.transform);
+    //     specificItem.SetData(itemsManager.GetRandomExistingCollectibleItem().RItemData);
+    //     specificItem.SetFloating();
+    //     UIManager.Instance.SetFirstItemImage(specificItem.RItemData.Sprite);
+    // }
 
     public void Die(string whyDie)
     {
@@ -351,19 +331,12 @@ public class Game : MonoBehaviour
 
         itemsSold += items.Count;
         float collectionSold = 0;
-        float collectionCount = 0;
+
         foreach (var item in items)
         {
             currentDayScore += item.Value;
             collectionSold += item.Value;
-            collectionCount++;
-            if (collectionCount > 1)
-            {
-                bonus += 10;
-            }
         }
-        currentDayScore += bonus;
-        collectionSold += bonus;
         CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
         collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + collectionUIOffset);
         collectionUI.SetProfitText($"${collectionSold}");
