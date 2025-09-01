@@ -106,7 +106,7 @@ public class DayManager : MonoBehaviour
         currentDay++;
         ModifyDayMaxTimeLimit();
         ModifyDayScore();
-        // ReloadScene();
+        ReloadScene();
     }
     public void ResetDay()
     {
@@ -145,8 +145,8 @@ public class DayManager : MonoBehaviour
         return number;
     }
 
-    // public void ReloadScene()
-    // {
-    //     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    // }
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
