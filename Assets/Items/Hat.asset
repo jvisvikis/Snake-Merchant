@@ -23,6 +23,6 @@ MonoBehaviour:
 
     _ # # _
 
-    L # # X'
+    # # # U'
   sprite: {fileID: 0}
   debugColor: {r: 0.006674961, g: 0.4716981, b: 0.32955667, a: 1}
