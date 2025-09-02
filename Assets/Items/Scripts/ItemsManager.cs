@@ -370,6 +370,7 @@ public class ItemsManager : MonoBehaviour
                 if (!itemData.IsConsumable)
                 {
                     CameraController.Instance.ClearFocus(game.focusItem);
+                    CameraController.Instance.LittleShake();
                     foreach (var gridSq in game.GridSquares.Values)
                         gridSq.SetInvertItemColor(false);
                 }
