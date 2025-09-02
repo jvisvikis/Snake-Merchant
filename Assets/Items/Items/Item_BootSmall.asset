@@ -15,7 +15,9 @@ MonoBehaviour:
   Value: 10
   Width: 2
   Height: 2
-  flavourText: Me needs some new boots!
+  flavourText:
+  - 
+  itemMaterial: 0
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
@@ -24,4 +26,5 @@ MonoBehaviour:
 
     # #'
   sprite: {fileID: 21300000, guid: 784c34989f447fb4dab769c1d0b1603e, type: 3}
+  SpriteScale: 1
   debugColor: {r: 0.6981132, g: 0.19338359, b: 0.02963687, a: 1}

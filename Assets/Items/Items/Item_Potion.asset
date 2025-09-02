@@ -15,7 +15,9 @@ MonoBehaviour:
   Value: 20
   Width: 2
   Height: 2
-  flavourText: []
+  flavourText:
+  - 
+  itemMaterial: 0
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
@@ -25,12 +27,4 @@ MonoBehaviour:
     # D'
   sprite: {fileID: 21300000, guid: 96e521f3fcd8fe543a28c32b51b7abd4, type: 3}
   SpriteScale: 1
-  ConsumeAudio:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  itemMaterial: 0
   debugColor: {r: 1, g: 0.5481836, b: 0, a: 1}

@@ -279,6 +279,7 @@ public class Game : MonoBehaviour
         int currentValue = 0;
         while (currentValue < DayManager.Instance.CurrentTargetScore)
         {
+           
             int index = 2 + Random.Range(0, CurrentLevel.Items.Items.Count - 2);
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
@@ -299,8 +300,18 @@ public class Game : MonoBehaviour
         items.Remove(itemConsumed);
         if (items.Count == 0)
             return;
-        indexToCollect = Random.Range(0, items.Count);
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
+        Debug.Log(items.Count);
+        //indexToCollect++;
+        
+        int textIdx = Random.Range(0, items[indexToCollect].flavourText.Count);
+        Debug.Log(textIdx);
+        Debug.Log(items[indexToCollect].flavourText.Count);
+        if (items[indexToCollect].flavourText.Count == 0)
+        {
+            Debug.LogError($"{items[indexToCollect].name} has no flavour text");
+            return;
+        }
+        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[textIdx]);
         UIManager.Instance.DialogueBox.ResetAnimation();
     }
 
