@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
 	<object class="MixerReturn" id="{e1269bbc-8888-475e-b627-290c5c624fe6}">
+		<property name="volume">
+			<value>-80</value>
+		</property>
 		<property name="overridingInputFormat">
 			<value>2</value>
 		</property>
@@ -19,18 +22,33 @@
 	</object>
 	<object class="MixerBusEffectChain" id="{edee65a7-334d-428d-a044-7ded6bd76599}">
 		<relationship name="effects">
-			<destination>{50a5aca2-b03a-4c89-b174-bbda2adcfee4}</destination>
+			<destination>{678fc0a8-55b1-47b1-a2ee-6ea58278e9db}</destination>
+			<destination>{f729fd58-f2c2-42cc-8010-1ae68f692468}</destination>
 			<destination>{f1940f15-62ff-4622-9d23-b2c59f5420e7}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{79065980-2df4-476e-a88d-cdfff44c1dac}" />
-	<object class="SFXReverbEffect" id="{50a5aca2-b03a-4c89-b174-bbda2adcfee4}">
-		<property name="wetLevel">
+	<object class="MixerSend" id="{678fc0a8-55b1-47b1-a2ee-6ea58278e9db}">
+		<property name="level">
 			<value>0</value>
 		</property>
-		<property name="dryLevel">
-			<value>-80</value>
+		<property name="inputFormat">
+			<value>2</value>
 		</property>
+		<relationship name="mixerReturn">
+			<destination>{7a8f72ab-200b-4227-9b6b-43903a853d35}</destination>
+		</relationship>
+	</object>
+	<object class="MixerSend" id="{f729fd58-f2c2-42cc-8010-1ae68f692468}">
+		<property name="level">
+			<value>-13</value>
+		</property>
+		<property name="inputFormat">
+			<value>2</value>
+		</property>
+		<relationship name="mixerReturn">
+			<destination>{7bc724ba-fdf0-47c3-b5d9-fdb87923947a}</destination>
+		</relationship>
 	</object>
 	<object class="MixerBusFader" id="{f1940f15-62ff-4622-9d23-b2c59f5420e7}" />
 </objects>

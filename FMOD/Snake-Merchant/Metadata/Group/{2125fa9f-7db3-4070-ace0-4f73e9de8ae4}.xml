@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="MixerGroup" id="{2125fa9f-7db3-4070-ace0-4f73e9de8ae4}">
+		<property name="name">
+			<value>AttenuateInsideItem</value>
+		</property>
+		<relationship name="effectChain">
+			<destination>{50806fa5-5d2a-48d2-812d-17ee03abf905}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{58ad9b8c-12e0-4774-8f4b-b13caf7bb263}</destination>
+		</relationship>
+		<relationship name="output">
+			<destination>{c64e624e-ccf0-4f93-9afb-c1a2f0c24a83}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{50806fa5-5d2a-48d2-812d-17ee03abf905}">
+		<relationship name="effects">
+			<destination>{44dade17-8278-48e1-a993-4ac8b4cc2dcd}</destination>
+			<destination>{a1dc6683-fc00-4833-91c1-1aef17400df0}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{58ad9b8c-12e0-4774-8f4b-b13caf7bb263}" />
+	<object class="MultibandEqEffect" id="{44dade17-8278-48e1-a993-4ac8b4cc2dcd}">
+		<property name="wetDryEnabled">
+			<value>true</value>
+		</property>
+		<property name="wetMix">
+			<value>0</value>
+		</property>
+		<property name="frequencyA">
+			<value>1250</value>
+		</property>
+	</object>
+	<object class="MixerBusFader" id="{a1dc6683-fc00-4833-91c1-1aef17400df0}" />
+</objects>

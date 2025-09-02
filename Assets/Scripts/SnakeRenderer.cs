@@ -10,6 +10,9 @@ public class SnakeRenderer : MonoBehaviour
     [SerializeField, Range(0f, 0.5f)]
     private float borderWidth = 0.2f;
 
+    [SerializeField, Range(0f, 2f)]
+    private float lumpWidth = 1f;
+
     [SerializeField]
     private SnakeLineRenderer borderLine;
 
@@ -63,7 +66,7 @@ public class SnakeRenderer : MonoBehaviour
                 {
                     new Keyframe(0, snakeWidth),
                     new Keyframe(progressTail / lineLength, snakeWidth),
-                    new Keyframe(progressCenter / lineLength, 1f),
+                    new Keyframe(progressCenter / lineLength, lumpWidth),
                     new Keyframe(progressHead / lineLength, snakeWidth),
                     new Keyframe(1, snakeWidth),
                 }
@@ -76,7 +79,7 @@ public class SnakeRenderer : MonoBehaviour
                 {
                     new Keyframe(0, bodyWidth),
                     new Keyframe(progressTail / lineLength, bodyWidth),
-                    new Keyframe(progressCenter / lineLength, 1f - borderWidth * 2f),
+                    new Keyframe(progressCenter / lineLength, lumpWidth - borderWidth * 2f),
                     new Keyframe(progressHead / lineLength, bodyWidth),
                     new Keyframe(1, bodyWidth),
                 }

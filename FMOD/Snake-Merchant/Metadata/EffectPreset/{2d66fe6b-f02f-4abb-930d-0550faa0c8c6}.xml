@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="EffectPreset" id="{2d66fe6b-f02f-4abb-930d-0550faa0c8c6}">
+		<property name="name">
+			<value>2D Spatialiser</value>
+		</property>
+		<relationship name="folder">
+			<destination>{619e315b-0001-4b63-a0f9-28d7544e937d}</destination>
+		</relationship>
+		<relationship name="effect">
+			<destination>{e5a3e2de-2f9b-4a06-b033-cda822cc578b}</destination>
+		</relationship>
+	</object>
+	<object class="EffectChain" id="{e5a3e2de-2f9b-4a06-b033-cda822cc578b}">
+		<relationship name="effects">
+			<destination>{5dc356cb-80f9-4971-b2aa-2afdec80e255}</destination>
+		</relationship>
+	</object>
+	<object class="SpatialiserEffect" id="{5dc356cb-80f9-4971-b2aa-2afdec80e255}">
+		<property name="distanceRolloffType">
+			<value>4</value>
+		</property>
+		<property name="panBlend">
+			<value>0</value>
+		</property>
+		<property name="userPanExtent">
+			<value>200</value>
+		</property>
+		<relationship name="automators">
+			<destination>{3064cac5-6f52-4bb1-860c-581b2ac94235}</destination>
+		</relationship>
+	</object>
+	<object class="Automator" id="{3064cac5-6f52-4bb1-860c-581b2ac94235}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>userPanDirection</value>
+		</property>
+		<relationship name="automationCurves">
+			<destination>{91f753b4-eb6b-4e82-8731-447c7ec0ee5b}</destination>
+		</relationship>
+	</object>
+	<object class="AutomationCurve" id="{91f753b4-eb6b-4e82-8731-447c7ec0ee5b}">
+		<relationship name="parameter">
+			<destination>{e7562aac-e876-48f8-877d-c4acaf14b9c3}</destination>
+		</relationship>
+		<relationship name="automationPoints">
+			<destination>{f189207c-de17-4499-9ff7-82a142de143b}</destination>
+			<destination>{da3e66eb-96d2-44ab-b921-5f40358c3c92}</destination>
+		</relationship>
+	</object>
+	<object class="AutomationPoint" id="{f189207c-de17-4499-9ff7-82a142de143b}">
+		<property name="position">
+			<value>-180</value>
+		</property>
+		<property name="value">
+			<value>-180</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{da3e66eb-96d2-44ab-b921-5f40358c3c92}">
+		<property name="position">
+			<value>180</value>
+		</property>
+		<property name="value">
+			<value>180</value>
+		</property>
+	</object>
+</objects>

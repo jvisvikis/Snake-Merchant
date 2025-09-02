@@ -28,7 +28,7 @@ public class ItemsManager : MonoBehaviour
         this.game = game;
         DespawnItems();
         SpawnObstacles();
-        SpawnCollectibles();
+        SpawnCollectibles(true);
         SpawnMunchies();
     }
 
@@ -59,7 +59,7 @@ public class ItemsManager : MonoBehaviour
             var randomObstacleItemData = obstacleItemData;
             if (game.CurrentLevel.RandomObstacles && game.CurrentLevel.RandomObstacles.Items.Count > 0)
                 randomObstacleItemData = ListUtil.Random(game.CurrentLevel.RandomObstacles.Items);
-            SpawnItem(randomObstacleItemData);
+            SpawnItem(randomObstacleItemData, true);
         }
     }
 
@@ -89,10 +89,15 @@ public class ItemsManager : MonoBehaviour
         }
 
         for (int i = 0; i < game.CurrentLevel.NumCoins; i++)
-            SpawnItem(coinItemData);
+            SpawnItem(coinItemData, true);
     }
 
-    public void SpawnCollectibles()
+    /// <summary>
+    /// Spawns as many items as possible up to the number of items for the current level.
+    /// "okInFrontOfSnake" should be false if they're running around with no time to react to new
+    /// items (as in normal play) vs true if they do have time (spawning and selling items).
+    /// </summary>
+    public void SpawnCollectibles(bool okInFrontOfSnake)
     {
         Debug.Log("Spawn da collectibles");
         var shuffledItems = new List<ItemData>(game.CurrentLevel.Items.Items);
@@ -115,7 +120,7 @@ public class ItemsManager : MonoBehaviour
             }
 
             if (spawnItem != null)
-                SpawnItem(spawnItem);
+                SpawnItem(spawnItem, okInFrontOfSnake);
 
             if (NumCollectibleItems() >= game.CurrentLevel.NumItems)
                 break;
@@ -137,7 +142,11 @@ public class ItemsManager : MonoBehaviour
         return null;
     }
 
-    private bool SpawnItem(ItemData originalItemData)
+    /// <summary>
+    /// "okInFrontOfSnake" should be false if they're running around with no time to react to new
+    /// items (as in normal play) vs true if they do have time (spawning and selling items).
+    /// </summary>
+    private bool SpawnItem(ItemData originalItemData, bool okInFrontOfSnake)
     {
         var rotation = ItemRotation.Up;
 
@@ -216,7 +225,7 @@ public class ItemsManager : MonoBehaviour
         var startCell = borderBounds.position;
         int dontInfiniteLoop = 0;
 
-        while (!CanSpawnItemInCell((Vector2Int)borderBounds.position, borderBounds.size.x, borderBounds.size.y))
+        while (!CanSpawnItemInCell((Vector2Int)borderBounds.position, borderBounds.size.x, borderBounds.size.y, okInFrontOfSnake))
         {
             // linearly search to find a spot that fits.
             borderBounds.position += Vector3Int.right;
@@ -278,20 +287,16 @@ public class ItemsManager : MonoBehaviour
 
     /// <summary>
     /// Rough check that gridCell is a valid spawn location for an item of a given width/height.
+    /// "okInFrontOfSnake" should be false if they're running around with no time to react to new
+    /// items (as in normal play) vs true if they do have time (spawning and selling items).
     /// </summary>
-    private bool CanSpawnItemInCell(Vector2Int gridCell, int itemWidth, int itemHeight)
+    private bool CanSpawnItemInCell(Vector2Int gridCell, int itemWidth, int itemHeight, bool okInFrontOfSnake)
     {
         for (int x = 0; x < itemWidth; x++)
         {
             for (int y = 0; y < itemHeight; y++)
             {
                 var checkCell = gridCell + new Vector2Int(x, y);
-
-                // // don't spawn in the same row as the spawn point
-                // if (
-                //     checkCell.x == game.CurrentLevelSpawn.x /* || checkCell.y == game.CurrentLevelSpawn.y */
-                // )
-                //     return false;
 
                 // don't spawn next to the spawn point
                 for (int dx = -1; dx <= 1; dx++)
@@ -312,8 +317,18 @@ public class ItemsManager : MonoBehaviour
                 if (game.Snake.ContainsCell(checkCell, out var _))
                     return false;
 
-                if (checkCell == game.Snake.NextMoveCell())
-                    return false;
+                if (!okInFrontOfSnake)
+                {
+                    var dir = game.Snake.Dir;
+                    if (dir.x == 1 && dir.y == checkCell.y && game.Snake.Head.x < checkCell.x)
+                        return false;
+                    else if (dir.x == -1 && dir.y == checkCell.y && game.Snake.Head.x > checkCell.x)
+                        return false;
+                    else if (dir.y == 1 && dir.x == checkCell.x && game.Snake.Head.y < checkCell.y)
+                        return false;
+                    else if (dir.y == -1 && dir.x == checkCell.x && game.Snake.Head.y > checkCell.y)
+                        return false;
+                }
             }
         }
 
@@ -368,17 +383,17 @@ public class ItemsManager : MonoBehaviour
             if (didConsume.IsCollectible)
                 game.Snake.CarryItem(didConsume);
             else if (didConsume.IsMunchie)
-                SpawnItem(didConsume);
+                SpawnItem(didConsume, true);
 
-            SpawnCollectibles();
+            SpawnCollectibles(false);
         }
     }
 
     public void SpawnMunchies()
     {
-        SpawnItem(appleItemData);
+        SpawnItem(appleItemData, true);
         if (game.CurrentLevel.Mushrooms)
-            SpawnItem(mushroomItemData);
+            SpawnItem(mushroomItemData, true);
     }
 
     private void DespawnMunchies()

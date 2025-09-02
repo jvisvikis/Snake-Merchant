@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,17 @@ public class ItemData : ScriptableObject
         UpEntry = 5,
         DownEntry = 6,
         Exit = 7,
+    }
+
+    public enum ItemMaterial
+    {
+        None = 0,
+        Wood = 1,
+        MetalBig = 2,
+        MetalSmall = 3,
+        Glass = 4,
+        Paper = 5,
+        Fabric = 6,
     }
 
     private const string MiddleCellChar = "#";
@@ -60,6 +72,11 @@ public class ItemData : ScriptableObject
     public Sprite sprite;
 
     public float SpriteScale = 1f;
+
+    [Header("Audio")]
+    public EventReference ConsumeAudio;
+
+    public ItemMaterial itemMaterial;
 
     [Header("Debug")]
     public Color debugColor = Color.white;

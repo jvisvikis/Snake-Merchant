@@ -9096,6 +9096,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1829753469}
   - component: {fileID: 1829753468}
+  - component: {fileID: 1829753470}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -9144,6 +9145,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1829753470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829753467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3007c1036b0247e9b4ea042f1480b51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EatApple:
+    Guid:
+      Data1: 1971130517
+      Data2: 1122371321
+      Data3: 171798973
+      Data4: 1544994923
+    Path: event:/SFX/Eat_Apple
+  PickupCoin:
+    Guid:
+      Data1: -1753314531
+      Data2: 1326930919
+      Data3: -187555156
+      Data4: 616696925
+    Path: event:/SFX/Pickup_Coin
 --- !u!1 &1830006551
 GameObject:
   m_ObjectHideFlags: 0
@@ -9908,14 +9935,14 @@ MonoBehaviour:
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
   mustCompleteItemAfterEntering: 0
-  initTimeToMove: 0.5
+  initTimeToMove: 0.2
   minTimeToMove: 0.15
   timeToMoveReduction: 0.025
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
-  startNumParts: 5
+  startNumParts: 10
   spawnPause: 0.5
   sellPause: 0.25
   itemBloopTime: 0.2

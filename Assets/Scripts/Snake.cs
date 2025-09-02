@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMOD.Studio;
+using FMODUnity;
 using UnityEngine;
 
 public class Snake : MonoBehaviour
@@ -31,6 +33,7 @@ public class Snake : MonoBehaviour
     }
 
     public Vector2Int Head => ToVector2Int(parts[0].transform.localPosition);
+    public Vector2Int Dir => dir;
     public int Length => parts.Count;
 
     private Game game;
@@ -41,6 +44,7 @@ public class Snake : MonoBehaviour
     private Vector2Int queuedDir = Vector2Int.zero;
     private List<CarryingItem> carryingItems = new();
     private ItemController insideItem = null;
+    private EventInstance insideItemSnapshotInstance;
     private bool didEatApple;
 
     private void Awake()
@@ -252,7 +256,7 @@ public class Snake : MonoBehaviour
             //     whyFail = "already carrying item";
             //     return false;
             // }
-            insideItem = moveInsideItem;
+            SetInsideItem(moveInsideItem);
             CameraController.Instance.SetFocus(game.focusItem, game.Grid.GetWorldPos(newPos));
             foreach (var gridSq in game.GridSquares.Values)
                 gridSq.SetInvertItemColor(true);
@@ -273,7 +277,7 @@ public class Snake : MonoBehaviour
                 whyFail = "not an item exit";
                 return false;
             }
-            insideItem = null;
+            SetInsideItem(null);
         }
         else if (insideItem != null && moveInsideItem != null && insideItem != moveInsideItem)
         {
@@ -290,7 +294,7 @@ public class Snake : MonoBehaviour
                 whyFail = "illegal crossed items";
                 return false;
             }
-            insideItem = moveInsideItem;
+            SetInsideItem(moveInsideItem);
         }
 
         // From here on, move must have been successful (i.e. cannot return false from here).
@@ -384,26 +388,37 @@ public class Snake : MonoBehaviour
         if (itemData.IsApple)
         {
             game.SnakeDidEatApple();
+            RuntimeManager.PlayOneShotAttached(SFX.Instance.EatApple, item.gameObject);
             didEatApple = true;
             CameraController.Instance.LittleShake();
         }
-        // else if (itemData.IsMushroom)
-        // {
-        //     if (parts.Count <= 2)
-        //     {
-        //         game.Die();
-        //         return;
-        //     }
-        //     GameObject.Destroy(parts[^1].gameObject);
-        //     parts.RemoveAt(parts.Count - 1);
-        //     targetParts--;
-        // }
         else if (itemData.IsCoin)
         {
             game.AddCoin();
+            RuntimeManager.PlayOneShotAttached(SFX.Instance.PickupCoin, item.gameObject);
+            CameraController.Instance.LittleShake();
         }
 
-        insideItem = null;
+        SetInsideItem(null);
+    }
+
+    private void SetInsideItem(ItemController newInsideItem)
+    {
+        if (newInsideItem == null)
+        {
+            if (insideItemSnapshotInstance.isValid())
+                insideItemSnapshotInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            insideItemSnapshotInstance.clearHandle();
+        }
+        else if (insideItem == null)
+        {
+            Debug.Assert(!insideItemSnapshotInstance.isValid());
+            insideItemSnapshotInstance = RuntimeManager.CreateInstance(SFX.Instance.InsideItemSnapshot);
+            insideItemSnapshotInstance.start();
+            insideItemSnapshotInstance.release();
+        }
+
+        insideItem = newInsideItem;
     }
 
     public void CarryItem(ItemData itemData)

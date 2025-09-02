@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 
 /// <summary>
@@ -30,6 +31,7 @@ public class RotatedItemData
     public bool HasRightEntryOrExit => GetHasRightEntryOrExit();
     public bool HasUpEntryOrExit => GetHasUpEntryOrExit();
     public bool HasDownEntryOrExit => GetHasDownEntryOrExit();
+    public EventReference ConsumeAudio => ConsumeAudio;
 
     private ItemData.CellType[][] cellStructure;
 

@@ -296,7 +296,7 @@ public class Game : MonoBehaviour
         if (itemConsumed.IsConsumable)
             return;
 
-        ItemsManager.SpawnCollectibles();
+        ItemsManager.SpawnCollectibles(false);
         items.Remove(itemConsumed);
         if (items.Count == 0)
             return;
@@ -382,7 +382,7 @@ public class Game : MonoBehaviour
             return;
         }
 
-        ItemsManager.SpawnCollectibles();
+        ItemsManager.SpawnCollectibles(true);
 
         // if (!canCarryMultipleItems)
         // {

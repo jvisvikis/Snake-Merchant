@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snakeWidth: 0.8
   borderWidth: 0.08
+  lumpWidth: 1.2
   borderLine: {fileID: 7983242075693033144}
   bodyLine: {fileID: 1557058890701738087}
 --- !u!1 &4870039305249919381
