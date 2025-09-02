@@ -284,7 +284,11 @@ public class Game : MonoBehaviour
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
         }
-        // UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)]);
+        string text = "";
+        if (items[indexToCollect].flavourText.Count >= 1)
+             text = items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)];
+
+        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, text);
     }
 
     public void ConsumeItem(ItemData itemConsumed)
