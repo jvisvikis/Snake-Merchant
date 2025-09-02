@@ -189,11 +189,17 @@
 		<property name="initialValue">
 			<value>-80</value>
 		</property>
+		<property name="attackTime">
+			<value>200</value>
+		</property>
 		<property name="holdTime">
 			<value>0</value>
 		</property>
 		<property name="decayTime">
 			<value>0</value>
+		</property>
+		<property name="releaseTime">
+			<value>200</value>
 		</property>
 		<property name="finalValue">
 			<value>-80</value>
