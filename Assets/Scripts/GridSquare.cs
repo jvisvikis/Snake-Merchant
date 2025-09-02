@@ -61,6 +61,8 @@ public class GridSquare : MonoBehaviour
             {
                 spriteRenderer.sprite = typeSprite.Sprite;
                 spriteRenderer.transform.localPosition += (Vector3)typeSprite.Offset;
+                if (type == Type.Middle)
+                    spriteRenderer.transform.localRotation *= RandomSquareRotation();
                 break;
             }
         }
@@ -69,6 +71,11 @@ public class GridSquare : MonoBehaviour
             Debug.LogError($"No sprite found for type {type}");
 
         Render(true);
+    }
+
+    private Quaternion RandomSquareRotation()
+    {
+        return Quaternion.Euler(0, 0, 90 * Random.Range(0, 3));
     }
 
     public void SetInvertItemColor(bool invert)
