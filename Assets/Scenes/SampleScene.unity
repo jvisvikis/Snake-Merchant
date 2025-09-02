@@ -9122,6 +9122,13 @@ MonoBehaviour:
       Data3: 1921897105
       Data4: -519891806
     Path: event:/MUSIC/MainLoop
+  ambEvent:
+    Guid:
+      Data1: -87023691
+      Data2: 1187501722
+      Data3: 1153967529
+      Data4: -182205939
+    Path: event:/Amb
 --- !u!4 &1829753469
 Transform:
   m_ObjectHideFlags: 0

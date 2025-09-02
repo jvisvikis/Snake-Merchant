@@ -8,15 +8,17 @@ public class AudioManager : MonoBehaviour
 {
     //--------------------------------------------------------------------
     // Creates a place in the UI to select your FMod event file
-    //-------------------------------------------------------------------- 
+    //--------------------------------------------------------------------
     public EventReference musicEvent;
-    
+    public EventReference ambEvent;
+
     //--------------------------------------------------------------------
     // Setting up the instance of the event
     // (in Start we will put the Event we selected above into this variable)
     //--------------------------------------------------------------------
     private EventInstance musicEventInstance;
-    
+    private EventInstance ambEventInstance;
+
     //--------------------------------------------------------------------
     // Setup this audio manager and make sure there is only one of it
     //--------------------------------------------------------------------
@@ -40,6 +42,8 @@ public class AudioManager : MonoBehaviour
     {
         musicEventInstance = RuntimeManager.CreateInstance(musicEvent);
         musicEventInstance.start();
+        ambEventInstance = RuntimeManager.CreateInstance(ambEvent);
+        ambEventInstance.start();
     }
 
     //--------------------------------------------------------------------
@@ -50,8 +54,10 @@ public class AudioManager : MonoBehaviour
     {
         musicEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         musicEventInstance.release();
+        ambEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        ambEventInstance.release();
     }
-    
+
     //--------------------------------------------------------------------
     // Method for setting a parameter
     //--------------------------------------------------------------------
@@ -59,7 +65,7 @@ public class AudioManager : MonoBehaviour
     {
         musicEventInstance.setParameterByName(parameterName, value);
     }
-    
+
     //--------------------------------------------------------------------
     // Method for playing a one-shot sound
     //--------------------------------------------------------------------
