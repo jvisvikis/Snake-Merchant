@@ -32,7 +32,6 @@ public class Game : MonoBehaviour
     public bool onlyCollectSpecificItem = false;
     public bool canExitAtAnyCell = false;
     public bool canEnterAtAnyCell = false;
-    // public bool canCarryMultipleItems = false;
     public bool mustCompleteItemAfterEntering = false;
 
     [Header("Game feel/settings")]
@@ -90,7 +89,7 @@ public class Game : MonoBehaviour
     private int currentDayScore;
     private Vector2Int currentLevelSpawn = Vector2Int.zero;
     private int currentNumParts;
-    public List<ItemData> items;
+    public List<ItemData> items = new();
     public int indexToCollect;
 
     public void SnakeDidEatApple()
@@ -243,7 +242,7 @@ public class Game : MonoBehaviour
                 yield return CameraController.Instance.ClearFocus(focusSell);
             }
 
-            string whyFail = "";
+            string whyFail;
             bool didMove = snake.Move(out didSellPreviousIteration, out whyFail);
 
             // allow grace time if snake is about to die for player to avoid death.
@@ -383,15 +382,6 @@ public class Game : MonoBehaviour
         }
 
         ItemsManager.SpawnCollectibles(true);
-
-        // if (!canCarryMultipleItems)
-        // {
-        //     // If only carrying a single item, respawn that item when it's sold.
-        //     Debug.Assert(items.Count == 1);
-        //     ItemsManager.SpawnRandomNonExistentCollectibleItem();
-        //     // RefreshSpecificItem();
-        // }
-
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);
     }

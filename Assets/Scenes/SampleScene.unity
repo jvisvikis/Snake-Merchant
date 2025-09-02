@@ -9171,6 +9171,13 @@ MonoBehaviour:
       Data3: -187555156
       Data4: 616696925
     Path: event:/SFX/Pickup_Coin
+  InsideItemSnapshot:
+    Guid:
+      Data1: 1322607231
+      Data2: 1258794229
+      Data3: 1533314493
+      Data4: -375392491
+    Path: snapshot:/InsideItem
 --- !u!1 &1830006551
 GameObject:
   m_ObjectHideFlags: 0
@@ -9934,8 +9941,8 @@ MonoBehaviour:
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
-  mustCompleteItemAfterEntering: 0
-  initTimeToMove: 0.2
+  mustCompleteItemAfterEntering: 1
+  initTimeToMove: 0.35
   minTimeToMove: 0.15
   timeToMoveReduction: 0.025
   timeToDieGrace: 0.2

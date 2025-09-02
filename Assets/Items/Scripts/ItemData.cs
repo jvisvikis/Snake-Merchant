@@ -55,6 +55,7 @@ public class ItemData : ScriptableObject
     [Min(1)]
     public int Height = 1;
     public List<string> flavourText;
+    public ItemMaterial itemMaterial;
 
     [Header("Special items")]
     public bool IsApple = false;
@@ -72,11 +73,6 @@ public class ItemData : ScriptableObject
     public Sprite sprite;
 
     public float SpriteScale = 1f;
-
-    [Header("Audio")]
-    public EventReference ConsumeAudio;
-
-    public ItemMaterial itemMaterial;
 
     [Header("Debug")]
     public Color debugColor = Color.white;

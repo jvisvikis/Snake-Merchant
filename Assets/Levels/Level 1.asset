@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f00d66c4e8164a05982a9b3fc7b7a4c, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
-  Width: 15
-  Height: 15
+  Width: 10
+  Height: 10
   Cost: 0
   NumCoins: 1
   NumItems: 3
   NumRandomObstacles: 0
   Mushrooms: 0
-  Items: {fileID: 11400000, guid: 79b1127dafaf44ceba2e7f331a285bf8, type: 2}
+  Items: {fileID: 11400000, guid: b6dd6df8e3d9546f697ec4efb8316f30, type: 2}
   RandomObstacles: {fileID: 11400000, guid: 143db1772930c49178a3808a6db1a2b1, type: 2}
   layout: 

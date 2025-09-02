@@ -58,6 +58,8 @@ public class Snake : MonoBehaviour
     {
         foreach (var part in parts)
             Destroy(part.gameObject);
+        if (insideItemSnapshotInstance.isValid())
+            insideItemSnapshotInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
     }
 
     public void SetSize(float size)
@@ -112,17 +114,11 @@ public class Snake : MonoBehaviour
         if (item.RItemData.IsConsumable)
             return Head == item.ItemGridCells[0];
 
-        // if (!game.canCarryMultipleItems && carryingItems.Count > 0)
+        // if (game.CurrentItem != item.RItemData.ItemData)
         //     return false;
-
-        // if (game.canCarryMultipleItems)
-        // {
-        if (game.CurrentItem != item.RItemData.ItemData)
-            return false;
 
         if (CarryingItemsCellCount() + item.RItemData.CellCount > parts.Count)
             return false;
-        // }
 
         if (parts.Count < item.RItemData.CellCount)
             return false;
@@ -251,11 +247,6 @@ public class Snake : MonoBehaviour
                 whyFail = "cant enter from this direction";
                 return false;
             }
-            // if (!game.canCarryMultipleItems && carryingItems.Count > 0)
-            // {
-            //     whyFail = "already carrying item";
-            //     return false;
-            // }
             SetInsideItem(moveInsideItem);
             CameraController.Instance.SetFocus(game.focusItem, game.Grid.GetWorldPos(newPos));
             foreach (var gridSq in game.GridSquares.Values)
@@ -406,6 +397,7 @@ public class Snake : MonoBehaviour
     {
         if (newInsideItem == null)
         {
+            Debug.Log("not insude item");
             if (insideItemSnapshotInstance.isValid())
                 insideItemSnapshotInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             insideItemSnapshotInstance.clearHandle();
