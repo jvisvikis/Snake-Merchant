@@ -214,6 +214,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Tex_Module_Obstacle_D_Red
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 1195
+        width: 420
+        height: 420
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a56576d7f936bc84db8a1b28be1f9498
+      internalID: -1113425297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -230,6 +251,7 @@ TextureImporter:
       Tex_Module_Obstacle_B: -2130908195
       Tex_Module_Obstacle_C: 42146520
       Tex_Module_Obstacle_D: -1938722549
+      Tex_Module_Obstacle_D_Red: -1113425297
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
