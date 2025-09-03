@@ -29,7 +29,7 @@
 			<value>0</value>
 		</property>
 		<property name="frequencyA">
-			<value>1250</value>
+			<value>22000</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{a1dc6683-fc00-4833-91c1-1aef17400df0}" />

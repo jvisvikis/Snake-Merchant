@@ -17,7 +17,7 @@ MonoBehaviour:
   Height: 3
   flavourText:
   - 
-  itemMaterial: 0
+  itemType: 4
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

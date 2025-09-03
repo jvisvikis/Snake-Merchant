@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{2354b0cd-449e-444a-b008-1f736965c6bf}">
+		<property name="assetPath">
+			<value>Gameplay/gpl_sell_before_3.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.41854166666666665</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{3f0f1461-e6b9-4eab-9252-1da0f092fa54}</destination>
+		</relationship>
+	</object>
+</objects>

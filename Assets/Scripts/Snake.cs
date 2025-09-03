@@ -44,7 +44,8 @@ public class Snake : MonoBehaviour
     private Vector2Int queuedDir = Vector2Int.zero;
     private List<CarryingItem> carryingItems = new();
     private ItemController insideItem = null;
-    private EventInstance insideItemSnapshotInstance;
+    private EventInstance insideItemInstance;
+    private EventInstance snakeAliveInstance;
     private bool didEatApple;
 
     private void Awake()
@@ -54,12 +55,21 @@ public class Snake : MonoBehaviour
         Debug.Assert(parts.Count == 1);
     }
 
+    private void OnEnable()
+    {
+        AudioManager.StartEvent(SFX.Instance.SnakeAlive, gameObject, out snakeAliveInstance);
+    }
+
+    private void OnDisable()
+    {
+        AudioManager.StopEvent(ref snakeAliveInstance);
+    }
+
     private void OnDestroy()
     {
         foreach (var part in parts)
             Destroy(part.gameObject);
-        if (insideItemSnapshotInstance.isValid())
-            insideItemSnapshotInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        AudioManager.StopEvent(ref insideItemInstance);
     }
 
     public void SetSize(float size)
@@ -209,6 +219,7 @@ public class Snake : MonoBehaviour
                 dir = newDirOnNextMove;
             newDirOnNextMove = queuedDir;
             queuedDir = Vector2Int.zero;
+            RuntimeManager.PlayOneShotAttached(SFX.Instance.TurnSnake, gameObject);
         }
 
         var newPos = Head + dir;
@@ -341,6 +352,9 @@ public class Snake : MonoBehaviour
 
         var item = carryingItems[^1];
         carryingItems.RemoveAt(carryingItems.Count - 1);
+
+        AudioManager.StartEvent(SFX.Instance.SellItem, this, out var _, ("ItemType", (float)item.ItemData.itemType));
+
         StartCoroutine(BloopOutItemThenDestroy(item));
         return true;
     }
@@ -397,19 +411,16 @@ public class Snake : MonoBehaviour
     {
         if (newInsideItem == null)
         {
-            Debug.Log("not insude item");
-            if (insideItemSnapshotInstance.isValid())
-                insideItemSnapshotInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            insideItemSnapshotInstance.clearHandle();
+            if (insideItemInstance.isValid())
+            {
+                insideItemInstance.setParameterByName("ItemType", (float)insideItem.RItemData.ItemType);
+                AudioManager.StopEvent(ref insideItemInstance);
+            }
         }
         else if (insideItem == null)
         {
-            Debug.Assert(!insideItemSnapshotInstance.isValid());
-            insideItemSnapshotInstance = RuntimeManager.CreateInstance(SFX.Instance.InsideItemSnapshot);
-            insideItemSnapshotInstance.start();
-            insideItemSnapshotInstance.release();
+            AudioManager.StartEvent(SFX.Instance.InsideItem, this, out insideItemInstance);
         }
-
         insideItem = newInsideItem;
     }
 
@@ -482,5 +493,13 @@ public class Snake : MonoBehaviour
     private void Update()
     {
         UpdateEyePosition();
+    }
+
+    public void SetSpeedFactor(float factor)
+    {
+        if (snakeAliveInstance.isValid())
+        {
+            snakeAliveInstance.setParameterByName("SnakeSpeed", Mathf.Clamp01(factor));
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using UnityEngine.Assertions.Must;
 
 public class AudioManager : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class AudioManager : MonoBehaviour
     // Setup this audio manager and make sure there is only one of it
     //--------------------------------------------------------------------
     public static AudioManager Instance { get; private set; }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -66,12 +68,72 @@ public class AudioManager : MonoBehaviour
         musicEventInstance.setParameterByName(parameterName, value);
     }
 
-    //--------------------------------------------------------------------
-    // Method for playing a one-shot sound
-    //--------------------------------------------------------------------
-    public void PlayOneShot(EventReference sound, Vector3 position)
+    public static bool StartEvent(
+        EventReference eventRef,
+        GameObject self,
+        out EventInstance eventInst,
+        params (string name, float value)[] parameters
+    )
     {
-        RuntimeManager.PlayOneShot(sound, position);
+        if (eventRef.IsNull)
+        {
+            Debug.LogWarning($"StartEvent: event {eventRef.Path} is null");
+            eventInst = default;
+            return false;
+        }
+
+        try
+        {
+            eventInst = RuntimeManager.CreateInstance(eventRef);
+        }
+        catch (System.Exception)
+        {
+            eventInst = default;
+        }
+
+        if (!eventInst.isValid())
+        {
+            Debug.LogWarning($"StartEvent: failed to start {eventRef.Path}");
+            eventInst = default;
+            return false;
+        }
+
+        if (self != null)
+            RuntimeManager.AttachInstanceToGameObject(eventInst, self);
+
+        foreach (var (name, value) in parameters)
+        {
+            eventInst.setParameterByName(name, value);
+        }
+
+        eventInst.start();
+        eventInst.release();
+        return true;
+    }
+
+    public static bool StartEvent(
+        EventReference eventRef,
+        Component self,
+        out EventInstance eventInst,
+        params (string name, float value)[] parameters
+    )
+    {
+        return StartEvent(eventRef, self.gameObject, out eventInst, parameters);
+    }
+
+    public static bool StartEvent(EventReference eventRef, out EventInstance eventInst, params (string name, float value)[] parameters)
+    {
+        return StartEvent(eventRef, null as GameObject, out eventInst, parameters);
+    }
+
+    public static bool StopEvent(ref EventInstance eventInst)
+    {
+        if (!eventInst.isValid())
+            return false;
+
+        eventInst.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        eventInst.clearHandle();
+        return true;
     }
 }
 

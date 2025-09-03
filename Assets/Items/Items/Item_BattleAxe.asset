@@ -15,9 +15,8 @@ MonoBehaviour:
   Value: 20
   Width: 3
   Height: 3
-  flavourText:
-  - 
-  itemMaterial: 0
+  flavourText: []
+  itemType: 1
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

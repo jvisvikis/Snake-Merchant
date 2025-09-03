@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{ce5f70f5-75ab-4bee-b6dd-6d4f6f049d48}">
+		<property name="assetPath">
+			<value>Gameplay/gpl_sine_drop.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>4.8940208333333333</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{3f0f1461-e6b9-4eab-9252-1da0f092fa54}</destination>
+		</relationship>
+	</object>
+</objects>

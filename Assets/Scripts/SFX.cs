@@ -10,9 +10,17 @@ public class SFX : MonoBehaviour
     [Header("SFX")]
     public EventReference EatApple;
     public EventReference PickupCoin;
+    public EventReference Sell;
+    public EventReference InsideItem;
+    public EventReference SellItem;
+    public EventReference Death;
+    public EventReference TurnSnake;
+    public EventReference SnakeAlive;
 
-    [Header("Snapshots")]
-    public EventReference InsideItemSnapshot;
+    [Header("UI")]
+    public EventReference NextDay;
+    public EventReference Upgrade;
+    public EventReference Button;
 
     private void Awake()
     {

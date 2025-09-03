@@ -32,6 +32,7 @@ public class RotatedItemData
     public bool HasUpEntryOrExit => GetHasUpEntryOrExit();
     public bool HasDownEntryOrExit => GetHasDownEntryOrExit();
     public EventReference ConsumeAudio => ConsumeAudio;
+    public ItemData.ItemType ItemType => ItemData.itemType;
 
     private ItemData.CellType[][] cellStructure;
 
