@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance => instance;
     private static UIManager instance;
 
+    [SerializeField]
+    private TextMeshProUGUI endPanelText;
     [Header("TimerUI")]
     [SerializeField]
     private Slider timeSlider;
@@ -60,6 +62,8 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI lengthLevelText;
     [SerializeField]
     private TextMeshProUGUI speedLevelText;
+    [SerializeField]
+    private TextMeshProUGUI upgradeLivesText;
 
     [Header("UpgradeShopUI")]
     [SerializeField]
@@ -78,6 +82,8 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI speedUpgradePriceText;
     [SerializeField]
     private TextMeshProUGUI livesUpgradePriceText;
+    [SerializeField]
+    private TextMeshProUGUI upgradePriceText;
 
     [Header("CoinUI")]
     [SerializeField]
@@ -119,20 +125,22 @@ public class UIManager : MonoBehaviour
         SetLivesText($"<sprite=1> <color=green>{EconomyManager.Instance.Lives}");
         //string warehouseLevelText = EconomyManager.Instance.WarehouseUpgradeAvailable() ? $"{EconomyManager.Instance.WarehouseLevel} <color=green> > {EconomyManager.Instance.WarehouseLevel + 1}" : "MAX";
         //SetWarehouseLevelText($"Level: {warehouseLevelText}");
-        string lengthLevelText = EconomyManager.Instance.SnakeLengthUpgradeAvailable() ? $"{EconomyManager.Instance.SnakeLengthLevel + 1} <color=green> > {EconomyManager.Instance.SnakeLengthLevel + 2}" : "<color=red>MAX";
-        SetLengthLevelText($"Length: {lengthLevelText}");
-        SetSpeedLevelText(EconomyManager.Instance.SnakeSpeedLevel.ToString());
-        SetWarehouseUpgradePrice($"Upgrade: <color=yellow>{EconomyManager.Instance.GetCurrentWarehouseUpgradePrice()}<sprite=0>");
-        SetLengthUpgradePrice($"{EconomyManager.Instance.GetCurrentLengthUpgradePrice()}<sprite=0>");
-        SetSpeedUpgradePrice(EconomyManager.Instance.GetCurrentSpeedUpgradePrice().ToString());
-        string lifePrice = EconomyManager.Instance.LivesUpgradeAvailable() ? EconomyManager.Instance.GetLifeUpgradePrice().ToString() : "";
-        SetLifePurchasePrice(lifePrice);
+        string lengthLevelText = EconomyManager.Instance.SnakeLengthLevel.ToString();
+        SetLengthLevelText(lengthLevelText);
+        SetUpgradeLivesText(EconomyManager.Instance.Lives.ToString());
+        //SetSpeedLevelText(EconomyManager.Instance.SnakeSpeedLevel.ToString());
+        SetUpgradePriceText($"{EconomyManager.Instance.CurrentUpgradePrice} <sprite=0>");
+        //SetSpeedUpgradePrice(EconomyManager.Instance.GetCurrentSpeedUpgradePrice().ToString());
         SetEnableWarehouseUpgrade(EconomyManager.Instance.WarehouseUpgradeAvailable());
         SetEnableLengthUpgrade(EconomyManager.Instance.SnakeLengthUpgradeAvailable());
-        SetEnableSpeedUpgrade(EconomyManager.Instance.SnakeSpeedUpgradeAvailable());
+        //SetEnableSpeedUpgrade(EconomyManager.Instance.SnakeSpeedUpgradeAvailable());
         SetEnableLifeUpgrade(EconomyManager.Instance.LivesUpgradeAvailable());
     }
     #region Set Text
+    public void SetEndPanelText(string text)
+    {
+        endPanelText.text = text;
+    }
     public void SetTimeSliderValue(float value)
     {
         timeSlider.value = value;
@@ -173,10 +181,14 @@ public class UIManager : MonoBehaviour
     {
         livesText.text = text;
     }
+    public void SetUpgradeLivesText(string text)
+    {
+        upgradeLivesText.text = text;
+    }
     public void SetWarehouseUpgradePrice(string text)
     {
         if (text.Contains("-1"))
-            text = "Upgrade: <color=red>MAX";
+            text = "<color=red>MAX";
         warehouseUpgradePriceText.text = text;
     }
     public void SetLengthUpgradePrice(string text)
@@ -197,6 +209,11 @@ public class UIManager : MonoBehaviour
             text = "";
         livesUpgradePriceText.text = text;
     }
+
+    public void SetUpgradePriceText(string text)
+    {
+        upgradePriceText.text = text;
+    }
     public void SetTimeLeftText(string text)
     {
         timeLeftText.text = text;
@@ -214,18 +231,10 @@ public class UIManager : MonoBehaviour
         coinsCollectedText.text = text;
     }
 
-    public void SetWarehouseInfo(LevelData current, LevelData next)
+    public void SetWarehouseInfo(LevelData current)
     {
-        if (next == null)
-        {
-            warehouseSizeText.text = $"Size: <color=red>{current.Width}x{current.Height}";
-            warehouseMaxCoinsText.text = $"Max Coins: <color=red>{current.NumCoins}";
-        }
-        else
-        {
-            warehouseSizeText.text = $"Size: {current.Width}x{current.Height}<color=green> > {next.Width}x{next.Height}";
-            warehouseMaxCoinsText.text = $"Max Coins: {current.NumCoins}<color=green> > {next.NumCoins}";
-        }
+        warehouseSizeText.text = $"Size: {current.Width}x{current.Height}";
+        warehouseMaxCoinsText.text = $"Max Coins: {current.NumCoins}";        
     }
     #endregion
     #region Set Images
@@ -308,7 +317,7 @@ public class UIManager : MonoBehaviour
         upgradesHolder.gameObject.SetActive(true);
         nextPanelButton.gameObject.SetActive(false);
         nextDayButton.gameObject.SetActive(true);
-
+        SetEndPanelText("Upgrades");
     }
     public void StartNextDay()
     {
