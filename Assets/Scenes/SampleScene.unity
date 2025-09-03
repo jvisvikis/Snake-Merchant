@@ -10026,6 +10026,7 @@ MonoBehaviour:
     ClearFocusDuration: 0.5
   items: []
   indexToCollect: 0
+  whyLastItemNotCollected: 
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0

@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
-  m_Name: _NotWorkWrongSprite_LongBoot
+  m_Name: Item_BootLong
   m_EditorClassIdentifier: 
   Value: 20
-  Width: 2
+  Width: 3
   Height: 3
   flavourText:
   - 
-  itemMaterial: 0
+  itemType: 0
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 0
-  cells: 'R _
+  cells: 'R _ _
 
-    # _
+    # _ _
 
-    # #'
-  sprite: {fileID: 21300000, guid: f59bd04a8f53d244ba450b99aef16f29, type: 3}
+    # # _'
+  sprite: {fileID: 21300000, guid: ab5ffb78976564f57b66b7177771759b, type: 3}
   SpriteScale: 1
   debugColor: {r: 0.045033827, g: 0.18733285, b: 0.41509432, a: 1}

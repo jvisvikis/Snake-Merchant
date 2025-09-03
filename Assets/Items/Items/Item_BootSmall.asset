@@ -26,6 +26,6 @@ MonoBehaviour:
   cells: 'R _
 
     # #'
-  sprite: {fileID: 21300000, guid: 784c34989f447fb4dab769c1d0b1603e, type: 3}
+  sprite: {fileID: 21300000, guid: ebc8f7f8f3aab4974bb849da561fcc70, type: 3}
   SpriteScale: 1
   debugColor: {r: 0.6981132, g: 0.19338359, b: 0.02963687, a: 1}

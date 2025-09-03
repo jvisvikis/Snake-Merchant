@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Item_Glove
   m_EditorClassIdentifier: 
   Value: 20
-  Width: 3
-  Height: 3
+  Width: 2
+  Height: 2
   flavourText:
   - I need some gloves
   - Is that a hand in that glove?
@@ -23,11 +23,9 @@ MonoBehaviour:
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 0
-  cells: '_ # #
+  cells: '# #
 
-    # # #
-
-    L # #'
-  sprite: {fileID: 21300000, guid: bca4b498ec479b9469e6c7d76ef7f01f, type: 3}
+    R _'
+  sprite: {fileID: -1635275815, guid: 1a591f91127d347c6897b4755985161b, type: 3}
   SpriteScale: 1
   debugColor: {r: 1, g: 0.5481836, b: 0, a: 1}
