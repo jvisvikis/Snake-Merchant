@@ -93,6 +93,7 @@ public class Game : MonoBehaviour
     private int currentNumParts;
     public List<ItemData> items = new();
     public int indexToCollect;
+    public string whyLastItemNotCollected = "";
 
     public void SnakeDidEatApple()
     {

@@ -214,7 +214,7 @@
 	</object>
 	<object class="SingleSound" id="{216c2965-228a-439a-9958-7b4e1fe89638}">
 		<property name="start">
-			<value>0.10000000000000001</value>
+			<value>0.12</value>
 		</property>
 		<property name="length">
 			<value>0.98560416666666661</value>
@@ -224,6 +224,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{46211e09-1d9a-46b4-a826-e8b6cefa2394}">
+		<property name="volume">
+			<value>-4</value>
+		</property>
 		<property name="name">
 			<value>gpl_rattle</value>
 		</property>

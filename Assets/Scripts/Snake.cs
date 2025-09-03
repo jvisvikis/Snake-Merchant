@@ -47,6 +47,8 @@ public class Snake : MonoBehaviour
     private EventInstance insideItemInstance;
     private EventInstance snakeAliveInstance;
     private bool didEatApple;
+    private int coinCollectCount = 0;
+    private int itemSellCount = 0;
 
     private void Awake()
     {
@@ -119,25 +121,27 @@ public class Snake : MonoBehaviour
         return Head + newDirOnNextMove;
     }
 
-    public bool CanConsumeOrCollect(ItemController item)
+    public bool CanConsumeOrCollect(ItemController item, out string whyNot)
     {
+        whyNot = "";
+
         if (item.RItemData.IsConsumable)
             return Head == item.ItemGridCells[0];
 
-        // if (game.CurrentItem != item.RItemData.ItemData)
-        //     return false;
-
         if (CarryingItemsCellCount() + item.RItemData.CellCount > parts.Count)
+        {
+            whyNot = "carrying too much already";
             return false;
-
-        if (parts.Count < item.RItemData.CellCount)
-            return false;
+        }
 
         // can only consume if all squares of the item are filled.
         for (int i = 0; i < item.ItemGridCells.Count; i++)
         {
             if (!ContainsCell(item.ItemGridCells[i], out var _))
+            {
+                whyNot = $"item not filled at {item.ItemGridCells[i]}";
                 return false;
+            }
         }
 
         if (!game.canExitAtAnyCell)
@@ -147,7 +151,10 @@ public class Snake : MonoBehaviour
             game.ItemsManager.GetItemAtCell(Head, out var cellType);
 
             if (!ItemData.IsAnyExit(cellType))
+            {
+                whyNot = "not an exit";
                 return false;
+            }
         }
 
         return true;
@@ -211,6 +218,7 @@ public class Snake : MonoBehaviour
 
     public bool Move(out bool didSell, out string whyFail)
     {
+        itemSellCount = 0;
         didSell = false;
 
         if (newDirOnNextMove != Vector2Int.zero)
@@ -237,12 +245,19 @@ public class Snake : MonoBehaviour
         }
 
         var moveInsideItem = game.ItemsManager.GetItemAtCell(newPos, out var moveInsideCellType);
+        bool didCollectCoin = false;
 
         if (moveInsideItem && moveInsideItem.RItemData.IsConsumable)
         {
             // The snake doesn't move inside apples, coins etc, it will immediately eat them later.
+            didCollectCoin = moveInsideItem.RItemData.IsCoin;
             moveInsideItem = null;
         }
+
+        if (didCollectCoin)
+            coinCollectCount++;
+        else
+            coinCollectCount = 0;
 
         if (moveInsideItem && moveInsideItem.RItemData.IsObstacle)
         {
@@ -269,7 +284,7 @@ public class Snake : MonoBehaviour
             // was completed then the snake would be holding it and insideItem would be null.
             if (game.mustCompleteItemAfterEntering)
             {
-                whyFail = "havent completed this item";
+                whyFail = $"havent completed this item: {game.whyLastItemNotCollected}";
                 return false;
             }
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
@@ -353,7 +368,8 @@ public class Snake : MonoBehaviour
         var item = carryingItems[^1];
         carryingItems.RemoveAt(carryingItems.Count - 1);
 
-        AudioManager.StartEvent(SFX.Instance.SellItem, this, out var _, ("ItemType", (float)item.ItemData.itemType));
+        AudioManager.StartEvent(SFX.Instance.SellItem, this, out var _, ("ItemType", (float)item.ItemData.itemType), ("Count", itemSellCount));
+        itemSellCount++;
 
         StartCoroutine(BloopOutItemThenDestroy(item));
         return true;
@@ -400,7 +416,7 @@ public class Snake : MonoBehaviour
         else if (itemData.IsCoin)
         {
             game.AddCoin();
-            RuntimeManager.PlayOneShotAttached(SFX.Instance.PickupCoin, item.gameObject);
+            AudioManager.StartEvent(SFX.Instance.PickupCoin, item.gameObject, out var _, ("Count", coinCollectCount));
             CameraController.Instance.LittleShake();
         }
 
