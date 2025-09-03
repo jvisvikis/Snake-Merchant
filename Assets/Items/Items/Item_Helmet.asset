@@ -16,12 +16,9 @@ MonoBehaviour:
   Width: 3
   Height: 3
   flavourText:
-  - This'll make a great toboggan.
+  - This'll make a great toboggan
   - Need some protection for the upcoming battle
-
-
   itemType: 2
-
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

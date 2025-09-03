@@ -17,9 +17,7 @@ MonoBehaviour:
   Height: 2
   flavourText:
   - Mmmm... Snake oil...
- 
   itemType: 3
-
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
