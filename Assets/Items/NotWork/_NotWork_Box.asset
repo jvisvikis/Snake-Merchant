@@ -15,6 +15,9 @@ MonoBehaviour:
   Value: 20
   Width: 2
   Height: 2
+  flavourText:
+  - 
+  itemMaterial: 0
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
@@ -23,4 +26,5 @@ MonoBehaviour:
 
     # D'
   sprite: {fileID: 0}
+  SpriteScale: 1
   debugColor: {r: 0.8584906, g: 0.17412782, b: 0.46009892, a: 1}

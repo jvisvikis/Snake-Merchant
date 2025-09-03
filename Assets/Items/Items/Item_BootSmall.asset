@@ -16,7 +16,8 @@ MonoBehaviour:
   Width: 2
   Height: 2
   flavourText:
-  - 
+  - It's time for some new boots!
+  - My shoes are worn, I need some new ones.
   itemMaterial: 0
   IsApple: 0
   IsMushroom: 0

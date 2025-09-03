@@ -16,7 +16,8 @@ MonoBehaviour:
   Width: 3
   Height: 3
   flavourText:
-  - 
+  - The axe is mighter than the sword
+  - This'll look great on my wall
   itemMaterial: 0
   IsApple: 0
   IsMushroom: 0
