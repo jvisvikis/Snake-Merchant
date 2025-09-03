@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,6 +10,16 @@ using UnityEditor;
 
 public class ItemController : MonoBehaviour
 {
+    [Serializable]
+    public struct ItemDataPrefab
+    {
+        public ItemData ItemData;
+        public GameObject Prefab;
+    }
+
+    [SerializeField]
+    private List<ItemDataPrefab> itemDataPrefabs = new();
+
     public RotatedItemData RItemData => itemData;
 
     /// <summary>
@@ -36,6 +48,7 @@ public class ItemController : MonoBehaviour
     private List<Vector2Int> itemGridCells;
     private List<ItemData.CellType> itemGridCellTypes;
     private List<Vector2Int> borderGridCells;
+    private GameObject instantiatedPrefab;
 
     private void Awake()
     {
@@ -59,6 +72,16 @@ public class ItemController : MonoBehaviour
             spriteRenderer.transform.localPosition = spriteOffset * itemData.SpriteScale;
             spriteRenderer.transform.localRotation = itemData.RotationQuaternion();
             spriteRenderer.transform.localScale = game.Grid.CellSize * Vector3.one * itemData.SpriteScale;
+
+            foreach (var itemDataPrefab in itemDataPrefabs)
+            {
+                if (itemDataPrefab.ItemData == itemData.ItemData)
+                {
+                    Debug.Log($"Switching sprite renderer out on {itemData.Name}");
+                    instantiatedPrefab = GameObject.Instantiate(itemDataPrefab.Prefab, spriteRenderer.transform);
+                    break;
+                }
+            }
         }
     }
 
@@ -82,6 +105,8 @@ public class ItemController : MonoBehaviour
     private void OnDestroy()
     {
         SetGridSquares(true);
+        if (instantiatedPrefab != null)
+            GameObject.Destroy(instantiatedPrefab);
     }
 
     public void SetFloating()

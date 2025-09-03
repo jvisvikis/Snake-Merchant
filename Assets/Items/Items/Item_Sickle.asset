@@ -28,6 +28,6 @@ MonoBehaviour:
     # # _
 
     _ # _'
-  sprite: {fileID: 21300000, guid: 2dfeacd2b97a125418eb6bf0118e58dd, type: 3}
+  sprite: {fileID: 21300000, guid: c97d9f6e04f14406b915ed047c364ab8, type: 3}
   SpriteScale: 1
   debugColor: {r: 1, g: 0.5481836, b: 0, a: 1}
