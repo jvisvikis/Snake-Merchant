@@ -41,9 +41,10 @@ public class EconomyManager : MonoBehaviour
     private int totalCoins = 0;
     private int warehouseLevel = 0;
     private int snakeSpeedLevel = 0;
-    private int snakeLengthLevel = 0;
+    private int snakeLengthLevel = 1;
     private int lives = 1;
     private int currentUpgradePrice;
+    private int numOfObstacles = 0;
 
     private void Awake()
     {
