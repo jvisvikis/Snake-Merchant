@@ -2060,6 +2060,7 @@ MonoBehaviour:
   lengthUpgradeButton: {fileID: 120804953}
   speedUpgradeButton: {fileID: 1031154760}
   livesUpgradeButton: {fileID: 862875348}
+  obstaclesUpgradeButton: {fileID: 927792928}
   warehouseUpgradePriceText: {fileID: 553343417}
   lengthUpgradePriceText: {fileID: 525623416}
   speedUpgradePriceText: {fileID: 104253437}
@@ -2067,6 +2068,7 @@ MonoBehaviour:
   upgradePriceText: {fileID: 525623416}
   totalCoinsText: {fileID: 26256007}
   livesText: {fileID: 1866895053}
+  obstaclesText: {fileID: 1447681109}
   itemImages:
   - {fileID: 208591017}
   dialogueBox: {fileID: 2017563612}
@@ -5696,7 +5698,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 927792929}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 301925218}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: BuyObstacleRemoval
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &927792929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9937,7 +9951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f99ea810a746749ab66eeea1977d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manyCoins: 1
+  manyCoins: 0
   warehouses: []
   snakeLengthPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000
   snakeSpeedPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000

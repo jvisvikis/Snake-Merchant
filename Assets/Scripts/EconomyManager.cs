@@ -37,6 +37,7 @@ public class EconomyManager : MonoBehaviour
     public int CurrentUpgradePrice => currentUpgradePrice;
     public int Lives => lives;
     public bool IsAlive => lives <= 0;
+    public int NumOfObstacles => numOfObstacles;
 
     private int totalCoins = 0;
     private int warehouseLevel = 0;
@@ -44,7 +45,7 @@ public class EconomyManager : MonoBehaviour
     private int snakeLengthLevel = 1;
     private int lives = 1;
     private int currentUpgradePrice;
-    private int numOfObstacles = 0;
+    private int numOfObstacles = 3;
 
     private void Awake()
     {
@@ -66,7 +67,10 @@ public class EconomyManager : MonoBehaviour
         warehouses = levels;
         if (WarehouseUpgradeAvailable())
         {
-            UIManager.Instance.SetEnableWarehouseUpgrade(true);
+            if(totalCoins >= GetCurrentWarehouseUpgradePrice())
+                UIManager.Instance.SetEnableWarehouseUpgrade(true);
+            else
+                UIManager.Instance.SetEnableWarehouseUpgrade(false);
             UIManager.Instance.SetWarehouseUpgradePrice($"{GetCurrentWarehouseUpgradePrice()} <sprite=0>");
         }
         else
@@ -219,6 +223,14 @@ public class EconomyManager : MonoBehaviour
     {
         return lives < maxLives;
     }
+    public bool ObstacleUpgradeAvailable()
+    {
+        return numOfObstacles > 0;
+    }
+    public bool HasCoinsForUpgrades()
+    {
+        return currentUpgradePrice < totalCoins;
+    }
     #endregion
 
     #region Get Upgrade Prices
@@ -257,8 +269,14 @@ public class EconomyManager : MonoBehaviour
 
     public void BuyObstacleRemoval()
     {
-        //TODO remove obstacle
-        Debug.Log("Not implemented yet");
+        if (ObstacleUpgradeAvailable())
+        {
+            numOfObstacles--;
+            SpendCoins(currentUpgradePrice);
+            UpdateSingleUpgradePrice();
+            if(!ObstacleUpgradeAvailable())
+                UIManager.Instance.SetEnableObstacleUpgrade(false);
+        }
     }
     public void AddCoins(int coins)
     {
@@ -273,6 +291,10 @@ public class EconomyManager : MonoBehaviour
         }
         totalCoins -= value;
         UIManager.Instance.SetTotalCoinText($"<sprite=0> <color=yellow>{totalCoins}");
+        if(!HasCoinsForUpgrades())
+            UIManager.Instance.SetAllUpgrades(false);
+        if(WarehouseUpgradeAvailable() && totalCoins < GetCurrentWarehouseUpgradePrice())
+            UIManager.Instance.SetEnableWarehouseUpgrade(false);
         return true;
     }
     public bool AddLife()

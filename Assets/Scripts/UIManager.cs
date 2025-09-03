@@ -75,6 +75,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button livesUpgradeButton;
     [SerializeField]
+    private Button obstaclesUpgradeButton;
+    [SerializeField]
     private TextMeshProUGUI warehouseUpgradePriceText;
     [SerializeField]
     private TextMeshProUGUI lengthUpgradePriceText;
@@ -92,6 +94,9 @@ public class UIManager : MonoBehaviour
     [Header("LivesUI")]
     [SerializeField]
     private TextMeshProUGUI livesText;
+    [Header("ObstaclesUI")]
+    [SerializeField]
+    private TextMeshProUGUI obstaclesText;
 
     [Header("ItemQueueUI")]
     [SerializeField]
@@ -127,14 +132,22 @@ public class UIManager : MonoBehaviour
         //SetWarehouseLevelText($"Level: {warehouseLevelText}");
         string lengthLevelText = EconomyManager.Instance.SnakeLengthLevel.ToString();
         SetLengthLevelText(lengthLevelText);
+        SetObstaclesText(EconomyManager.Instance.NumOfObstacles.ToString());
         SetUpgradeLivesText(EconomyManager.Instance.Lives.ToString());
         //SetSpeedLevelText(EconomyManager.Instance.SnakeSpeedLevel.ToString());
         SetUpgradePriceText($"{EconomyManager.Instance.CurrentUpgradePrice} <sprite=0>");
         //SetSpeedUpgradePrice(EconomyManager.Instance.GetCurrentSpeedUpgradePrice().ToString());
-        SetEnableWarehouseUpgrade(EconomyManager.Instance.WarehouseUpgradeAvailable());
-        SetEnableLengthUpgrade(EconomyManager.Instance.SnakeLengthUpgradeAvailable());
-        //SetEnableSpeedUpgrade(EconomyManager.Instance.SnakeSpeedUpgradeAvailable());
-        SetEnableLifeUpgrade(EconomyManager.Instance.LivesUpgradeAvailable());
+        //SetEnableWarehouseUpgrade(EconomyManager.Instance.WarehouseUpgradeAvailable());
+        if (EconomyManager.Instance.HasCoinsForUpgrades())
+        {
+            SetEnableLengthUpgrade(EconomyManager.Instance.SnakeLengthUpgradeAvailable());
+            //SetEnableSpeedUpgrade(EconomyManager.Instance.SnakeSpeedUpgradeAvailable());
+            SetEnableLifeUpgrade(EconomyManager.Instance.LivesUpgradeAvailable());
+            SetEnableObstacleUpgrade(EconomyManager.Instance.ObstacleUpgradeAvailable());
+        }
+        else
+            SetAllUpgrades(false);
+        
     }
     #region Set Text
     public void SetEndPanelText(string text)
@@ -184,6 +197,11 @@ public class UIManager : MonoBehaviour
     public void SetUpgradeLivesText(string text)
     {
         upgradeLivesText.text = text;
+    }
+
+    public void SetObstaclesText(string text)
+    {
+        obstaclesText.text = text;
     }
     public void SetWarehouseUpgradePrice(string text)
     {
@@ -254,6 +272,12 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Buy Upgrades
+    public void BuyObstacleRemoval()
+    {
+        PlayUpgradeSFX();
+        EconomyManager.Instance.BuyObstacleRemoval();
+        SetObstaclesText(EconomyManager.Instance.NumOfObstacles.ToString());
+    }
     public void BuyWarehouseUpgrade()
     {
         PlayUpgradeSFX();
@@ -286,6 +310,7 @@ public class UIManager : MonoBehaviour
     #region Enable/Disable Buttons
     public void SetEnableWarehouseUpgrade(bool active)
     {
+        Debug.Log(active);
         warehouseUpgradeButton.interactable = active;
     }
     public void SetEnableLengthUpgrade(bool active)
@@ -299,6 +324,16 @@ public class UIManager : MonoBehaviour
     public void SetEnableLifeUpgrade(bool active)
     {
         livesUpgradeButton.interactable = active;
+    }
+    public void SetEnableObstacleUpgrade(bool active)
+    {
+        obstaclesUpgradeButton.interactable=active;
+    }
+    public void SetAllUpgrades(bool active)
+    {
+        SetEnableLengthUpgrade(active);
+        SetEnableLifeUpgrade(active);
+        SetEnableObstacleUpgrade(active);
     }
     #endregion
     public void EndDay()
@@ -333,11 +368,16 @@ public class UIManager : MonoBehaviour
     {
         nextDayButton.gameObject.SetActive(visible);
     }
-
+    public void SetHoverText()
+    {
+        Debug.Log("Hovering over button");
+    }
     private void PlayUpgradeSFX()
     {
         AudioManager.StartEvent(SFX.Instance.Upgrade, out var _, ("UpgradeCount", upgradeCountThisDay));
         upgradeCountThisDay++;
     }
+
+
 
 }
