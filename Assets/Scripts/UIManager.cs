@@ -122,7 +122,7 @@ public class UIManager : MonoBehaviour
     {
         SetEndDayPanelActive(false);
         SetTotalCoinText($"<sprite=0> <color=yellow>{EconomyManager.Instance.TotalCoins}");
-        SetLivesText($"<sprite=1> <color=green>{EconomyManager.Instance.Lives}");
+        SetLivesText($"<sprite=0> <color=green>{EconomyManager.Instance.Lives}");
         //string warehouseLevelText = EconomyManager.Instance.WarehouseUpgradeAvailable() ? $"{EconomyManager.Instance.WarehouseLevel} <color=green> > {EconomyManager.Instance.WarehouseLevel + 1}" : "MAX";
         //SetWarehouseLevelText($"Level: {warehouseLevelText}");
         string lengthLevelText = EconomyManager.Instance.SnakeLengthLevel.ToString();
