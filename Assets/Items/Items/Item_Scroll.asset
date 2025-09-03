@@ -18,7 +18,9 @@ MonoBehaviour:
   flavourText:
   - I'm starting a journal of my daily adventures.
   - I'm going to write some gibberish on this.
-  itemMaterial: 0
+
+  itemType: 4
+
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

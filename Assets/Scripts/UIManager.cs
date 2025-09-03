@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -88,11 +89,13 @@ public class UIManager : MonoBehaviour
 
     [Header("ItemQueueUI")]
     [SerializeField]
-    private Image [] itemImages;
+    private Image[] itemImages;
     [SerializeField]
     private DialogueBox dialogueBox;
 
     public DialogueBox DialogueBox => dialogueBox;
+
+    private int upgradeCountThisDay = 0;
 
     private void Awake()
     {
@@ -116,7 +119,7 @@ public class UIManager : MonoBehaviour
         SetLivesText($"<sprite=1> <color=green>{EconomyManager.Instance.Lives}");
         //string warehouseLevelText = EconomyManager.Instance.WarehouseUpgradeAvailable() ? $"{EconomyManager.Instance.WarehouseLevel} <color=green> > {EconomyManager.Instance.WarehouseLevel + 1}" : "MAX";
         //SetWarehouseLevelText($"Level: {warehouseLevelText}");
-        string lengthLevelText = EconomyManager.Instance.SnakeLengthUpgradeAvailable() ? $"{EconomyManager.Instance.SnakeLengthLevel+1} <color=green> > {EconomyManager.Instance.SnakeLengthLevel + 2}" : "<color=red>MAX";
+        string lengthLevelText = EconomyManager.Instance.SnakeLengthUpgradeAvailable() ? $"{EconomyManager.Instance.SnakeLengthLevel + 1} <color=green> > {EconomyManager.Instance.SnakeLengthLevel + 2}" : "<color=red>MAX";
         SetLengthLevelText($"Length: {lengthLevelText}");
         SetSpeedLevelText(EconomyManager.Instance.SnakeSpeedLevel.ToString());
         SetWarehouseUpgradePrice($"Upgrade: <color=yellow>{EconomyManager.Instance.GetCurrentWarehouseUpgradePrice()}<sprite=0>");
@@ -213,7 +216,7 @@ public class UIManager : MonoBehaviour
 
     public void SetWarehouseInfo(LevelData current, LevelData next)
     {
-        if(next == null)
+        if (next == null)
         {
             warehouseSizeText.text = $"Size: <color=red>{current.Width}x{current.Height}";
             warehouseMaxCoinsText.text = $"Max Coins: <color=red>{current.NumCoins}";
@@ -234,7 +237,7 @@ public class UIManager : MonoBehaviour
 
     public void SetAllItemImages(Sprite[] sprites)
     {
-        for(int i = 0; i < sprites.Length; i++)
+        for (int i = 0; i < sprites.Length; i++)
         {
             itemImages[i].sprite = sprites[i];
         }
@@ -244,25 +247,30 @@ public class UIManager : MonoBehaviour
     #region Buy Upgrades
     public void BuyWarehouseUpgrade()
     {
+        PlayUpgradeSFX();
         EconomyManager.Instance.UpgradeWarehouse();
     }
 
     public void BuyLengthUpgrade()
     {
+        PlayUpgradeSFX();
         EconomyManager.Instance.UpgradeSnakeLength();
     }
 
     public void BuySpeedUpgrade()
     {
+        PlayUpgradeSFX();
         EconomyManager.Instance.UpgradeSpeedLevel();
     }
 
     public void BuyRemoveObstacle()
     {
+        PlayUpgradeSFX();
         EconomyManager.Instance.BuyObstacleRemoval();
     }
     public void BuyLife()
     {
+        PlayUpgradeSFX();
         EconomyManager.Instance.BuyLife();
     }
     #endregion
@@ -295,6 +303,7 @@ public class UIManager : MonoBehaviour
 
     public void OpenUpgradesPanel()
     {
+        RuntimeManager.PlayOneShot(SFX.Instance.Button);
         overviewHolder.gameObject.SetActive(false);
         upgradesHolder.gameObject.SetActive(true);
         nextPanelButton.gameObject.SetActive(false);
@@ -303,6 +312,8 @@ public class UIManager : MonoBehaviour
     }
     public void StartNextDay()
     {
+        upgradeCountThisDay = 0;
+        RuntimeManager.PlayOneShot(SFX.Instance.NextDay);
         DayManager.Instance.NextDay();
     }
     public void SetEndDayPanelActive(bool active)
@@ -313,7 +324,11 @@ public class UIManager : MonoBehaviour
     {
         nextDayButton.gameObject.SetActive(visible);
     }
-    
 
+    private void PlayUpgradeSFX()
+    {
+        AudioManager.StartEvent(SFX.Instance.Upgrade, out var _, ("UpgradeCount", upgradeCountThisDay));
+        upgradeCountThisDay++;
+    }
 
 }

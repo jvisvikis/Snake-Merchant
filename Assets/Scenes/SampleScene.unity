@@ -9171,13 +9171,69 @@ MonoBehaviour:
       Data3: -187555156
       Data4: 616696925
     Path: event:/SFX/Pickup_Coin
-  InsideItemSnapshot:
+  Sell:
     Guid:
-      Data1: 1322607231
-      Data2: 1258794229
-      Data3: 1533314493
-      Data4: -375392491
-    Path: snapshot:/InsideItem
+      Data1: 407970686
+      Data2: 1337452595
+      Data3: -1426235250
+      Data4: -1371740592
+    Path: event:/SFX/Sell
+  InsideItem:
+    Guid:
+      Data1: 654617542
+      Data2: 1269839220
+      Data3: 2109301429
+      Data4: 501209416
+    Path: event:/SFX/Inside_Item
+  SellItem:
+    Guid:
+      Data1: -1460476320
+      Data2: 1186158711
+      Data3: 551743132
+      Data4: -376942512
+    Path: event:/SFX/SellItem
+  Death:
+    Guid:
+      Data1: 1731389076
+      Data2: 1173917809
+      Data3: -1194574416
+      Data4: 132403785
+    Path: event:/SFX/Death
+  TurnSnake:
+    Guid:
+      Data1: -1775948930
+      Data2: 1141819601
+      Data3: 1157824951
+      Data4: -1651829959
+    Path: event:/SFX/Turn
+  SnakeAlive:
+    Guid:
+      Data1: -773472725
+      Data2: 1311998000
+      Data3: 1090910606
+      Data4: 1549827962
+    Path: event:/SFX/SnakeAlive
+  NextDay:
+    Guid:
+      Data1: 1931702866
+      Data2: 1304186132
+      Data3: 1442096282
+      Data4: -1998955166
+    Path: event:/UI/Next_Day
+  Upgrade:
+    Guid:
+      Data1: -1284434713
+      Data2: 1271762422
+      Data3: -119406922
+      Data4: -1738298642
+    Path: event:/UI/Upgrade
+  Button:
+    Guid:
+      Data1: -1716817239
+      Data2: 1100242553
+      Data3: 1582491524
+      Data4: -999451545
+    Path: event:/UI/Generic_Button
 --- !u!1 &1830006551
 GameObject:
   m_ObjectHideFlags: 0
@@ -9929,7 +9985,7 @@ MonoBehaviour:
   collectionUIOffset: {x: 0, y: 1}
   itemsManagerPrefab: {fileID: 7085311104296680027, guid: 91f8b8b16c01946feb689ff910d2cfbc, type: 3}
   levels:
-  - {fileID: 11400000, guid: d013e2b92fd7f6e4a81c21a0cd9bf0d8, type: 2}
+  - {fileID: 11400000, guid: 7919659961c994580af077b764df0297, type: 2}
   - {fileID: 11400000, guid: d6914d8b6e214ca49a588113ca0748fb, type: 2}
   - {fileID: 11400000, guid: e7725d7c6ac911d47970a93b164628f3, type: 2}
   - {fileID: 11400000, guid: 7fc892a17b36b3c4bbca21302ee5113f, type: 2}

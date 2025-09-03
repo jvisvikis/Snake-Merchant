@@ -21,12 +21,17 @@
 		</relationship>
 		<relationship name="snapshotProperties">
 			<destination>{f8da1b0d-e6e6-4b03-bd4b-3a6a86ea90b5}</destination>
+			<destination>{449d71f1-da41-40dd-9b77-fb4b9eae03de}</destination>
 		</relationship>
 		<relationship name="snapshotTracks">
 			<destination>{2dace219-5c31-46c5-83d7-06c0dcfbabd7}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{d4221cc7-f62f-4d4f-9d9c-2963c26c719f}" />
+	<object class="EventAutomatableProperties" id="{d4221cc7-f62f-4d4f-9d9c-2963c26c719f}">
+		<relationship name="modulators">
+			<destination>{57e79e2a-fe4c-4e3d-a22f-b1c1feef970c}</destination>
+		</relationship>
+	</object>
 	<object class="MarkerTrack" id="{1710bd6c-717c-4642-9e66-b829c1bc78d9}" />
 	<object class="Timeline" id="{b2fa4ef8-df09-4117-a3c5-18e052296c1d}" />
 	<object class="SnapshotMasterTrack" id="{d2a7765b-42e8-4cd0-86be-ea04b3393fa8}" />
@@ -41,9 +46,43 @@
 			<destination>{44dade17-8278-48e1-a993-4ac8b4cc2dcd}</destination>
 		</relationship>
 	</object>
+	<object class="SnapshotProperty" id="{449d71f1-da41-40dd-9b77-fb4b9eae03de}">
+		<property name="propertyName">
+			<value>frequencyA</value>
+		</property>
+		<property name="value">
+			<value>280</value>
+		</property>
+		<relationship name="automatableObject">
+			<destination>{44dade17-8278-48e1-a993-4ac8b4cc2dcd}</destination>
+		</relationship>
+	</object>
 	<object class="SnapshotTrack" id="{2dace219-5c31-46c5-83d7-06c0dcfbabd7}">
 		<relationship name="mixerStrip">
 			<destination>{2125fa9f-7db3-4070-ace0-4f73e9de8ae4}</destination>
 		</relationship>
+	</object>
+	<object class="ADSRModulator" id="{57e79e2a-fe4c-4e3d-a22f-b1c1feef970c}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>snapshotIntensity</value>
+		</property>
+		<property name="attackTime">
+			<value>180</value>
+		</property>
+		<property name="peakValue">
+			<value>100</value>
+		</property>
+		<property name="holdTime">
+			<value>0</value>
+		</property>
+		<property name="decayTime">
+			<value>0</value>
+		</property>
+		<property name="sustainValue">
+			<value>100</value>
+		</property>
+		<property name="releaseTime">
+			<value>20</value>
+		</property>
 	</object>
 </objects>

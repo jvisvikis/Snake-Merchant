@@ -359,7 +359,7 @@ public class ItemsManager : MonoBehaviour
         {
             var item = items[i];
             var itemData = item.RItemData;
-            if (game.Snake.CanConsumeOrCollect(item))
+            if (game.Snake.CanConsumeOrCollect(item, out game.whyLastItemNotCollected))
             {
                 game.Snake.ConsumeOrCollect(item);
                 didConsume = itemData.ItemData;

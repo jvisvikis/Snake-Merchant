@@ -18,7 +18,9 @@ MonoBehaviour:
   flavourText:
   - I need something to store my cat.
   - I just have sooooo much money.
-  itemMaterial: 0
+
+  itemType: 5
+
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

@@ -44,8 +44,11 @@ public class Snake : MonoBehaviour
     private Vector2Int queuedDir = Vector2Int.zero;
     private List<CarryingItem> carryingItems = new();
     private ItemController insideItem = null;
-    private EventInstance insideItemSnapshotInstance;
+    private EventInstance insideItemInstance;
+    private EventInstance snakeAliveInstance;
     private bool didEatApple;
+    private int coinCollectCount = 0;
+    private int itemSellCount = 0;
 
     private void Awake()
     {
@@ -54,12 +57,21 @@ public class Snake : MonoBehaviour
         Debug.Assert(parts.Count == 1);
     }
 
+    private void OnEnable()
+    {
+        AudioManager.StartEvent(SFX.Instance.SnakeAlive, gameObject, out snakeAliveInstance);
+    }
+
+    private void OnDisable()
+    {
+        AudioManager.StopEvent(ref snakeAliveInstance);
+    }
+
     private void OnDestroy()
     {
         foreach (var part in parts)
             Destroy(part.gameObject);
-        if (insideItemSnapshotInstance.isValid())
-            insideItemSnapshotInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        AudioManager.StopEvent(ref insideItemInstance);
     }
 
     public void SetSize(float size)
@@ -109,25 +121,27 @@ public class Snake : MonoBehaviour
         return Head + newDirOnNextMove;
     }
 
-    public bool CanConsumeOrCollect(ItemController item)
+    public bool CanConsumeOrCollect(ItemController item, out string whyNot)
     {
+        whyNot = "";
+
         if (item.RItemData.IsConsumable)
             return Head == item.ItemGridCells[0];
 
-        // if (game.CurrentItem != item.RItemData.ItemData)
-        //     return false;
-
         if (CarryingItemsCellCount() + item.RItemData.CellCount > parts.Count)
+        {
+            whyNot = "carrying too much already";
             return false;
-
-        if (parts.Count < item.RItemData.CellCount)
-            return false;
+        }
 
         // can only consume if all squares of the item are filled.
         for (int i = 0; i < item.ItemGridCells.Count; i++)
         {
             if (!ContainsCell(item.ItemGridCells[i], out var _))
+            {
+                whyNot = $"item not filled at {item.ItemGridCells[i]}";
                 return false;
+            }
         }
 
         if (!game.canExitAtAnyCell)
@@ -137,7 +151,10 @@ public class Snake : MonoBehaviour
             game.ItemsManager.GetItemAtCell(Head, out var cellType);
 
             if (!ItemData.IsAnyExit(cellType))
+            {
+                whyNot = "not an exit";
                 return false;
+            }
         }
 
         return true;
@@ -201,6 +218,7 @@ public class Snake : MonoBehaviour
 
     public bool Move(out bool didSell, out string whyFail)
     {
+        itemSellCount = 0;
         didSell = false;
 
         if (newDirOnNextMove != Vector2Int.zero)
@@ -209,6 +227,7 @@ public class Snake : MonoBehaviour
                 dir = newDirOnNextMove;
             newDirOnNextMove = queuedDir;
             queuedDir = Vector2Int.zero;
+            RuntimeManager.PlayOneShotAttached(SFX.Instance.TurnSnake, gameObject);
         }
 
         var newPos = Head + dir;
@@ -226,12 +245,19 @@ public class Snake : MonoBehaviour
         }
 
         var moveInsideItem = game.ItemsManager.GetItemAtCell(newPos, out var moveInsideCellType);
+        bool didCollectCoin = false;
 
         if (moveInsideItem && moveInsideItem.RItemData.IsConsumable)
         {
             // The snake doesn't move inside apples, coins etc, it will immediately eat them later.
+            didCollectCoin = moveInsideItem.RItemData.IsCoin;
             moveInsideItem = null;
         }
+
+        if (didCollectCoin)
+            coinCollectCount++;
+        else
+            coinCollectCount = 0;
 
         if (moveInsideItem && moveInsideItem.RItemData.IsObstacle)
         {
@@ -258,7 +284,7 @@ public class Snake : MonoBehaviour
             // was completed then the snake would be holding it and insideItem would be null.
             if (game.mustCompleteItemAfterEntering)
             {
-                whyFail = "havent completed this item";
+                whyFail = $"havent completed this item: {game.whyLastItemNotCollected}";
                 return false;
             }
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
@@ -341,6 +367,10 @@ public class Snake : MonoBehaviour
 
         var item = carryingItems[^1];
         carryingItems.RemoveAt(carryingItems.Count - 1);
+
+        AudioManager.StartEvent(SFX.Instance.SellItem, this, out var _, ("ItemType", (float)item.ItemData.itemType), ("Count", itemSellCount));
+        itemSellCount++;
+
         StartCoroutine(BloopOutItemThenDestroy(item));
         return true;
     }
@@ -386,7 +416,7 @@ public class Snake : MonoBehaviour
         else if (itemData.IsCoin)
         {
             game.AddCoin();
-            RuntimeManager.PlayOneShotAttached(SFX.Instance.PickupCoin, item.gameObject);
+            AudioManager.StartEvent(SFX.Instance.PickupCoin, item.gameObject, out var _, ("Count", coinCollectCount));
             CameraController.Instance.LittleShake();
         }
 
@@ -397,19 +427,16 @@ public class Snake : MonoBehaviour
     {
         if (newInsideItem == null)
         {
-            Debug.Log("not insude item");
-            if (insideItemSnapshotInstance.isValid())
-                insideItemSnapshotInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            insideItemSnapshotInstance.clearHandle();
+            if (insideItemInstance.isValid())
+            {
+                insideItemInstance.setParameterByName("ItemType", (float)insideItem.RItemData.ItemType);
+                AudioManager.StopEvent(ref insideItemInstance);
+            }
         }
         else if (insideItem == null)
         {
-            Debug.Assert(!insideItemSnapshotInstance.isValid());
-            insideItemSnapshotInstance = RuntimeManager.CreateInstance(SFX.Instance.InsideItemSnapshot);
-            insideItemSnapshotInstance.start();
-            insideItemSnapshotInstance.release();
+            AudioManager.StartEvent(SFX.Instance.InsideItem, this, out insideItemInstance);
         }
-
         insideItem = newInsideItem;
     }
 
@@ -482,5 +509,13 @@ public class Snake : MonoBehaviour
     private void Update()
     {
         UpdateEyePosition();
+    }
+
+    public void SetSpeedFactor(float factor)
+    {
+        if (snakeAliveInstance.isValid())
+        {
+            snakeAliveInstance.setParameterByName("SnakeSpeed", Mathf.Clamp01(factor));
+        }
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{9fd8dfdb-831b-43eb-88ca-dfbf95dd5271}">
+		<property name="name">
+			<value>UpgradeCount</value>
+		</property>
+		<relationship name="folder">
+			<destination>{5118e716-a331-4fad-97dc-a9bf3a24f2fc}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{bde7fc25-11ee-44ae-b55c-54fdfa6b51e3}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{bde7fc25-11ee-44ae-b55c-54fdfa6b51e3}">
+		<property name="maximum">
+			<value>12</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

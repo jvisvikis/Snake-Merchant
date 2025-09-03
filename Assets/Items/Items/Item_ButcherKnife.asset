@@ -18,7 +18,9 @@ MonoBehaviour:
   flavourText:
   - One of your finest knives please!
   - As the best chef in the village, I NEED this knife
-  itemMaterial: 0
+  
+  itemType: 1
+
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

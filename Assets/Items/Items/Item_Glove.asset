@@ -18,7 +18,9 @@ MonoBehaviour:
   flavourText:
   - I need some gloves
   - Is that a hand in that glove?
-  itemMaterial: 0
+
+  itemType: 5
+
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

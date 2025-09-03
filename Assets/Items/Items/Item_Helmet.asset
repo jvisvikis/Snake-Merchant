@@ -18,7 +18,10 @@ MonoBehaviour:
   flavourText:
   - This'll make a great toboggan.
   - Need some protection for the upcoming battle
-  itemMaterial: 0
+
+
+  itemType: 2
+
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

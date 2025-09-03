@@ -18,7 +18,7 @@ MonoBehaviour:
   flavourText:
   - It's time for some new boots!
   - My shoes are worn, I need some new ones.
-  itemMaterial: 0
+  itemType: 5
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

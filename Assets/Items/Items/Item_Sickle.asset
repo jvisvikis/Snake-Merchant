@@ -18,7 +18,9 @@ MonoBehaviour:
   flavourText:
   - You reap what you sow!
   - Ah... The perfect dancing prop!
-  itemMaterial: 0
+
+  itemType: 1
+
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0

@@ -19,15 +19,14 @@ public class ItemData : ScriptableObject
         Exit = 7,
     }
 
-    public enum ItemMaterial
+    public enum ItemType
     {
         None = 0,
-        Wood = 1,
-        MetalBig = 2,
-        MetalSmall = 3,
-        Glass = 4,
-        Paper = 5,
-        Fabric = 6,
+        Weapon = 1,
+        Armour = 2,
+        Glass = 3,
+        Paper = 4,
+        Leather = 5,
     }
 
     private const string MiddleCellChar = "#";
@@ -55,7 +54,7 @@ public class ItemData : ScriptableObject
     [Min(1)]
     public int Height = 1;
     public List<string> flavourText;
-    public ItemMaterial itemMaterial;
+    public ItemType itemType;
 
     [Header("Special items")]
     public bool IsApple = false;

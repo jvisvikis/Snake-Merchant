@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using FMODUnity;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -91,6 +93,7 @@ public class Game : MonoBehaviour
     private int currentNumParts;
     public List<ItemData> items = new();
     public int indexToCollect;
+    public string whyLastItemNotCollected = "";
 
     public void SnakeDidEatApple()
     {
@@ -279,7 +282,7 @@ public class Game : MonoBehaviour
         int currentValue = 0;
         while (currentValue < DayManager.Instance.CurrentTargetScore)
         {
-           
+
             int index = 2 + Random.Range(0, CurrentLevel.Items.Items.Count - 2);
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
@@ -302,7 +305,7 @@ public class Game : MonoBehaviour
             return;
         Debug.Log(items.Count);
         //indexToCollect++;
-        
+
         int textIdx = Random.Range(0, items[indexToCollect].flavourText.Count);
         Debug.Log(textIdx);
         Debug.Log(items[indexToCollect].flavourText.Count);
@@ -318,6 +321,7 @@ public class Game : MonoBehaviour
     public void Die(string whyDie)
     {
         Debug.Log($"DYING: {whyDie}");
+        RuntimeManager.PlayOneShotAttached(SFX.Instance.Death, snake.gameObject);
         //This will need a revist
         // TODO and when it does, i.e. because snake has more lives, move the camera slowly back to the spawn point.
         // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
@@ -377,6 +381,7 @@ public class Game : MonoBehaviour
                 bonus += 10;
             }
         }
+        RuntimeManager.PlayOneShotAttached(SFX.Instance.Sell, snake.gameObject);
         currentDayScore += bonus;
         collectionSold += bonus;
         CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
@@ -394,6 +399,7 @@ public class Game : MonoBehaviour
 
         ItemsManager.SpawnCollectibles(true);
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+        snake.SetSpeedFactor(timeToMove / initTimeToMove);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);
     }
 }
