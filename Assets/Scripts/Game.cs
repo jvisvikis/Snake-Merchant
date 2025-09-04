@@ -301,7 +301,11 @@ public class Game : MonoBehaviour
     public void ConsumeItem(ItemData itemConsumed)
     {
         if (itemConsumed.IsConsumable)
+        {
+            if (itemConsumed.IsApple)
+                IncreaseSpeed();
             return;
+        }
 
         ItemsManager.SpawnCollectibles(false);
         items.Remove(itemConsumed);
@@ -402,8 +406,12 @@ public class Game : MonoBehaviour
         }
 
         ItemsManager.SpawnCollectibles(true);
-        timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+        
         snake.SetSpeedFactor(timeToMove / initTimeToMove);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);
+    }
+    public void IncreaseSpeed()
+    {
+        timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
     }
 }

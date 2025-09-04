@@ -9383,7 +9383,7 @@ MonoBehaviour:
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
-  mustCompleteItemAfterEntering: 1
+  mustCompleteItemAfterEntering: 0
   initTimeToMove: 0.35
   minTimeToMove: 0.15
   timeToMoveReduction: 0.025
