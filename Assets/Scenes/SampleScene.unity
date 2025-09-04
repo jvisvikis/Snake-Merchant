@@ -1313,7 +1313,7 @@ MonoBehaviour:
   minScore: 100
   maxScore: 9999
   scoreModifier: 1.1
-  instantWin: 1
+  instantWin: 0
 --- !u!4 &196152557
 Transform:
   m_ObjectHideFlags: 0
@@ -9369,12 +9369,15 @@ MonoBehaviour:
   collectionUIOffset: {x: 0, y: 1}
   itemsManagerPrefab: {fileID: 7085311104296680027, guid: 91f8b8b16c01946feb689ff910d2cfbc, type: 3}
   levels:
-  - {fileID: 11400000, guid: 7919659961c994580af077b764df0297, type: 2}
+  - {fileID: 11400000, guid: d013e2b92fd7f6e4a81c21a0cd9bf0d8, type: 2}
   - {fileID: 11400000, guid: d6914d8b6e214ca49a588113ca0748fb, type: 2}
   - {fileID: 11400000, guid: e7725d7c6ac911d47970a93b164628f3, type: 2}
   - {fileID: 11400000, guid: 7fc892a17b36b3c4bbca21302ee5113f, type: 2}
   - {fileID: 11400000, guid: 46429c6350a3a04409c5f0b49b362d18, type: 2}
   - {fileID: 11400000, guid: 727ca08977a05dd408579f119487a508, type: 2}
+  - {fileID: 11400000, guid: bc2c33cf50dc30a4da4dc554e9ff9af6, type: 2}
+  - {fileID: 11400000, guid: 8912feaee6c4cce47b9b3d814aaf440b, type: 2}
+  - {fileID: 11400000, guid: 142e0f82fad1479438d34bb683067a83, type: 2}
   - {fileID: 11400000, guid: d093b64e46b47ae4580d868184d38b87, type: 2}
   gridAutoSizeScale: 0.75
   onlyCollectSpecificItem: 0
