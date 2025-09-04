@@ -84,6 +84,7 @@ public class DayManager : MonoBehaviour
     {
         currentTotalScore += currentDayScore;
         isPlaying = false;
+        EconomyManager.Instance.AddObstacles(1);
         UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(timeLeft)}s");
         UIManager.Instance.SetBonusText($"Total Bonus: 0");
         UIManager.Instance.SetCoinsCollectedText($"Coins Collected: 0");
@@ -95,6 +96,7 @@ public class DayManager : MonoBehaviour
     {
         currentTotalScore += currentDayScore;
         isPlaying = false;
+        EconomyManager.Instance.AddObstacles(1);
         UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(timeLeft)}s");
         UIManager.Instance.SetBonusText($"Total Bonus: {bonusScore}");
         UIManager.Instance.SetCoinsCollectedText($"Coins Collected: {coins}");

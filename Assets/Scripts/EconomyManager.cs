@@ -65,9 +65,12 @@ public class EconomyManager : MonoBehaviour
     public void SetupWarehouses(LevelData[] levels)
     {
         warehouses = levels;
-        warehouses[warehouseLevel].NumRandomObstacles = numOfObstacles;
+        Debug.Log(numOfObstacles);
         if(numOfObstacles > warehouses[warehouseLevel].MaxObstacles)
-            warehouses[warehouseLevel].NumRandomObstacles = warehouses[warehouseLevel].MaxObstacles;
+            numOfObstacles = warehouses[warehouseLevel].MaxObstacles;
+
+        warehouses[warehouseLevel].NumRandomObstacles = numOfObstacles;
+
         if (WarehouseUpgradeAvailable())
         {
             if(totalCoins >= GetCurrentWarehouseUpgradePrice())
@@ -327,6 +330,11 @@ public class EconomyManager : MonoBehaviour
     public void UpdateSingleUpgradePrice()
     {
         currentUpgradePrice = Mathf.RoundToInt(currentUpgradePrice * upgradePriceModifier);
+    }
+
+    public void AddObstacles(int obstaclesToAdd)
+    {
+        numOfObstacles += obstaclesToAdd;
     }
 
 }
