@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{2c87e891-4430-4fb6-be4d-e61611aa471b}">
+		<property name="assetPath">
+			<value>Music/snakejam_music_v2.2_perc.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>54</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{3f0f1461-e6b9-4eab-9252-1da0f092fa54}</destination>
+		</relationship>
+	</object>
+</objects>
