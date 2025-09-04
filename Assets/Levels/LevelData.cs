@@ -15,6 +15,7 @@ public class LevelData : ScriptableObject
     public int NumCoins = 5;
     public int NumItems = 3;
     public int NumRandomObstacles = 0;
+    public int MaxObstacles = 3;
     public bool Mushrooms = false;
     public ItemDataCollection Items;
     public ItemDataCollection RandomObstacles;

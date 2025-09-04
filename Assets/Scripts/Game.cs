@@ -102,8 +102,8 @@ public class Game : MonoBehaviour
 
     void Start()
     {
-        CurrentLevel.ParseLayout();
         EconomyManager.Instance.SetupWarehouses(levels);
+        CurrentLevel.ParseLayout();
         var orig = new Vector2(CurrentLevel.Width, CurrentLevel.Height) * cellSize / -2f;
         grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, cellSize, orig);
         currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;

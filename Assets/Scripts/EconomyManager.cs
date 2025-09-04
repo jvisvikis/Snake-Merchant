@@ -45,7 +45,7 @@ public class EconomyManager : MonoBehaviour
     private int snakeLengthLevel = 1;
     private int lives = 1;
     private int currentUpgradePrice;
-    private int numOfObstacles = 3;
+    private int numOfObstacles = 0;
 
     private void Awake()
     {
@@ -65,6 +65,9 @@ public class EconomyManager : MonoBehaviour
     public void SetupWarehouses(LevelData[] levels)
     {
         warehouses = levels;
+        warehouses[warehouseLevel].NumRandomObstacles = numOfObstacles;
+        if(numOfObstacles > warehouses[warehouseLevel].MaxObstacles)
+            warehouses[warehouseLevel].NumRandomObstacles = warehouses[warehouseLevel].MaxObstacles;
         if (WarehouseUpgradeAvailable())
         {
             if(totalCoins >= GetCurrentWarehouseUpgradePrice())
