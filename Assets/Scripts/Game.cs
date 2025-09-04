@@ -219,8 +219,9 @@ public class Game : MonoBehaviour
     public IEnumerator MoveSnake(Vector2Int spawn, bool isStart)
     {
         yield return CameraController.Instance.SetFocus(isStart ? focusSpawn : focusRespawn, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
-        if (isStart)
-            yield return new WaitForSeconds(spawnPause);
+        // if (isStart)
+        //     yield return new WaitForSeconds(spawnPause);
+        AudioManager.Instance.StartMusic();
         yield return CameraController.Instance.ClearFocus(isStart ? focusSpawn : focusRespawn);
 
         snake.ApplyQueuedDirection();
