@@ -74,11 +74,6 @@ public class Snake : MonoBehaviour
         AudioManager.StopEvent(ref insideItemInstance);
     }
 
-    public void SetSize(float size)
-    {
-        this.transform.localScale = new Vector3(size, size);
-    }
-
     public void Init(Vector2Int pos)
     {
         parts[0].transform.localPosition = new Vector3(pos.x, pos.y);
@@ -216,10 +211,11 @@ public class Snake : MonoBehaviour
         return game.canExitAtAnyCell || ItemData.IsAnyExit(cellType);
     }
 
-    public bool Move(out bool didSell, out string whyFail)
+    public bool Move(out bool didSell, out string whyFail, out ItemController blockedByItem)
     {
         itemSellCount = 0;
         didSell = false;
+        blockedByItem = null;
 
         if (newDirOnNextMove != Vector2Int.zero)
         {
@@ -262,6 +258,7 @@ public class Snake : MonoBehaviour
         if (moveInsideItem && moveInsideItem.RItemData.IsObstacle)
         {
             whyFail = "hit obstacle";
+            blockedByItem = moveInsideItem;
             return false;
         }
 
@@ -271,6 +268,7 @@ public class Snake : MonoBehaviour
             if (!CanEnterFromDirection(moveInsideCellType, dir))
             {
                 whyFail = "cant enter from this direction";
+                blockedByItem = moveInsideItem;
                 return false;
             }
             SetInsideItem(moveInsideItem);
@@ -285,6 +283,7 @@ public class Snake : MonoBehaviour
             if (game.mustCompleteItemAfterEntering)
             {
                 whyFail = $"havent completed this item: {game.whyLastItemNotCollected}";
+                blockedByItem = moveInsideItem;
                 return false;
             }
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
@@ -292,6 +291,7 @@ public class Snake : MonoBehaviour
             if (!CanExit(currentyInsideCellType))
             {
                 whyFail = "not an item exit";
+                blockedByItem = moveInsideItem;
                 return false;
             }
             SetInsideItem(null);
@@ -302,6 +302,7 @@ public class Snake : MonoBehaviour
             if (game.mustCompleteItemAfterEntering)
             {
                 whyFail = "incomplete item";
+                blockedByItem = moveInsideItem;
                 return false;
             }
             var itemAtCell = game.ItemsManager.GetItemAtCell(Head, out var currentyInsideCellType);
@@ -309,6 +310,7 @@ public class Snake : MonoBehaviour
             if (!CanEnterFromDirection(moveInsideCellType, dir) || !CanExit(currentyInsideCellType))
             {
                 whyFail = "illegal crossed items";
+                blockedByItem = moveInsideItem;
                 return false;
             }
             SetInsideItem(moveInsideItem);

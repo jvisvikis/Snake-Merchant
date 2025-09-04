@@ -8502,11 +8502,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicEvent:
     Guid:
-      Data1: -500237249
-      Data2: 1085391038
-      Data3: 1921897105
-      Data4: -519891806
-    Path: event:/MUSIC/MainLoop
+      Data1: -1270361317
+      Data2: 1229764766
+      Data3: 615331993
+      Data4: -1154991894
+    Path: event:/MUSIC/MainLoop_2
   ambEvent:
     Guid:
       Data1: -87023691
@@ -9376,7 +9376,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 46429c6350a3a04409c5f0b49b362d18, type: 2}
   - {fileID: 11400000, guid: 727ca08977a05dd408579f119487a508, type: 2}
   - {fileID: 11400000, guid: d093b64e46b47ae4580d868184d38b87, type: 2}
-  cellSize: 1
   gridAutoSizeScale: 0.75
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
@@ -9390,21 +9389,26 @@ MonoBehaviour:
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
   startNumParts: 10
-  spawnPause: 0.5
+  spawnPause: 5
   sellPause: 0.25
   itemBloopTime: 0.2
   focusSpawn:
-    FocusZoom: 0.607
+    FocusZoom: 0.5
     FocusPosition: 1
     SetFocusDuration: 0
-    ClearFocusDuration: 2
+    ClearFocusDuration: 5.6
+  focusRespawn:
+    FocusZoom: 0.7
+    FocusPosition: 1
+    SetFocusDuration: 0.5
+    ClearFocusDuration: 1
   focusItem:
     FocusZoom: 0.852
     FocusPosition: 0.074
     SetFocusDuration: 0.5
     ClearFocusDuration: 0.5
   focusSell:
-    FocusZoom: 0.8
+    FocusZoom: 0.5
     FocusPosition: 0.9
     SetFocusDuration: 0.5
     ClearFocusDuration: 0.5

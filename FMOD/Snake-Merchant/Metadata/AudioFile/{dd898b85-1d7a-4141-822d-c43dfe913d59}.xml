@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{dd898b85-1d7a-4141-822d-c43dfe913d59}">
 		<property name="assetPath">
-			<value>snakejam_music_v1_accomp.wav</value>
+			<value>Music/snakejam_music_v1_accomp.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>

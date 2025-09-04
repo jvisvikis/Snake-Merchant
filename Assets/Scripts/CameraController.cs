@@ -37,7 +37,6 @@ public class CameraController : MonoBehaviour
     private Shaker camShaker;
 
     private static CameraController instance = null;
-    private bool busy;
     private float focusSpeedScale = 1f;
 
     // Focus
@@ -65,7 +64,8 @@ public class CameraController : MonoBehaviour
     public void Init(float orthoSize)
     {
         defaultOrthoSize = orthoSize;
-        Reset();
+        transform.position = defaultPosition;
+        cam.orthographicSize = defaultOrthoSize;
     }
 
     public void SetFocusSpeedScale(float scale)
@@ -83,28 +83,14 @@ public class CameraController : MonoBehaviour
         return camShaker.LittleShake();
     }
 
-    public void Reset()
-    {
-        StopAllCoroutines();
-
-        transform.position = defaultPosition;
-        cam.orthographicSize = defaultOrthoSize;
-
-        busy = false;
-    }
-
     public Coroutine SetFocus(FocusOptions opts, Vector3 focusPosition)
     {
-        if (busy)
-        {
-            Reset();
-            return StartCoroutine(NullCoroutine());
-        }
+        StopAllCoroutines();
 
         var targetPosition = new Vector3(focusPosition.x, focusPosition.y, transform.position.z);
         var targetPositionDelta = targetPosition - transform.position;
         targetPosition = transform.position + targetPositionDelta * opts.FocusPosition;
-        var targetOrthoSize = cam.orthographicSize * opts.FocusZoom;
+        var targetOrthoSize = defaultOrthoSize * opts.FocusZoom;
 
         if (opts.SetFocusDuration == 0)
         {
@@ -113,9 +99,6 @@ public class CameraController : MonoBehaviour
             return StartCoroutine(NullCoroutine());
         }
 
-        busy = true;
-
-        StopAllCoroutines();
         return StartCoroutine(FocusCoroutine(opts.SetFocusDuration, targetPosition, targetOrthoSize));
     }
 
@@ -126,11 +109,7 @@ public class CameraController : MonoBehaviour
 
     public Coroutine ClearFocus(FocusOptions opts)
     {
-        if (busy)
-        {
-            Reset();
-            return StartCoroutine(NullCoroutine());
-        }
+        StopAllCoroutines();
 
         if (opts.ClearFocusDuration == 0)
         {
@@ -139,9 +118,6 @@ public class CameraController : MonoBehaviour
             return StartCoroutine(NullCoroutine());
         }
 
-        busy = true;
-
-        StopAllCoroutines();
         return StartCoroutine(FocusCoroutine(opts.ClearFocusDuration, defaultPosition, defaultOrthoSize));
     }
 
@@ -160,7 +136,5 @@ public class CameraController : MonoBehaviour
 
         transform.position = targetPosition;
         cam.orthographicSize = targetOrthoSize;
-
-        busy = false;
     }
 }

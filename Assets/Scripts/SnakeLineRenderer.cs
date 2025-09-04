@@ -192,7 +192,7 @@ public class SnakeLineRenderer : MonoBehaviour
             {
                 // turns a corner, so generate a curve that connects this cell to the cell 2 back.
                 var cellOnTurnPos = grid.GetWorldPos(cells[i + 1]) + centerOffset;
-                var cellBeforeTurnPos = cellOnTurnPos - (new Vector3(prevDir.x, prevDir.y)).normalized * grid.CellSize;
+                var cellBeforeTurnPos = cellOnTurnPos - (new Vector3(prevDir.x, prevDir.y)).normalized;
 
                 var midpointCellOnTurnVsBefore = Avg(cellOnTurnPos, cellBeforeTurnPos);
                 var midpointCellVsOnTurn = Avg(cellPos, cellOnTurnPos);
@@ -222,7 +222,7 @@ public class SnakeLineRenderer : MonoBehaviour
                 {
                     var t = p / (float)(cornerVertices - 1);
                     var interpolatedDir = Vector3.Slerp(cellOnTurnVsBeforeDirection, cellVsOnTurnDirection, t);
-                    positions[positionCount] = pivotCenter + interpolatedDir * grid.CellSize / 2f;
+                    positions[positionCount] = pivotCenter + interpolatedDir / 2f;
                     positionCount++;
                 }
 
@@ -240,7 +240,7 @@ public class SnakeLineRenderer : MonoBehaviour
         // Smooth snake movement - remember that the positions are drawn from the tail to the head,
         // so positions[0] is the tail and positions[positionCount-1] is the head.
 
-        var dropHeadLength = Mathf.Lerp(grid.CellSize, 0, renderOffset);
+        var dropHeadLength = Mathf.Lerp(1, 0, renderOffset);
 
         while (dropHeadLength > 0 && positionCount > 1)
         {
@@ -257,10 +257,10 @@ public class SnakeLineRenderer : MonoBehaviour
             }
         }
 
-        var dropTailSize = grid.CellSize;
+        var dropTailSize = 1f;
 
         if (tailIsTurn || afterTailIsTurn)
-            dropTailSize = grid.CellSize / 2f + grid.CellSize * Mathf.PI / 8f;
+            dropTailSize = 0.5f + 1 * Mathf.PI / 8f;
 
         var dropTailLength = Mathf.Lerp(0, dropTailSize, renderOffset);
         int droppedTailPositions = 0;

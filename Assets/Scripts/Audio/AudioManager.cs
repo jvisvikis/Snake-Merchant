@@ -48,6 +48,12 @@ public class AudioManager : MonoBehaviour
         ambEventInstance.start();
     }
 
+    public void StartMusic()
+    {
+        musicEventInstance.keyOff();
+        ambEventInstance.keyOff();
+    }
+
     //--------------------------------------------------------------------
     // Method to stop the music event, allowing the
     // ADSR envelope fadeout settings from FMOD

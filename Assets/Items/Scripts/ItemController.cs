@@ -40,6 +40,7 @@ public class ItemController : MonoBehaviour
     public List<Vector2Int> BorderGridCells => borderGridCells;
 
     private SpriteRenderer spriteRenderer;
+    private Shaker shaker;
     private RotatedItemData itemData;
     private Game game;
     private bool attachedToGrid = false;
@@ -53,7 +54,13 @@ public class ItemController : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        shaker = GetComponentInChildren<Shaker>();
         game = FindObjectOfType<Game>();
+    }
+
+    public Coroutine Shake()
+    {
+        return shaker.Shake();
     }
 
     public void SetData(RotatedItemData itemData)
@@ -64,14 +71,14 @@ public class ItemController : MonoBehaviour
         {
             spriteRenderer.sprite = itemData.Sprite;
 
-            var spriteOffset = itemData.Sprite.bounds.size / 2 * game.Grid.CellSize;
+            var spriteOffset = itemData.Sprite.bounds.size / 2;
 
             if (itemData.Rotation == ItemRotation.Right || itemData.Rotation == ItemRotation.Left)
                 (spriteOffset.x, spriteOffset.y) = (spriteOffset.y, spriteOffset.x);
 
             spriteRenderer.transform.localPosition = spriteOffset * itemData.SpriteScale;
             spriteRenderer.transform.localRotation = itemData.RotationQuaternion();
-            spriteRenderer.transform.localScale = game.Grid.CellSize * Vector3.one * itemData.SpriteScale;
+            spriteRenderer.transform.localScale = Vector3.one * itemData.SpriteScale;
 
             foreach (var itemDataPrefab in itemDataPrefabs)
             {
