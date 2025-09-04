@@ -66,7 +66,6 @@ public class DayManager : MonoBehaviour
         if (instantWin)
         {
             EndDay(Int32.MaxValue);
-
         }
         while (isPlaying && currentTime < dayTimeLimit)
         {

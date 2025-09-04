@@ -276,6 +276,7 @@ public class UIManager : MonoBehaviour
     {
         PlayUpgradeSFX();
         EconomyManager.Instance.BuyObstacleRemoval();
+        Debug.Log("Change Damn it!!!");
         SetObstaclesText(EconomyManager.Instance.NumOfObstacles.ToString());
     }
     public void BuyWarehouseUpgrade()
@@ -385,7 +386,5 @@ public class UIManager : MonoBehaviour
         AudioManager.StartEvent(SFX.Instance.Upgrade, out var _, ("UpgradeCount", upgradeCountThisDay));
         upgradeCountThisDay++;
     }
-
-
 
 }

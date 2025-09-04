@@ -151,7 +151,6 @@ public class EconomyManager : MonoBehaviour
             snakeLengthLevel++;
             if (singleUpgradePrice)
             {
-                UpdateSingleUpgradePrice();
                 UIManager.Instance.SetLengthLevelText($"{snakeLengthLevel}");
                 UIManager.Instance.SetUpgradePriceText($"{currentUpgradePrice}<sprite=0>");
             }
@@ -189,10 +188,6 @@ public class EconomyManager : MonoBehaviour
         int spending = singleUpgradePrice ? currentUpgradePrice : lifePrice;
         if (SpendCoins(spending))
         {
-            if (singleUpgradePrice)
-            {
-                UpdateSingleUpgradePrice();
-            }
             AddLife();
             if(!LivesUpgradeAvailable())
             {
@@ -276,10 +271,10 @@ public class EconomyManager : MonoBehaviour
     {
         if (ObstacleUpgradeAvailable())
         {
-            numOfObstacles--;
-            SpendCoins(currentUpgradePrice);
-            UpdateSingleUpgradePrice();
-            if(!ObstacleUpgradeAvailable())
+            if(SpendCoins(currentUpgradePrice))
+                numOfObstacles--;
+            Debug.Log($"Obstacles:{numOfObstacles}");
+            if (!ObstacleUpgradeAvailable())
                 UIManager.Instance.SetEnableObstacleUpgrade(false);
         }
     }
@@ -296,7 +291,8 @@ public class EconomyManager : MonoBehaviour
         }
         totalCoins -= value;
         UIManager.Instance.SetTotalCoinText($"<sprite=0> <color=yellow>{totalCoins}");
-        if(!HasCoinsForUpgrades())
+        UpdateSingleUpgradePrice();
+        if (!HasCoinsForUpgrades())
             UIManager.Instance.SetAllUpgrades(false);
         if(WarehouseUpgradeAvailable() && totalCoins < GetCurrentWarehouseUpgradePrice())
             UIManager.Instance.SetEnableWarehouseUpgrade(false);
@@ -334,6 +330,7 @@ public class EconomyManager : MonoBehaviour
     public void AddObstacles(int obstaclesToAdd)
     {
         numOfObstacles += obstaclesToAdd;
+        UIManager.Instance.SetObstaclesText(obstaclesToAdd.ToString());
     }
 
 }

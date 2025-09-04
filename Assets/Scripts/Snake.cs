@@ -151,6 +151,8 @@ public class Snake : MonoBehaviour
                 return false;
             }
         }
+        if(item.RItemData.ItemData != game.itemToCollect) 
+            return false;
 
         return true;
     }

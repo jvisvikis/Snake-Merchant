@@ -9386,7 +9386,7 @@ MonoBehaviour:
   mustCompleteItemAfterEntering: 0
   initTimeToMove: 0.35
   minTimeToMove: 0.15
-  timeToMoveReduction: 0.005
+  timeToMoveReduction: 0.01
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   coinsSpawnTurns: 20
@@ -9416,7 +9416,7 @@ MonoBehaviour:
     SetFocusDuration: 0.5
     ClearFocusDuration: 0.5
   items: []
-  indexToCollect: 0
+  itemToCollect: {fileID: 0}
   whyLastItemNotCollected: 
 --- !u!4 &1915158410
 Transform:
@@ -9963,7 +9963,7 @@ MonoBehaviour:
   snakeLengthPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000
   snakeSpeedPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000
   singleUpgradePrice: 1
-  defaultSinglePrice: 5
+  defaultSinglePrice: 3
   upgradePriceModifier: 1.5
   maxLengthLevel: 10
   maxLives: 10
