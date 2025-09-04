@@ -1792,7 +1792,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <color=grey> Target<color=orange> Reached!
+  m_text: Target<color=orange> Reached!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 690d4de45f6bd4244aa727f3117b3ee7, type: 2}
   m_sharedMaterial: {fileID: 7612984450422911781, guid: 690d4de45f6bd4244aa727f3117b3ee7, type: 2}
@@ -1802,7 +1802,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2047,6 +2047,7 @@ MonoBehaviour:
   nextPanelButton: {fileID: 36711249}
   nextDayButton: {fileID: 969294276}
   resetGameButton: {fileID: 1731881070}
+  targetReachedText: {fileID: 292454520}
   timeLeftText: {fileID: 977614579}
   totalBonusText: {fileID: 677517436}
   itemsCollectedText: {fileID: 1886614332}

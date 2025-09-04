@@ -45,6 +45,8 @@ public class UIManager : MonoBehaviour
 
     [Header("OverviewTextUI")]
     [SerializeField]
+    private TextMeshProUGUI targetReachedText;
+    [SerializeField]
     private TextMeshProUGUI timeLeftText;
     [SerializeField]
     private TextMeshProUGUI totalBonusText;
@@ -346,12 +348,14 @@ public class UIManager : MonoBehaviour
         upgradesHolder.gameObject.SetActive(false);
         if(dead)
         {
+            targetReachedText.text = $"Target <color=red>Failed";
             nextPanelButton.gameObject.SetActive(false);
             nextDayButton.gameObject.SetActive(false);
             resetGameButton.gameObject.SetActive(true);
         }
         else
         {
+            targetReachedText.text = $"Target <color=orange>Reached";
             nextPanelButton.gameObject.SetActive(false);
             nextDayButton.gameObject.SetActive(true);
             resetGameButton.gameObject.SetActive(false);
