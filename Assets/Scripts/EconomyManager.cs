@@ -65,7 +65,6 @@ public class EconomyManager : MonoBehaviour
     public void SetupWarehouses(LevelData[] levels)
     {
         warehouses = levels;
-        Debug.Log(numOfObstacles);
         if(numOfObstacles > warehouses[warehouseLevel].MaxObstacles)
             numOfObstacles = warehouses[warehouseLevel].MaxObstacles;
 

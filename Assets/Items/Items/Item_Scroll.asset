@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
   m_Name: Item_Scroll
   m_EditorClassIdentifier: 
-  Value: 20
+  Value: 10
   Width: 3
   Height: 3
   flavourText:

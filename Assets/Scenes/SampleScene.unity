@@ -9386,7 +9386,7 @@ MonoBehaviour:
   mustCompleteItemAfterEntering: 0
   initTimeToMove: 0.35
   minTimeToMove: 0.15
-  timeToMoveReduction: 0.025
+  timeToMoveReduction: 0.005
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   coinsSpawnTurns: 20
