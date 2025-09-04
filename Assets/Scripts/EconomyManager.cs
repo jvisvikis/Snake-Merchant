@@ -94,7 +94,7 @@ public class EconomyManager : MonoBehaviour
             return false;
         }
         //Uncomment when warehouses have prices
-        if (SpendCoins(warehouses[warehouseLevel].Cost))
+        if (SpendCoins(warehouses[warehouseLevel+1].Cost))
         {
             warehouseLevel++;
             UIManager.Instance.SetWarehouseUpgradePrice($"{GetCurrentWarehouseUpgradePrice()}<sprite=0>");

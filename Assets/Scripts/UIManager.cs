@@ -343,6 +343,14 @@ public class UIManager : MonoBehaviour
         upgradesHolder.gameObject.SetActive(false);
         nextPanelButton.gameObject.SetActive(true);
         nextDayButton.gameObject.SetActive(false);
+        if(EconomyManager.Instance.HasCoinsForUpgrades())
+        {
+            SetAllUpgrades(true);
+        }
+        if(EconomyManager.Instance.GetCurrentWarehouseUpgradePrice() <= EconomyManager.Instance.TotalCoins)
+        {
+            SetEnableWarehouseUpgrade(true);
+        }
     }
 
     public void OpenUpgradesPanel()
