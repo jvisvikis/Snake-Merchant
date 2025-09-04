@@ -22,9 +22,6 @@ public class Game : MonoBehaviour
     [SerializeField]
     private LevelData[] levels;
 
-    [Header("Grid")]
-    public float cellSize = 1;
-
     [Range(0f, 1f)]
     public float gridAutoSizeScale = 1f;
 
@@ -63,6 +60,7 @@ public class Game : MonoBehaviour
     public float itemBloopTime = 0.2f;
 
     public CameraController.FocusOptions focusSpawn = CameraController.DefaultFocusOptions;
+    public CameraController.FocusOptions focusRespawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusItem = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusSell = CameraController.DefaultFocusOptions;
 
@@ -104,13 +102,13 @@ public class Game : MonoBehaviour
     {
         CurrentLevel.ParseLayout();
         EconomyManager.Instance.SetupWarehouses(levels);
-        var orig = new Vector2(CurrentLevel.Width, CurrentLevel.Height) * cellSize / -2f;
-        grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, cellSize, orig);
+        var orig = new Vector2(CurrentLevel.Width, CurrentLevel.Height) / -2f;
+        grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, orig);
         currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
         SetItemList();
         SpawnPerRoundObjects(true);
-        StartCoroutine(MoveSnake(currentLevelSpawn));
+        StartCoroutine(MoveSnake(currentLevelSpawn, true));
         StartCoroutine(DayManager.Instance.StartDay());
     }
 
@@ -121,7 +119,11 @@ public class Game : MonoBehaviour
 
     private void SpawnPerRoundObjects(bool isStart)
     {
-        if (!isStart)
+        if (isStart)
+        {
+            CameraController.Instance.Init(grid.Height / 2f / gridAutoSizeScale);
+        }
+        else
         {
             DestroyImmediate(snake.gameObject);
             DestroyImmediate(itemsManager.gameObject);
@@ -129,10 +131,10 @@ public class Game : MonoBehaviour
                 DestroyImmediate(gridSquare.gameObject);
             gridSquares.Clear();
         }
+
         currentLevelSpawn = GetSpawnPoint(CurrentLevel);
         SpawnGrid();
         coinSpawnCountdown = coinsFirstSpawnTurns;
-        CameraController.Instance.Init(grid.Height * grid.CellSize / 2f / gridAutoSizeScale);
         SpawnSnake();
         SpawnItemsManager();
         itemsManager.LoadLevel(this);
@@ -162,7 +164,6 @@ public class Game : MonoBehaviour
             {
                 var gridSquare = GameObject.Instantiate(gridSquarePrefab, transform);
                 gridSquare.transform.position = grid.GetWorldPos(x, y) + grid.CellCenterOffset();
-                gridSquare.transform.localScale = cellSize * Vector3.one;
                 var cell = new Vector2Int(x, y);
                 var gridSquareType = GridSquare.Type.Middle;
                 if (x == 0 && y == 0)
@@ -192,7 +193,6 @@ public class Game : MonoBehaviour
     void SpawnSnake()
     {
         snake = Instantiate(snakePrefab, grid.Orig, Quaternion.identity, null);
-        snake.SetSize(cellSize);
         snake.Init(currentLevelSpawn);
     }
 
@@ -216,11 +216,12 @@ public class Game : MonoBehaviour
         controls.PlayerInput.Pause.performed -= OnPause;
     }
 
-    public IEnumerator MoveSnake(Vector2Int spawn)
+    public IEnumerator MoveSnake(Vector2Int spawn, bool isStart)
     {
-        yield return CameraController.Instance.SetFocus(focusSpawn, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
-        yield return new WaitForSeconds(spawnPause);
-        yield return CameraController.Instance.ClearFocus(focusSpawn);
+        yield return CameraController.Instance.SetFocus(isStart ? focusSpawn : focusRespawn, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
+        if (isStart)
+            yield return new WaitForSeconds(spawnPause);
+        yield return CameraController.Instance.ClearFocus(isStart ? focusSpawn : focusRespawn);
 
         snake.ApplyQueuedDirection();
 
@@ -246,18 +247,21 @@ public class Game : MonoBehaviour
             }
 
             string whyFail;
-            bool didMove = snake.Move(out didSellPreviousIteration, out whyFail);
+            ItemController blockedByItemOnLastMove;
+            bool didMove = snake.Move(out didSellPreviousIteration, out whyFail, out blockedByItemOnLastMove);
 
             // allow grace time if snake is about to die for player to avoid death.
             for (float t = 0; t < timeToDieGrace && !didMove; t += Time.deltaTime)
             {
                 yield return null;
-                didMove = snake.Move(out didSellPreviousIteration, out whyFail);
+                didMove = snake.Move(out didSellPreviousIteration, out whyFail, out blockedByItemOnLastMove);
             }
 
             if (!didMove)
             {
-                // TODO: (re)spawn animation here
+                yield return CameraController.Instance.SetFocus(focusRespawn, grid.GetWorldPos(snake.Head) + grid.CellCenterOffset());
+                if (blockedByItemOnLastMove != null)
+                    blockedByItemOnLastMove.Shake();
                 yield return CameraController.Instance.Shake();
                 Die(whyFail);
             }
@@ -282,14 +286,13 @@ public class Game : MonoBehaviour
         int currentValue = 0;
         while (currentValue < DayManager.Instance.CurrentTargetScore)
         {
-
             int index = 2 + Random.Range(0, CurrentLevel.Items.Items.Count - 2);
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
         }
         string text = "";
         if (items[indexToCollect].flavourText.Count >= 1)
-             text = items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)];
+            text = items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)];
 
         UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, text);
     }
@@ -328,7 +331,7 @@ public class Game : MonoBehaviour
         StopAllCoroutines();
         SpawnPerRoundObjects(false);
         DayManager.Instance.ResetDay();
-        StartCoroutine(MoveSnake(currentLevelSpawn));
+        StartCoroutine(MoveSnake(currentLevelSpawn, false));
         StartCoroutine(DayManager.Instance.StartDay());
     }
 

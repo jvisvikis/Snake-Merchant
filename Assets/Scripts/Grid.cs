@@ -7,30 +7,27 @@ public class Grid
 {
     private int width;
     private int height;
-    private float cellSize;
     private Vector3 orig;
 
-    public float CellSize => cellSize;
     public int Width => width;
     public int Height => height;
     public Vector2 Orig => orig;
 
-    public Grid(int width, int height, float cellSize, Vector3 orig)
+    public Grid(int width, int height, Vector3 orig)
     {
         this.width = width;
         this.height = height;
-        this.cellSize = cellSize;
         this.orig = orig;
     }
 
     public Vector3 CellCenterOffset()
     {
-        return new Vector3(cellSize / 2, cellSize / 2);
+        return 0.5f * Vector3.one;
     }
 
     public Vector3 GetWorldPos(int x, int y)
     {
-        return new Vector3(x * cellSize, y * cellSize) + orig;
+        return new Vector3(x, y) + orig;
     }
 
     public Vector3 GetWorldPos(Vector2Int pos)
@@ -41,7 +38,7 @@ public class Grid
     public Vector2Int GetCell(Vector3 worldPos)
     {
         worldPos -= orig;
-        return new Vector2Int((int)Mathf.Round(worldPos.x / cellSize), (int)Mathf.Round(worldPos.y / cellSize));
+        return new Vector2Int((int)Mathf.Round(worldPos.x), (int)Mathf.Round(worldPos.y));
     }
 
     public bool InGrid(int x, int y)
