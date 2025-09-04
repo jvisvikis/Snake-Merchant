@@ -18,8 +18,10 @@ MonoBehaviour:
   NumCoins: 4
   NumItems: 5
   NumRandomObstacles: 0
+  MaxObstacles: 12
   Mushrooms: 0
   Items: {fileID: 11400000, guid: 00ff3c4ce692bc24a99527b56bfddaf1, type: 2}
+  RandomObstacles: {fileID: 11400000, guid: 143db1772930c49178a3808a6db1a2b1, type: 2}
   layout: "_ _ _ _ _ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _
     _ _ _ _ _\n_ _ _ _ _ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _ _ _ _ _ \n_ _ _ _ _ _
     _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _ _ _ _ _\n_ _ _ _ _ _ _ _ _ _ _ _ _\n_ _ _ _
