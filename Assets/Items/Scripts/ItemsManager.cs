@@ -22,6 +22,20 @@ public class ItemsManager : MonoBehaviour
     private Game game;
 
     private List<ItemController> items = new();
+    public List<ItemController> Items 
+    { get 
+        {
+            List<ItemController> collectables = new();
+            foreach (ItemController item in items)
+            {
+                if (item.RItemData.IsCollectible)
+                    collectables.Add(item);
+            }
+            return collectables;
+        }
+    }
+        
+        
 
     public void LoadLevel(Game game)
     {
@@ -100,7 +114,7 @@ public class ItemsManager : MonoBehaviour
     public void SpawnCollectibles(bool okInFrontOfSnake)
     {
         Debug.Log("Spawn da collectibles");
-        var shuffledItems = new List<ItemData>(game.CurrentLevel.Items.Items);
+        var shuffledItems = new List<ItemData>(game.Items);
         ListUtil.Shuffle(shuffledItems);
 
         foreach (var itemData in shuffledItems)
