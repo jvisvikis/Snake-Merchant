@@ -40,6 +40,8 @@ public class UIManager : MonoBehaviour
     private Button nextPanelButton;
     [SerializeField]
     private Button nextDayButton;
+    [SerializeField]
+    private Button resetGameButton;
 
     [Header("OverviewTextUI")]
     [SerializeField]
@@ -337,14 +339,25 @@ public class UIManager : MonoBehaviour
         SetEnableObstacleUpgrade(active);
     }
     #endregion
-    public void EndDay()
+    public void EndDay(bool dead)
     {
         SetEndDayPanelActive(true);
         overviewHolder.gameObject.SetActive(true);
         upgradesHolder.gameObject.SetActive(false);
-        nextPanelButton.gameObject.SetActive(true);
-        nextDayButton.gameObject.SetActive(false);
-        if(EconomyManager.Instance.HasCoinsForUpgrades())
+        if(dead)
+        {
+            nextPanelButton.gameObject.SetActive(false);
+            nextDayButton.gameObject.SetActive(false);
+            resetGameButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            nextPanelButton.gameObject.SetActive(false);
+            nextDayButton.gameObject.SetActive(true);
+            resetGameButton.gameObject.SetActive(false);
+        }
+
+        if (EconomyManager.Instance.HasCoinsForUpgrades())
         {
             SetAllUpgrades(true);
         }
@@ -352,6 +365,10 @@ public class UIManager : MonoBehaviour
         {
             SetEnableWarehouseUpgrade(true);
         }
+    }
+    public void RestartGame()
+    {
+        DayManager.Instance.Reset();
     }
 
     public void OpenUpgradesPanel()

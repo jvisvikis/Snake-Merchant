@@ -342,9 +342,9 @@ public class Game : MonoBehaviour
         // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
         StopAllCoroutines();
         SpawnPerRoundObjects(false);
-        DayManager.Instance.ResetDay();
-        StartCoroutine(MoveSnake(currentLevelSpawn, false));
-        StartCoroutine(DayManager.Instance.StartDay());
+        DayManager.Instance.EndDay(currentDayScore,bonus,coins,itemsSold,true);
+        //StartCoroutine(MoveSnake(currentLevelSpawn, false));
+        //StartCoroutine(DayManager.Instance.StartDay());
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
@@ -408,7 +408,7 @@ public class Game : MonoBehaviour
 
         if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
-            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold);
+            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold, false);
             return;
         }
 

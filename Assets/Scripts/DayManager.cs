@@ -88,19 +88,19 @@ public class DayManager : MonoBehaviour
         UIManager.Instance.SetBonusText($"Total Bonus: 0");
         UIManager.Instance.SetCoinsCollectedText($"Coins Collected: 0");
         UIManager.Instance.SetItemsCollectedText($"Items Collected: 0");
-        UIManager.Instance.EndDay();
+        UIManager.Instance.EndDay(false);
     }
 
-    public void EndDay(int currentDayScore, int bonusScore, int coins, int itemsCollected)
+    public void EndDay(int currentDayScore, int bonusScore, int coins, int itemsCollected,bool dead)
     {
         currentTotalScore += currentDayScore;
         isPlaying = false;
         EconomyManager.Instance.AddObstacles(1);
-        UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(timeLeft)}s");
+        UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(maxTimeLimit - timeLeft)}s");
         UIManager.Instance.SetBonusText($"Total Bonus: {bonusScore}");
         UIManager.Instance.SetCoinsCollectedText($"Coins Collected: {coins}");
         UIManager.Instance.SetItemsCollectedText($"Items Collected: {itemsCollected}");
-        UIManager.Instance.EndDay();
+        UIManager.Instance.EndDay(dead);
     }
 
     public void NextDay()
@@ -120,7 +120,8 @@ public class DayManager : MonoBehaviour
         currentDay = 0;
         currentTargetScore = minScore;
         dayTimeLimit = maxTimeLimit;
-        // ReloadScene();
+        EconomyManager.Instance.Reset();
+        ReloadScene();
     }
 
     private void ModifyDayMaxTimeLimit()

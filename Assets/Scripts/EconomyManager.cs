@@ -263,7 +263,7 @@ public class EconomyManager : MonoBehaviour
         totalCoins = manyCoins ? 999 : 0;
         warehouseLevel = 0;
         snakeSpeedLevel = 0;
-        snakeLengthLevel = 0;
+        snakeLengthLevel = 1;
         lives = 1;
     }
 
