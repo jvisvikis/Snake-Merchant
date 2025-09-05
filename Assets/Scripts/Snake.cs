@@ -283,7 +283,7 @@ public class Snake : MonoBehaviour
                 blockedByItem = moveInsideItem;
                 return false;
             }
-            SetInsideItem(moveInsideItem);
+            SetInsideItem(moveInsideItem, true);
             CameraController.Instance.SetFocus(game.focusItem, game.Grid.GetWorldPos(newPos));
             foreach (var gridSq in game.GridSquares.Values)
                 gridSq.SetInvertItemColor(true);
@@ -315,7 +315,7 @@ public class Snake : MonoBehaviour
                 foreach (var gridSq in game.GridSquares.Values)
                     gridSq.SetInvertItemColor(false);
             }
-            SetInsideItem(null);
+            SetInsideItem(null, false);
         }
         else if (insideItem != null && moveInsideItem != null && insideItem != moveInsideItem)
         {
@@ -334,7 +334,7 @@ public class Snake : MonoBehaviour
                 blockedByItem = moveInsideItem;
                 return false;
             }
-            SetInsideItem(moveInsideItem);
+            SetInsideItem(moveInsideItem, true);
         }
 
         // From here on, move must have been successful (i.e. cannot return false from here).
@@ -443,16 +443,20 @@ public class Snake : MonoBehaviour
             CameraController.Instance.LittleShake();
         }
 
-        SetInsideItem(null);
+        SetInsideItem(null, true);
     }
 
-    private void SetInsideItem(ItemController newInsideItem)
+    private void SetInsideItem(ItemController newInsideItem, bool success)
     {
         if (newInsideItem == null)
         {
             if (insideItemInstance.isValid())
             {
-                insideItemInstance.setParameterByName("ItemType", (float)insideItem.RItemData.ItemType);
+                if (success)
+                {
+                    insideItemInstance.setParameterByName("ItemType", (float)insideItem.RItemData.ItemType);
+                    insideItemInstance.setParameterByName("Success", success ? 1f : 0f);
+                }
                 AudioManager.StopEvent(ref insideItemInstance);
             }
         }

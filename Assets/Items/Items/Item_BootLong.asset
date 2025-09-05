@@ -16,7 +16,9 @@ MonoBehaviour:
   Width: 3
   Height: 3
   flavourText:
-  - 
+  - Just the left boot for me
+  - Just the right boot for me
+  - I've grown out of my old boots
   itemType: 0
   IsApple: 0
   IsMushroom: 0

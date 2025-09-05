@@ -17,6 +17,8 @@ MonoBehaviour:
   Height: 2
   flavourText:
   - Mmmm... Snake oil...
+  - This should help with the eczema
+  - Does this help for dry skin?
   itemType: 3
   IsApple: 0
   IsMushroom: 0

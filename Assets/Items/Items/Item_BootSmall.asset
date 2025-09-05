@@ -18,6 +18,8 @@ MonoBehaviour:
   flavourText:
   - It's time for some new boots!
   - My shoes are worn, I need some new ones.
+  - Just the left boot for me
+  - Just the right boot for me
   itemType: 5
   IsApple: 0
   IsMushroom: 0

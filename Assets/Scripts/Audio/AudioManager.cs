@@ -83,7 +83,7 @@ public class AudioManager : MonoBehaviour
     {
         if (eventRef.IsNull)
         {
-            Debug.LogWarning($"StartEvent: event {eventRef.Path} is null");
+            Debug.LogWarning($"StartEvent: event is null");
             eventInst = default;
             return false;
         }
@@ -99,7 +99,7 @@ public class AudioManager : MonoBehaviour
 
         if (!eventInst.isValid())
         {
-            Debug.LogWarning($"StartEvent: failed to start {eventRef.Path}");
+            Debug.LogWarning($"StartEvent: failed to start event");
             eventInst = default;
             return false;
         }

@@ -87,7 +87,7 @@
 	</object>
 	<object class="EventMixerMaster" id="{3f298bef-1f40-4059-9998-d8d6bd23af6d}">
 		<property name="volume">
-			<value>-6.5</value>
+			<value>-10</value>
 		</property>
 		<relationship name="effectChain">
 			<destination>{a8bf64d9-9f41-41bf-a0ca-e1710a68fb72}</destination>
@@ -115,10 +115,10 @@
 			<value>0</value>
 		</property>
 		<property name="minimumTimeDelay">
-			<value>6000</value>
+			<value>7000</value>
 		</property>
 		<property name="maximumTimeDelay">
-			<value>6000</value>
+			<value>10000</value>
 		</property>
 		<property name="minimumTimeBetweenSounds">
 			<value>2000</value>

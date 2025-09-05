@@ -6231,9 +6231,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   sayingsPass:
-  - Good job, you can come back tomorrow
+  - See you tomorrow, bright and early
+  - You deserve a raise
+  - Keep the tips!
   sayingsFail:
   - I can't believe this business idea failed!
+  - I should have opened a cafe
+  - I should have opened a restaurant
+  - Maybe Hades is still hiring
+  - Maybe Zeus is still hiring
   dialogueText: {fileID: 210807409}
 --- !u!1001 &918352963
 PrefabInstance:
@@ -10833,7 +10839,7 @@ MonoBehaviour:
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
-  mustCompleteItemAfterEntering: 1
+  mustCompleteItemAfterEntering: 0
   initTimeToMove: 0.35
   minTimeToMove: 0.15
   timeToMoveReduction: 0.01

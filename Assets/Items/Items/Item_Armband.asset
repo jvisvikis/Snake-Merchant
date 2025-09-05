@@ -17,6 +17,7 @@ MonoBehaviour:
   Height: 3
   flavourText:
   - All good fighters must have cool armbands
+  - Do my biceps look big in this?
   itemType: 5
   IsApple: 0
   IsMushroom: 0

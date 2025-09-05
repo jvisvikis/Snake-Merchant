@@ -287,7 +287,7 @@
 	</object>
 	<object class="MultiSound" id="{10af57ee-e078-4c7f-a4e8-eac76db6eb55}">
 		<property name="start">
-			<value>0.14000000000000001</value>
+			<value>0.10000000000000001</value>
 		</property>
 		<property name="length">
 			<value>0.36566121852616923</value>
