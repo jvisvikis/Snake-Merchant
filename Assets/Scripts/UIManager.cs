@@ -354,6 +354,7 @@ public class UIManager : MonoBehaviour
         medusa.gameObject.SetActive(true);
         overviewHolder.gameObject.SetActive(true);
         upgradesHolder.gameObject.SetActive(false);
+        SetObstaclesText(EconomyManager.Instance.NumOfObstacles.ToString());
         if(dead)
         {
             targetReachedText.text = $"Target <color=red>Failed";
