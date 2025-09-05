@@ -10197,6 +10197,7 @@ MonoBehaviour:
   items: []
   itemToCollect: {fileID: 0}
   whyLastItemNotCollected: 
+  fitToScreen: {fileID: 558409467}
 --- !u!4 &1915158410
 Transform:
   m_ObjectHideFlags: 0

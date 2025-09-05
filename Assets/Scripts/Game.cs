@@ -93,6 +93,7 @@ public class Game : MonoBehaviour
     public List<ItemData> items = new();
     public ItemData itemToCollect;
     public string whyLastItemNotCollected = "";
+    public FitToScreen fitToScreen;
 
     public void SnakeDidEatApple()
     {
@@ -225,7 +226,7 @@ public class Game : MonoBehaviour
         //     yield return new WaitForSeconds(spawnPause);
         AudioManager.Instance.StartMusic();
         yield return CameraController.Instance.ClearFocus(isStart ? focusSpawn : focusRespawn);
-
+        fitToScreen.SetFittingOff();
         snake.ApplyQueuedDirection();
 
         bool didSellPreviousIteration = false;

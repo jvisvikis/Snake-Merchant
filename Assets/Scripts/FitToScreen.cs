@@ -8,6 +8,9 @@ public class FitToScreen : MonoBehaviour
     private SpriteRenderer background;
     [SerializeField]
     private bool resizeOnStart;
+
+    private bool fitting = true;
+
     private void Start()
     {
         if(resizeOnStart)
@@ -17,7 +20,7 @@ public class FitToScreen : MonoBehaviour
     }
     void Update()
     {
-        if (!resizeOnStart)
+        if (!resizeOnStart && fitting)
         {
             ResizeBackground();   
         }
@@ -27,10 +30,13 @@ public class FitToScreen : MonoBehaviour
     {
         Vector2 spriteSize = background.sprite.bounds.size;
         Vector2 cameraSize = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
-        Vector2 worldSpace = cameraSize * 2;
-        Debug.Log($"Sprite: {spriteSize.x},{spriteSize.y} Camera: {worldSpace.x},{worldSpace.y}");
+        Vector2 worldSpace = cameraSize * 2;;
         Vector2 scale = worldSpace / spriteSize;
-        Debug.Log($"Scale: {scale.x},{scale.y}");
         background.transform.localScale = scale;
+    }
+
+    public void SetFittingOff()
+    {
+        fitting = false;
     }
 }
