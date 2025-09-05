@@ -2214,7 +2214,7 @@ MonoBehaviour:
   itemImages:
   - {fileID: 208591017}
   dialogueBox: {fileID: 2017563612}
-  customerAvatar: {fileID: 0}
+  customerAvatar: {fileID: 2067176424}
 --- !u!114 &301925219
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -136,8 +136,8 @@ public class UIManager : MonoBehaviour
     {
         SetEndDayPanelActive(false);
         medusa.gameObject.SetActive(false);
-        SetTotalCoinText($" <color=yellow>{EconomyManager.Instance.TotalCoins}<sprite=0>");
-        SetLivesText($" <color=green>{EconomyManager.Instance.Lives}<sprite=0>");
+        SetTotalCoinText($" <color=yellow>{EconomyManager.Instance.TotalCoins}");
+        SetLivesText($" <color=green>{EconomyManager.Instance.Lives}");
         //string warehouseLevelText = EconomyManager.Instance.WarehouseUpgradeAvailable() ? $"{EconomyManager.Instance.WarehouseLevel} <color=green> > {EconomyManager.Instance.WarehouseLevel + 1}" : "MAX";
         //SetWarehouseLevelText($"Level: {warehouseLevelText}");
         string lengthLevelText = EconomyManager.Instance.SnakeLengthLevel.ToString();
@@ -145,7 +145,7 @@ public class UIManager : MonoBehaviour
         SetObstaclesText(EconomyManager.Instance.NumOfObstacles.ToString());
         SetUpgradeLivesText(EconomyManager.Instance.Lives.ToString());
         //SetSpeedLevelText(EconomyManager.Instance.SnakeSpeedLevel.ToString());
-        SetUpgradePriceText($"{EconomyManager.Instance.CurrentUpgradePrice} <sprite=0>");
+        SetUpgradePriceText($"{EconomyManager.Instance.CurrentUpgradePrice}");
         //SetSpeedUpgradePrice(EconomyManager.Instance.GetCurrentSpeedUpgradePrice().ToString());
         //SetEnableWarehouseUpgrade(EconomyManager.Instance.WarehouseUpgradeAvailable());
         if (EconomyManager.Instance.HasCoinsForUpgrades())
