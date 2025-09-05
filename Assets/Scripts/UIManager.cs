@@ -186,11 +186,17 @@ public class UIManager : MonoBehaviour
     }
     public void SetWarehouseLevelText(string text)
     {
-        warehouseLevelText.text = text;
+        if(EconomyManager.Instance.WarehouseUpgradeAvailable())
+            warehouseLevelText.text = text;
+        else
+            warehouseLevelText.text = $"<color=red>MAX";
     }
     public void SetLengthLevelText(string text)
     {
-        lengthLevelText.text = text;
+        if(EconomyManager.Instance.SnakeLengthUpgradeAvailable())
+            lengthLevelText.text = text;
+        else
+            lengthLevelText.text = $"<color=red>MAX";
     }
     public void SetSpeedLevelText(string text)
     {
@@ -206,7 +212,10 @@ public class UIManager : MonoBehaviour
     }
     public void SetUpgradeLivesText(string text)
     {
-        upgradeLivesText.text = text;
+        if(EconomyManager.Instance.LivesUpgradeAvailable())
+            upgradeLivesText.text = text;
+        else
+            upgradeLivesText.text = $"<color=red>MAX";
     }
 
     public void SetObstaclesText(string text)
@@ -409,9 +418,38 @@ public class UIManager : MonoBehaviour
     {
         nextDayButton.gameObject.SetActive(visible);
     }
-    public void SetHoverText()
+    public void SetHoverText(string type)
     {
-        Debug.Log("Hovering over button");
+        if(type.Contains("length") && lengthUpgradeButton.interactable)
+        {
+            SetLengthLevelText($"<color=green>{EconomyManager.Instance.SnakeLengthLevel + 1}");
+        }
+        if(type.Contains("obstacles") && obstaclesUpgradeButton.interactable)
+        {
+            SetObstaclesText($"<color=green>{EconomyManager.Instance.NumOfObstacles - 1}");
+        }
+        if(type.Contains("life") && livesUpgradeButton.interactable)
+        {
+            SetUpgradeLivesText($"<color=green>{EconomyManager.Instance.Lives + 1}");
+        }
+        if(type.Contains("warehouse") && warehouseUpgradeButton.interactable)
+        {
+            if (EconomyManager.Instance.WarehouseUpgradeAvailable())
+            {
+                int idx = EconomyManager.Instance.WarehouseLevel + 1;
+                warehouseSizeText.text = $"Size: <color=green>{EconomyManager.Instance.warehouses[idx].Width}x{EconomyManager.Instance.warehouses[idx].Height}";
+                warehouseMaxCoinsText.text = $"Max Coins: <color=green>{EconomyManager.Instance.warehouses[idx].NumCoins}";
+            }
+        }
+        if(type.Contains("off"))
+        {
+            SetLengthLevelText($"{EconomyManager.Instance.SnakeLengthLevel}");
+            SetUpgradeLivesText($"{EconomyManager.Instance.Lives}");
+            SetObstaclesText($"{EconomyManager.Instance.NumOfObstacles}");
+            int idx = EconomyManager.Instance.WarehouseLevel;
+            SetWarehouseInfo(EconomyManager.Instance.warehouses[idx]);
+        }
+        
     }
     private void PlayUpgradeSFX()
     {
