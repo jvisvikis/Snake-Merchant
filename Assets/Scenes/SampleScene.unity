@@ -10851,6 +10851,63 @@ MonoBehaviour:
   spawnPause: 5
   sellPause: 0.25
   itemBloopTime: 0.2
+  gridTypeSprites:
+  - Type: 0
+    Sprites:
+    - {fileID: -509189832, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: 57099381, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: 490125821, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: 1476800639, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: -1351635293, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: -1931614397, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: -2119246286, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: 561760927, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    - {fileID: -1130065949, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
+    Offset: {x: 0, y: 0}
+  - Type: 1
+    Sprites:
+    - {fileID: -509189832, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: 1476800639, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: 1035920051, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    Offset: {x: -0.45, y: 0}
+  - Type: 2
+    Sprites:
+    - {fileID: 490125821, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: -1931614397, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: -1130065949, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    Offset: {x: 0.45, y: 0}
+  - Type: 3
+    Sprites:
+    - {fileID: 1202240309, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: 57099381, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: -1812864894, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    Offset: {x: 0, y: 0.45}
+  - Type: 4
+    Sprites:
+    - {fileID: -2119246286, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: 561760927, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    - {fileID: -906904138, guid: 7b6b9d65c0934814eb39db0c960d2ce0, type: 3}
+    Offset: {x: 0, y: -0.45}
+  - Type: 5
+    Sprites:
+    - {fileID: 1678989267, guid: 26ade72650241db4d87ec2d067cf9ff4, type: 3}
+    Offset: {x: -0.45, y: 0.45}
+  - Type: 6
+    Sprites:
+    - {fileID: -1560489430, guid: 26ade72650241db4d87ec2d067cf9ff4, type: 3}
+    Offset: {x: 0.45, y: 0.45}
+  - Type: 7
+    Sprites:
+    - {fileID: -1522411266, guid: 26ade72650241db4d87ec2d067cf9ff4, type: 3}
+    Offset: {x: -0.45, y: -0.45}
+  - Type: 8
+    Sprites:
+    - {fileID: 19245706, guid: 26ade72650241db4d87ec2d067cf9ff4, type: 3}
+    Offset: {x: 0.45, y: -0.45}
+  - Type: 9
+    Sprites:
+    - {fileID: 721947936, guid: 1b6b1d8870a748a46b9209f1cdfd7d9f, type: 3}
+    Offset: {x: 0, y: 0}
   focusSpawn:
     FocusZoom: 0.5
     FocusPosition: 1

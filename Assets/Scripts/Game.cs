@@ -59,6 +59,10 @@ public class Game : MonoBehaviour
     [Min(0f)]
     public float itemBloopTime = 0.2f;
 
+    [Header("Grid")]
+    [SerializeField]
+    private GridSquare.TypeSprites[] gridTypeSprites;
+
     public CameraController.FocusOptions focusSpawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusRespawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusItem = CameraController.DefaultFocusOptions;
@@ -187,10 +191,32 @@ public class Game : MonoBehaviour
                     gridSquareType = GridSquare.Type.Top;
                 else if (cell == currentLevelSpawn)
                     gridSquareType = GridSquare.Type.Spawn;
-                gridSquare.Init(cell, gridSquareType);
+
+                var typeSprites = FindTypeSprites(gridSquareType);
+
+                gridSquare.Init(
+                    cell,
+                    new GridSquare.TypeSprite
+                    {
+                        Type = typeSprites.Type,
+                        Sprite = ListUtil.Random(typeSprites.Sprites),
+                        Offset = typeSprites.Offset,
+                    }
+                );
                 gridSquares[cell] = gridSquare;
             }
         }
+    }
+
+    private GridSquare.TypeSprites FindTypeSprites(GridSquare.Type type)
+    {
+        foreach (var typeSprites in gridTypeSprites)
+        {
+            if (typeSprites.Type == type)
+                return typeSprites;
+        }
+        Debug.Assert(false);
+        return gridTypeSprites[0];
     }
 
     void SpawnSnake()
@@ -299,7 +325,7 @@ public class Game : MonoBehaviour
 
     public void SetFirstItem()
     {
-        itemToCollect = itemsManager.Items[Random.Range(0,itemsManager.Items.Count)].RItemData.ItemData;
+        itemToCollect = itemsManager.Items[Random.Range(0, itemsManager.Items.Count)].RItemData.ItemData;
         string text = "";
         if (itemToCollect.flavourText.Count >= 1)
             text = itemToCollect.flavourText[Random.Range(0, itemToCollect.flavourText.Count)];
@@ -343,7 +369,7 @@ public class Game : MonoBehaviour
         // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
         StopAllCoroutines();
         SpawnPerRoundObjects(false);
-        DayManager.Instance.EndDay(currentDayScore,bonus,coins,itemsSold,true);
+        DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold, true);
         //StartCoroutine(MoveSnake(currentLevelSpawn, false));
         //StartCoroutine(DayManager.Instance.StartDay());
     }
@@ -418,6 +444,7 @@ public class Game : MonoBehaviour
         snake.SetSpeedFactor(timeToMove / initTimeToMove);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);
     }
+
     public void IncreaseSpeed()
     {
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);

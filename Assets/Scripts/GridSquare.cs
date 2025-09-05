@@ -27,6 +27,14 @@ public class GridSquare : MonoBehaviour
         public Vector2 Offset;
     }
 
+    [System.Serializable]
+    public struct TypeSprites
+    {
+        public Type Type;
+        public Sprite[] Sprites;
+        public Vector2 Offset;
+    }
+
     [SerializeField]
     private TypeSprite[] typeSprites;
 
@@ -50,26 +58,13 @@ public class GridSquare : MonoBehaviour
     private RotatedItemData itemData;
     public bool invertItemColor;
 
-    public void Init(Vector2Int cell, Type type)
+    public void Init(Vector2Int cell, TypeSprite typeSprite)
     {
         this.cell = cell;
-        spriteRenderer.sprite = null;
-
-        foreach (var typeSprite in typeSprites)
-        {
-            if (typeSprite.Type == type)
-            {
-                spriteRenderer.sprite = typeSprite.Sprite;
-                spriteRenderer.transform.localPosition += (Vector3)typeSprite.Offset;
-                if (type == Type.Middle)
-                    spriteRenderer.transform.localRotation *= RandomSquareRotation();
-                break;
-            }
-        }
-
-        if (spriteRenderer.sprite == null)
-            Debug.LogError($"No sprite found for type {type}");
-
+        spriteRenderer.sprite = typeSprite.Sprite;
+        spriteRenderer.transform.localPosition += (Vector3)typeSprite.Offset;
+        if (typeSprite.Type == Type.Middle)
+            spriteRenderer.transform.localRotation *= RandomSquareRotation();
         Render(true);
     }
 

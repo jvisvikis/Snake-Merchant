@@ -14,6 +14,13 @@ public class ListUtil
         }
     }
 
+
+    public static T Random<T>(T[] list)
+    {
+        Debug.Assert(list.Length > 0);
+        return list[UnityEngine.Random.Range(0, list.Length)];
+    }
+
     public static T Random<T>(List<T> list)
     {
         Debug.Assert(list.Count > 0);
