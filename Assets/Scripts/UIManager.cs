@@ -109,8 +109,11 @@ public class UIManager : MonoBehaviour
     private Image[] itemImages;
     [SerializeField]
     private DialogueBox dialogueBox;
+    [SerializeField]
+    private CustomerAvatar customerAvatar;
 
     public DialogueBox DialogueBox => dialogueBox;
+    public CustomerAvatar CustomerAvatar => customerAvatar;
 
     private int upgradeCountThisDay = 0;
 
@@ -267,6 +270,7 @@ public class UIManager : MonoBehaviour
     {
         itemImages[0].sprite = sprite;
         dialogueBox.SetText(text);
+        customerAvatar.RandomiseCharacter();
     }
 
     public void SetAllItemImages(Sprite[] sprites)
