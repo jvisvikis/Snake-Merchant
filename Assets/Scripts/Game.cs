@@ -456,7 +456,7 @@ public class Game : MonoBehaviour
     private void AddBonus(int addBonus)
     {
         bonus += addBonus;
-        currentDayScore += bonus;
+        currentDayScore += addBonus;
 
         ShowCollectionUI(addBonus);
 
