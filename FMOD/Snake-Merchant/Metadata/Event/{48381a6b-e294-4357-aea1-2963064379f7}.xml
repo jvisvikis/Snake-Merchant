@@ -108,6 +108,7 @@
 		<relationship name="markers">
 			<destination>{34e15f9a-d077-4328-9cc9-d932069f6bd2}</destination>
 			<destination>{a0b2c83e-4b5f-46c7-a0fe-ce25720097e9}</destination>
+			<destination>{f653bcbe-96b6-4d90-b29f-591ed3388d4f}</destination>
 		</relationship>
 	</object>
 	<object class="ParameterProxy" id="{597aaa70-fd52-48ba-8a05-c20ecddcc3dd}">
@@ -289,6 +290,17 @@
 		</relationship>
 		<relationship name="transitionTimeline">
 			<destination>{d64318f7-b92f-4ae9-a6a6-4e29e483be75}</destination>
+		</relationship>
+	</object>
+	<object class="SustainPoint" id="{f653bcbe-96b6-4d90-b29f-591ed3388d4f}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<relationship name="timeline">
+			<destination>{b8ef0275-5982-43e2-a5d0-b662187d546a}</destination>
+		</relationship>
+		<relationship name="markerTrack">
+			<destination>{74cc7f16-a61b-4198-a5b6-3f08ecf25938}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{19a9d84f-eb34-4338-9ca6-a095d5760822}">

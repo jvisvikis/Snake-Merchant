@@ -25,6 +25,9 @@ public class AudioManager : MonoBehaviour
     //--------------------------------------------------------------------
     public static AudioManager Instance { get; private set; }
 
+    [SerializeField]
+    private bool startAmbience = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -46,6 +49,9 @@ public class AudioManager : MonoBehaviour
         musicEventInstance.start();
         ambEventInstance = RuntimeManager.CreateInstance(ambEvent);
         ambEventInstance.start();
+
+        if (startAmbience)
+            ambEventInstance.keyOff();
     }
 
     public void StartMusic()

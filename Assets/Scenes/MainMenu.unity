@@ -701,6 +701,7 @@ GameObject:
   - component: {fileID: 731985506}
   - component: {fileID: 731985505}
   - component: {fileID: 731985511}
+  - component: {fileID: 731985512}
   m_Layer: 5
   m_Name: CloseBtn
   m_TagString: Untagged
@@ -962,6 +963,49 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 731985512}
+        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &731985512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731985503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1716817239
+      Data2: 1100242553
+      Data3: 1582491524
+      Data4: -999451545
+    Path: event:/UI/Generic_Button
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &830527181
 GameObject:
   m_ObjectHideFlags: 0
@@ -977,6 +1021,7 @@ GameObject:
   - component: {fileID: 830527185}
   - component: {fileID: 830527184}
   - component: {fileID: 830527183}
+  - component: {fileID: 830527189}
   m_Layer: 5
   m_Name: TutorialButton
   m_TagString: Untagged
@@ -1141,6 +1186,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 830527189}
+        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &830527187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1238,6 +1295,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 830527181}
   m_CullTransparentMesh: 1
+--- !u!114 &830527189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830527181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1716817239
+      Data2: 1100242553
+      Data3: 1582491524
+      Data4: -999451545
+    Path: event:/UI/Generic_Button
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &889384452
 GameObject:
   m_ObjectHideFlags: 0
@@ -2510,6 +2598,7 @@ GameObject:
   - component: {fileID: 1830280726}
   - component: {fileID: 1830280727}
   - component: {fileID: 1830280728}
+  - component: {fileID: 1830280729}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -2609,6 +2698,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1830280729}
+        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2783,6 +2884,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2001d530b0958042acaba56b67b6b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1830280729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830280719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1931702866
+      Data2: 1304186132
+      Data3: 1442096282
+      Data4: -1998955166
+    Path: event:/UI/Next_Day
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &1849978056
 GameObject:
   m_ObjectHideFlags: 0
@@ -3445,6 +3577,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1956965443}
   m_CullTransparentMesh: 1
+--- !u!1001 &1986949424
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454091304822098983, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012610291743339131, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: startAmbience
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6270223551186299027, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 34ec2c4128e4b44ebb57cd1fd4c08943, type: 3}
 --- !u!1 &2007863659
 GameObject:
   m_ObjectHideFlags: 0
@@ -3819,7 +4012,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10.299988, y: -210}
+  m_AnchoredPosition: {x: 10.300049, y: -210}
   m_SizeDelta: {x: 245.00003, y: 125}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2134355069
@@ -3942,3 +4135,4 @@ SceneRoots:
   - {fileID: 967158310}
   - {fileID: 476149222}
   - {fileID: 2039038984}
+  - {fileID: 1986949424}

@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6270223551186299027
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1454091304822098983}
+  - component: {fileID: 2012610291743339131}
+  - component: {fileID: 6754416134288242900}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1454091304822098983
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6270223551186299027}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2012610291743339131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6270223551186299027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b05f4ca70b23e41818797ab50e6a893a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicEvent:
+    Guid:
+      Data1: 1211636331
+      Data2: 1129833108
+      Data3: 1663672750
+      Data4: -143047930
+    Path: event:/MUSIC/MainLoop_3
+  ambEvent:
+    Guid:
+      Data1: -87023691
+      Data2: 1187501722
+      Data3: 1153967529
+      Data4: -182205939
+    Path: event:/Amb
+  startAmbience: 0
+--- !u!114 &6754416134288242900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6270223551186299027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3007c1036b0247e9b4ea042f1480b51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EatApple:
+    Guid:
+      Data1: 1971130517
+      Data2: 1122371321
+      Data3: 171798973
+      Data4: 1544994923
+    Path: event:/SFX/Eat_Apple
+  PickupCoin:
+    Guid:
+      Data1: -1753314531
+      Data2: 1326930919
+      Data3: -187555156
+      Data4: 616696925
+    Path: event:/SFX/Pickup_Coin
+  Sell:
+    Guid:
+      Data1: 407970686
+      Data2: 1337452595
+      Data3: -1426235250
+      Data4: -1371740592
+    Path: event:/SFX/Sell
+  InsideItem:
+    Guid:
+      Data1: 654617542
+      Data2: 1269839220
+      Data3: 2109301429
+      Data4: 501209416
+    Path: event:/SFX/Inside_Item
+  SellItem:
+    Guid:
+      Data1: -1460476320
+      Data2: 1186158711
+      Data3: 551743132
+      Data4: -376942512
+    Path: event:/SFX/SellItem
+  Death:
+    Guid:
+      Data1: 1731389076
+      Data2: 1173917809
+      Data3: -1194574416
+      Data4: 132403785
+    Path: event:/SFX/Death
+  TurnSnake:
+    Guid:
+      Data1: -1775948930
+      Data2: 1141819601
+      Data3: 1157824951
+      Data4: -1651829959
+    Path: event:/SFX/Turn
+  SnakeAlive:
+    Guid:
+      Data1: -773472725
+      Data2: 1311998000
+      Data3: 1090910606
+      Data4: 1549827962
+    Path: event:/SFX/SnakeAlive
+  NextDay:
+    Guid:
+      Data1: 1931702866
+      Data2: 1304186132
+      Data3: 1442096282
+      Data4: -1998955166
+    Path: event:/UI/Next_Day
+  Upgrade:
+    Guid:
+      Data1: -1284434713
+      Data2: 1271762422
+      Data3: -119406922
+      Data4: -1738298642
+    Path: event:/UI/Upgrade
+  Button:
+    Guid:
+      Data1: -1716817239
+      Data2: 1100242553
+      Data3: 1582491524
+      Data4: -999451545
+    Path: event:/UI/Generic_Button
