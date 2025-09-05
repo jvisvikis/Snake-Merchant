@@ -46,15 +46,18 @@ public class SnakeRenderer : MonoBehaviour
         var progressTail = progressCenter - segmentWidth;
         var progressHead = progressCenter + segmentWidth;
         var bodyWidth = snakeWidth - borderWidth * 2f;
+        var adjustedLumpWidth = lumpWidth;
 
         if (progressTail < 0)
         {
+            adjustedLumpWidth = Mathf.Lerp(snakeWidth, lumpWidth, progressCenter / segmentWidth);
             progressTail = 0f;
             progressCenter = segmentWidth;
             progressHead = segmentWidth * 2f;
         }
-        if (progressHead > lineLength)
+        else if (progressHead > lineLength)
         {
+            adjustedLumpWidth = Mathf.Lerp(lumpWidth, snakeWidth, (lineLength - progressCenter) / segmentWidth);
             progressHead = lineLength;
             progressCenter = lineLength - segmentWidth;
             progressTail = lineLength - 2f * segmentWidth;
@@ -66,7 +69,7 @@ public class SnakeRenderer : MonoBehaviour
                 {
                     new Keyframe(0, snakeWidth),
                     new Keyframe(progressTail / lineLength, snakeWidth),
-                    new Keyframe(progressCenter / lineLength, lumpWidth),
+                    new Keyframe(progressCenter / lineLength, adjustedLumpWidth),
                     new Keyframe(progressHead / lineLength, snakeWidth),
                     new Keyframe(1, snakeWidth),
                 }
@@ -79,7 +82,7 @@ public class SnakeRenderer : MonoBehaviour
                 {
                     new Keyframe(0, bodyWidth),
                     new Keyframe(progressTail / lineLength, bodyWidth),
-                    new Keyframe(progressCenter / lineLength, lumpWidth - borderWidth * 2f),
+                    new Keyframe(progressCenter / lineLength, adjustedLumpWidth - borderWidth * 2f),
                     new Keyframe(progressHead / lineLength, bodyWidth),
                     new Keyframe(1, bodyWidth),
                 }

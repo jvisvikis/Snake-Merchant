@@ -414,7 +414,7 @@ public class Game : MonoBehaviour
         }
 
         ItemsManager.SpawnCollectibles(true);
-        
+
         snake.SetSpeedFactor(timeToMove / initTimeToMove);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);
     }
