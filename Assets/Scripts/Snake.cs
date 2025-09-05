@@ -223,19 +223,23 @@ public class Snake : MonoBehaviour
         return game.canExitAtAnyCell || ItemData.IsAnyExit(cellType);
     }
 
-    public bool Move(out bool didSell, out string whyFail, out ItemController blockedByItem)
+    public bool Move(out int didSell, out string whyFail, out ItemController blockedByItem)
     {
         itemSellCount = 0;
-        didSell = false;
+        didSell = 0;
         blockedByItem = null;
 
         if (newDirOnNextMove != Vector2Int.zero)
         {
-            if (dir != -newDirOnNextMove)
+            if (dir == -newDirOnNextMove)
+                newDirOnNextMove = dir;
+            if (dir != newDirOnNextMove)
+            {
                 dir = newDirOnNextMove;
+                RuntimeManager.PlayOneShotAttached(SFX.Instance.TurnSnake, gameObject);
+            }
             newDirOnNextMove = queuedDir;
             queuedDir = Vector2Int.zero;
-            RuntimeManager.PlayOneShotAttached(SFX.Instance.TurnSnake, gameObject);
         }
 
         var newPos = Head + dir;
@@ -309,12 +313,6 @@ public class Snake : MonoBehaviour
                 blockedByItem = moveInsideItem;
                 return false;
             }
-            else
-            {
-                CameraController.Instance.ClearFocus(game.focusItem);
-                foreach (var gridSq in game.GridSquares.Values)
-                    gridSq.SetInvertItemColor(false);
-            }
             SetInsideItem(null, false);
         }
         else if (insideItem != null && moveInsideItem != null && insideItem != moveInsideItem)
@@ -376,7 +374,7 @@ public class Snake : MonoBehaviour
                 sellCarryingItemsData.Add(carryingItem.ItemData);
 
             game.OnItemsSold(sellCarryingItemsData);
-            didSell = true;
+            didSell = sellCarryingItemsData.Count;
         }
 
         whyFail = "";
@@ -459,11 +457,16 @@ public class Snake : MonoBehaviour
                 }
                 AudioManager.StopEvent(ref insideItemInstance);
             }
+
+            CameraController.Instance.ClearFocus(game.focusItem);
+            foreach (var gridSq in game.GridSquares.Values)
+                gridSq.SetInvertItemColor(false);
         }
         else if (insideItem == null)
         {
             AudioManager.StartEvent(SFX.Instance.InsideItem, this, out insideItemInstance);
         }
+
         insideItem = newInsideItem;
     }
 

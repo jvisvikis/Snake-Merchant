@@ -39,6 +39,7 @@ public class Game : MonoBehaviour
     public float timeToMoveReduction = 0.01f;
     public float timeToDieGrace = 0.1f;
     public int collectionWalkDelay = 3;
+    public int bonusPointStack = 5;
 
     [Header("Coins")]
     public int coinsSpawnTurns = 15;
@@ -164,6 +165,7 @@ public class Game : MonoBehaviour
     private void SpawnGrid()
     {
         Debug.Assert(gridSquares.Count == 0);
+        var middleTypeSprites = FindTypeSprites(GridSquare.Type.Middle);
 
         for (int x = 0; x < grid.Width; x++)
         {
@@ -201,7 +203,8 @@ public class Game : MonoBehaviour
                         Type = typeSprites.Type,
                         Sprite = ListUtil.Random(typeSprites.Sprites),
                         Offset = typeSprites.Offset,
-                    }
+                    },
+                    middleTypeSprites
                 );
                 gridSquares[cell] = gridSquare;
             }
@@ -255,7 +258,7 @@ public class Game : MonoBehaviour
         fitToScreen.SetFittingOff();
         snake.ApplyQueuedDirection();
 
-        bool didSellPreviousIteration = false;
+        int didSellPreviousIteration = 0;
 
         while (DayManager.Instance.IsPlaying)
         {
@@ -267,12 +270,17 @@ public class Game : MonoBehaviour
 
             snake.SetMoveOffset(1);
 
-            if (didSellPreviousIteration)
+            if (didSellPreviousIteration > 0)
             {
                 yield return CameraController.Instance.SetFocus(focusSell, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
-                yield return new WaitForSeconds(sellPause);
+                var moreBonus = 0;
                 while (snake.DespawnNextCarryingItem())
+                {
+                    if (moreBonus > 0)
+                        AddBonus(moreBonus);
+                    moreBonus += bonusPointStack;
                     yield return new WaitForSeconds(sellPause);
+                }
                 yield return CameraController.Instance.ClearFocus(focusSell);
             }
 
@@ -407,31 +415,17 @@ public class Game : MonoBehaviour
 
     public void OnItemsSold(List<ItemData> items)
     {
-        // Debug.Assert(specificItem != null);
-        // Debug.Assert(specificItem.RItemData != null);
-
         itemsSold += items.Count;
-        float collectionSold = 0;
-        float collectionCount = 0;
+        int collectionSold = 0;
         foreach (var item in items)
         {
             currentDayScore += item.Value;
             collectionSold += item.Value;
-            collectionCount++;
-            if (collectionCount > 1)
-            {
-                bonus += 10;
-            }
         }
-        RuntimeManager.PlayOneShotAttached(SFX.Instance.Sell, snake.gameObject);
-        currentDayScore += bonus;
-        collectionSold += bonus;
-        CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
-        collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + collectionUIOffset);
-        collectionUI.SetProfitText($"{collectionSold}");
-        Destroy(collectionUI.gameObject, collectionUI.ClipLength);
 
-        UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
+        RuntimeManager.PlayOneShotAttached(SFX.Instance.Sell, snake.gameObject);
+
+        ShowCollectionUI(collectionSold);
 
         if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
@@ -448,5 +442,28 @@ public class Game : MonoBehaviour
     public void IncreaseSpeed()
     {
         timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+    }
+
+    private void ShowCollectionUI(int sold)
+    {
+        CollectionWorldUI collectionUI = Instantiate(collectionUIPrefab);
+        collectionUI.transform.position = grid.GetWorldPos(currentLevelSpawn + collectionUIOffset);
+        collectionUI.SetProfitText($"+{sold}");
+        Destroy(collectionUI.gameObject, collectionUI.ClipLength);
+        UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
+    }
+
+    private void AddBonus(int addBonus)
+    {
+        bonus += addBonus;
+        currentDayScore += bonus;
+
+        ShowCollectionUI(addBonus);
+
+        if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
+        {
+            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold, false);
+            return;
+        }
     }
 }

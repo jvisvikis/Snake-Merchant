@@ -10845,24 +10845,21 @@ MonoBehaviour:
   timeToMoveReduction: 0.01
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
+  bonusPointStack: 5
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
   startNumParts: 1
   spawnPause: 5
-  sellPause: 0.25
+  sellPause: 1
   itemBloopTime: 0.2
   gridTypeSprites:
   - Type: 0
     Sprites:
-    - {fileID: -509189832, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
     - {fileID: 57099381, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
-    - {fileID: 490125821, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
     - {fileID: 1476800639, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
     - {fileID: -1351635293, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
     - {fileID: -1931614397, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
-    - {fileID: -2119246286, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
     - {fileID: 561760927, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
-    - {fileID: -1130065949, guid: 36886eb672e6e44ce8e75c5e917c85f4, type: 3}
     Offset: {x: 0, y: 0}
   - Type: 1
     Sprites:

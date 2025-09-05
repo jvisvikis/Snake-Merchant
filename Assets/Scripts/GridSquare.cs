@@ -52,20 +52,45 @@ public class GridSquare : MonoBehaviour
 
     public Vector2Int Cell => cell;
 
+    [SerializeField]
     private SpriteRenderer spriteRenderer;
+
+    [SerializeField]
+    private SpriteRenderer middleSpriteRenderer;
+
+    private SpriteRenderer colorSpriteRenderer;
     private Vector2Int cell;
+    private Type type;
     public bool hasSnake;
     private RotatedItemData itemData;
     public bool invertItemColor;
 
-    public void Init(Vector2Int cell, TypeSprite typeSprite)
+    public void Init(Vector2Int cell, TypeSprite typeSprite, TypeSprites middleSprites)
     {
         this.cell = cell;
+        type = typeSprite.Type;
         spriteRenderer.sprite = typeSprite.Sprite;
         spriteRenderer.transform.localPosition += (Vector3)typeSprite.Offset;
-        if (typeSprite.Type == Type.Middle)
+
+        if (UseMiddleSprite())
+        {
+            middleSpriteRenderer.sprite = ListUtil.Random(middleSprites.Sprites);
+            middleSpriteRenderer.transform.localRotation *= RandomSquareRotation();
+            colorSpriteRenderer = middleSpriteRenderer;
+        }
+        else
+        {
+            middleSpriteRenderer.enabled = false;
             spriteRenderer.transform.localRotation *= RandomSquareRotation();
+            colorSpriteRenderer = spriteRenderer;
+        }
+
         Render(true);
+    }
+
+    private bool UseMiddleSprite()
+    {
+        return type != Type.Middle && type != Type.Spawn;
     }
 
     private Quaternion RandomSquareRotation()
@@ -101,7 +126,7 @@ public class GridSquare : MonoBehaviour
         if (spriteRenderer == null)
             return;
 
-        Color setColor;
+        Color setColor = Color.white;
 
         if (invertItemColor && !HasCollectibleItem())
             setColor = hasSnake ? snakeColor : obstacleColor;
@@ -109,17 +134,24 @@ public class GridSquare : MonoBehaviour
             setColor = hasSnake ? snakeColor : Color.white;
         else if (itemData.IsCollectible && !invertItemColor)
             setColor = itemColor;
-        else
-            setColor = Color.white;
 
         if (immediate)
         {
-            spriteRenderer.color = setColor;
+            colorSpriteRenderer.color = setColor;
         }
-        else if (setColor != spriteRenderer.color)
+        else if (colorSpriteRenderer.color != setColor)
         {
             StopAllCoroutines();
-            StartCoroutine(SetColorCoroutine(setColor));
+            StartCoroutine(SetColorCoroutine(colorSpriteRenderer, setColor));
+        }
+
+        if (UseMiddleSprite())
+        {
+            Color setOuterColor = invertItemColor ? obstacleColor : Color.white;
+            if (immediate)
+                spriteRenderer.color = setOuterColor;
+            else if (spriteRenderer.color != setOuterColor)
+                StartCoroutine(SetColorCoroutine(spriteRenderer, setOuterColor));
         }
     }
 
@@ -131,24 +163,19 @@ public class GridSquare : MonoBehaviour
         Render(true);
     }
 
-    private void Awake()
-    {
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-    }
-
     private void OnDestroy()
     {
         spriteRenderer = null;
     }
 
-    private IEnumerator SetColorCoroutine(Color setColor)
+    private IEnumerator SetColorCoroutine(SpriteRenderer r, Color setColor)
     {
-        var fromColor = spriteRenderer.color;
+        var fromColor = r.color;
         for (float t = 0; t < setColorTime; t += Time.deltaTime)
         {
-            spriteRenderer.color = VectorUtil.SmoothStep(fromColor, setColor, t);
+            r.color = VectorUtil.SmoothStep(fromColor, setColor, t);
             yield return null;
         }
-        spriteRenderer.color = setColor;
+        r.color = setColor;
     }
 }

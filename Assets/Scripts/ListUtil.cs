@@ -14,7 +14,6 @@ public class ListUtil
         }
     }
 
-
     public static T Random<T>(T[] list)
     {
         Debug.Assert(list.Length > 0);
