@@ -42,6 +42,8 @@ public class UIManager : MonoBehaviour
     private Button nextDayButton;
     [SerializeField]
     private Button resetGameButton;
+    [SerializeField]
+    private Medusa medusa;
 
     [Header("OverviewTextUI")]
     [SerializeField]
@@ -130,6 +132,7 @@ public class UIManager : MonoBehaviour
     private void SetupDay()
     {
         SetEndDayPanelActive(false);
+        medusa.gameObject.SetActive(false);
         SetTotalCoinText($" <color=yellow>{EconomyManager.Instance.TotalCoins}<sprite=0>");
         SetLivesText($" <color=green>{EconomyManager.Instance.Lives}<sprite=0>");
         //string warehouseLevelText = EconomyManager.Instance.WarehouseUpgradeAvailable() ? $"{EconomyManager.Instance.WarehouseLevel} <color=green> > {EconomyManager.Instance.WarehouseLevel + 1}" : "MAX";
@@ -344,6 +347,7 @@ public class UIManager : MonoBehaviour
     public void EndDay(bool dead)
     {
         SetEndDayPanelActive(true);
+        medusa.gameObject.SetActive(true);
         overviewHolder.gameObject.SetActive(true);
         upgradesHolder.gameObject.SetActive(false);
         if(dead)
@@ -352,6 +356,7 @@ public class UIManager : MonoBehaviour
             nextPanelButton.gameObject.SetActive(false);
             nextDayButton.gameObject.SetActive(false);
             resetGameButton.gameObject.SetActive(true);
+            medusa.ChooseSayingsFail();
         }
         else
         {
@@ -359,6 +364,7 @@ public class UIManager : MonoBehaviour
             nextPanelButton.gameObject.SetActive(false);
             nextDayButton.gameObject.SetActive(true);
             resetGameButton.gameObject.SetActive(false);
+            medusa.ChooseSayingsPass();
         }
 
         if (EconomyManager.Instance.HasCoinsForUpgrades())
