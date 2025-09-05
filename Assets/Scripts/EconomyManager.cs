@@ -281,7 +281,7 @@ public class EconomyManager : MonoBehaviour
     public void AddCoins(int coins)
     {
         this.totalCoins += coins;
-        UIManager.Instance.SetTotalCoinText($"<sprite=0> <color=yellow>{totalCoins}");
+        UIManager.Instance.SetTotalCoinText($"<color=yellow>{totalCoins}<sprite=0>");
     }
     public bool SpendCoins(int value, bool isWarehouseUpgrade)
     {
@@ -290,7 +290,7 @@ public class EconomyManager : MonoBehaviour
             return false;
         }
         totalCoins -= value;
-        UIManager.Instance.SetTotalCoinText($"<sprite=0> <color=yellow>{totalCoins}");
+        UIManager.Instance.SetTotalCoinText($" <color=yellow>{totalCoins}<sprite=0>");
         if(!isWarehouseUpgrade)
             UpdateSingleUpgradePrice();
        
@@ -309,7 +309,7 @@ public class EconomyManager : MonoBehaviour
         {
             UIManager.Instance.SetLifePurchasePrice("-1");
         }
-        UIManager.Instance.SetLivesText($"<sprite=0> <color=green>{lives}");
+        UIManager.Instance.SetLivesText($"<color=green>{lives}<sprite=0>");
         UIManager.Instance.SetUpgradeLivesText(lives.ToString());
         UIManager.Instance.SetUpgradePriceText($"{currentUpgradePrice} <sprite=0>");
         return true;

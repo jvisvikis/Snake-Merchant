@@ -96,10 +96,10 @@ public class DayManager : MonoBehaviour
         currentTotalScore += currentDayScore;
         isPlaying = false;
         EconomyManager.Instance.AddObstacles(1);
-        UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(maxTimeLimit - timeLeft)}s");
-        UIManager.Instance.SetBonusText($"Total Bonus: {bonusScore}");
-        UIManager.Instance.SetCoinsCollectedText($"Coins Collected: {coins}");
-        UIManager.Instance.SetItemsCollectedText($"Items Collected: {itemsCollected}");
+        UIManager.Instance.SetTimeLeftText($"<color=grey>Time Left: <color=white>{Mathf.RoundToInt(maxTimeLimit - timeLeft)}s");
+        UIManager.Instance.SetBonusText($"<color=grey>Total Bonus: <color=white>{bonusScore}");
+        UIManager.Instance.SetCoinsCollectedText($"<color=grey>Coins Collected: <color=white>{coins}");
+        UIManager.Instance.SetItemsCollectedText($"<color=grey>Items Collected: <color=white>{itemsCollected}");
         UIManager.Instance.EndDay(dead);
     }
 
