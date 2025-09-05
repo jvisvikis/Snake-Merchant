@@ -157,7 +157,7 @@ public class UIManager : MonoBehaviour
         }
         else
             SetAllUpgrades(false);
-        
+
     }
     #region Set Text
     public void SetEndPanelText(string text)
@@ -262,7 +262,7 @@ public class UIManager : MonoBehaviour
     public void SetWarehouseInfo(LevelData current)
     {
         warehouseSizeText.text = $"Size: {current.Width}x{current.Height}";
-        warehouseMaxCoinsText.text = $"Max Coins: {current.NumCoins}";        
+        warehouseMaxCoinsText.text = $"Max Coins: {current.NumCoins}";
     }
     #endregion
     #region Set Images

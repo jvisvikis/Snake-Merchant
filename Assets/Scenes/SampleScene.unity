@@ -7358,7 +7358,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.26959634, y: 0.045}
   m_AnchorMax: {x: 0.7301055, y: 0.95500004}
-  m_AnchoredPosition: {x: 0.043792725, y: -5.4000397}
+  m_AnchoredPosition: {x: 0.043792725, y: -5.4000244}
   m_SizeDelta: {x: 157.11, y: 28.657}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1144445762
@@ -10665,7 +10665,7 @@ MonoBehaviour:
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
-  mustCompleteItemAfterEntering: 0
+  mustCompleteItemAfterEntering: 1
   initTimeToMove: 0.35
   minTimeToMove: 0.15
   timeToMoveReduction: 0.01
