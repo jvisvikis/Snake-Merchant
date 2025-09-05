@@ -81,7 +81,7 @@ public class EconomyManager : MonoBehaviour
         else
             UIManager.Instance.SetWarehouseUpgradePrice($"<color=red>MAX");
 
-        UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel]); 
+        UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel]);
     }
     #region Upgrades
     //TODO Change method to use warehouse upgrade price
@@ -99,11 +99,11 @@ public class EconomyManager : MonoBehaviour
             UIManager.Instance.SetWarehouseUpgradePrice($"{GetCurrentWarehouseUpgradePrice()}");
             if (!WarehouseUpgradeAvailable())
             {
-                UIManager.Instance.SetEnableWarehouseUpgrade(false);               
+                UIManager.Instance.SetEnableWarehouseUpgrade(false);
             }
-            
+
             UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel]);
-            
+
             return true;
         }
         else
@@ -131,11 +131,11 @@ public class EconomyManager : MonoBehaviour
             }
             return true;
         }
-        else 
+        else
         {
             Debug.Log("Not enough Coins");
             return false;
-        }            
+        }
     }
 
     public bool UpgradeSnakeLength()
@@ -168,7 +168,7 @@ public class EconomyManager : MonoBehaviour
 
                 UIManager.Instance.SetEnableLengthUpgrade(false);
             }
-            
+
             return true;
         }
         else
@@ -192,7 +192,7 @@ public class EconomyManager : MonoBehaviour
             if(!LivesUpgradeAvailable())
             {
                 UIManager.Instance.SetEnableLifeUpgrade(false);
-            }           
+            }
             return true;
         }
         else
@@ -264,6 +264,7 @@ public class EconomyManager : MonoBehaviour
         warehouseLevel = 0;
         snakeSpeedLevel = 0;
         snakeLengthLevel = 1;
+        numOfObstacles = 0;
         lives = 1;
     }
 
@@ -293,7 +294,7 @@ public class EconomyManager : MonoBehaviour
         UIManager.Instance.SetTotalCoinText($" <color=yellow>{totalCoins}");
         if(!isWarehouseUpgrade)
             UpdateSingleUpgradePrice();
-       
+
         if (!HasCoinsForUpgrades())
             UIManager.Instance.SetAllUpgrades(false);
         if(WarehouseUpgradeAvailable() && totalCoins < GetCurrentWarehouseUpgradePrice())

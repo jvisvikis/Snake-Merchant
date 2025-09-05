@@ -25,9 +25,6 @@ public class AudioManager : MonoBehaviour
     //--------------------------------------------------------------------
     public static AudioManager Instance { get; private set; }
 
-    [SerializeField]
-    private bool startAmbience = false;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -45,31 +42,25 @@ public class AudioManager : MonoBehaviour
     //--------------------------------------------------------------------
     private void Start()
     {
-        musicEventInstance = RuntimeManager.CreateInstance(musicEvent);
-        musicEventInstance.start();
-        ambEventInstance = RuntimeManager.CreateInstance(ambEvent);
-        ambEventInstance.start();
-
-        if (startAmbience)
-            ambEventInstance.keyOff();
+        StartAmbience();
     }
 
     public void StartMusic()
     {
-        musicEventInstance.keyOff();
-        ambEventInstance.keyOff();
+        if (!musicEventInstance.isValid())
+        {
+            musicEventInstance = RuntimeManager.CreateInstance(musicEvent);
+            musicEventInstance.start();
+        }
     }
 
-    //--------------------------------------------------------------------
-    // Method to stop the music event, allowing the
-    // ADSR envelope fadeout settings from FMOD
-    //--------------------------------------------------------------------
-    public void StopMusic()
+    private void StartAmbience()
     {
-        musicEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        musicEventInstance.release();
-        ambEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        ambEventInstance.release();
+        if (!ambEventInstance.isValid())
+        {
+            ambEventInstance = RuntimeManager.CreateInstance(ambEvent);
+            ambEventInstance.start();
+        }
     }
 
     //--------------------------------------------------------------------
