@@ -151,6 +151,8 @@ public class Snake : MonoBehaviour
                 return false;
             }
         }
+        if(item.RItemData.ItemData != game.itemToCollect) 
+            return false;
 
         return true;
     }
@@ -294,7 +296,14 @@ public class Snake : MonoBehaviour
                 blockedByItem = moveInsideItem;
                 return false;
             }
-            SetInsideItem(null);
+            else if(CanExit(currentyInsideCellType))
+            {
+                Debug.Log("WEE WHOOO WEEE WHOOO WEE WHOOO!");
+                CameraController.Instance.ClearFocus(game.focusItem);
+                foreach (var gridSq in game.GridSquares.Values)
+                    gridSq.SetInvertItemColor(false);
+            }
+                SetInsideItem(null);
         }
         else if (insideItem != null && moveInsideItem != null && insideItem != moveInsideItem)
         {

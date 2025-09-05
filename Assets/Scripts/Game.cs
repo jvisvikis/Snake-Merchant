@@ -73,7 +73,8 @@ public class Game : MonoBehaviour
     public Vector2Int CurrentLevelSpawn => currentLevelSpawn;
     public Dictionary<Vector2Int, GridSquare> GridSquares => gridSquares;
     public int CurrentNumParts => currentNumParts;
-    public ItemData CurrentItem => items[indexToCollect] ? items[indexToCollect] : null;
+    public List<ItemData> Items => items;
+    public ItemData CurrentItem => itemToCollect;
 
     private Snake snake;
     private Grid grid;
@@ -90,7 +91,7 @@ public class Game : MonoBehaviour
     private Vector2Int currentLevelSpawn = Vector2Int.zero;
     private int currentNumParts;
     public List<ItemData> items = new();
-    public int indexToCollect;
+    public ItemData itemToCollect;
     public string whyLastItemNotCollected = "";
 
     public void SnakeDidEatApple()
@@ -108,6 +109,7 @@ public class Game : MonoBehaviour
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
         SetItemList();
         SpawnPerRoundObjects(true);
+        SetFirstItem();
         StartCoroutine(MoveSnake(currentLevelSpawn, true));
         StartCoroutine(DayManager.Instance.StartDay());
     }
@@ -285,17 +287,23 @@ public class Game : MonoBehaviour
     {
         items = new();
         int currentValue = 0;
-        while (currentValue < DayManager.Instance.CurrentTargetScore)
+        int fluff = 100;
+        while (currentValue - fluff < DayManager.Instance.CurrentTargetScore)
         {
             int index = 2 + Random.Range(0, CurrentLevel.Items.Items.Count - 2);
             items.Add(CurrentLevel.Items.Items[index]);
             currentValue += CurrentLevel.Items.Items[index].Value;
         }
-        string text = "";
-        if (items[indexToCollect].flavourText.Count >= 1)
-            text = items[indexToCollect].flavourText[Random.Range(0, items[indexToCollect].flavourText.Count)];
+    }
 
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, text);
+    public void SetFirstItem()
+    {
+        itemToCollect = itemsManager.Items[Random.Range(0,itemsManager.Items.Count)].RItemData.ItemData;
+        string text = "";
+        if (itemToCollect.flavourText.Count >= 1)
+            text = itemToCollect.flavourText[Random.Range(0, itemToCollect.flavourText.Count)];
+
+        UIManager.Instance.SetFirstItem(itemToCollect.sprite, text);
     }
 
     public void ConsumeItem(ItemData itemConsumed)
@@ -311,18 +319,17 @@ public class Game : MonoBehaviour
         items.Remove(itemConsumed);
         if (items.Count == 0)
             return;
+        SetFirstItem();
         Debug.Log(items.Count);
         //indexToCollect++;
 
-        int textIdx = Random.Range(0, items[indexToCollect].flavourText.Count);
-        Debug.Log(textIdx);
-        Debug.Log(items[indexToCollect].flavourText.Count);
-        if (items[indexToCollect].flavourText.Count == 0)
+        int textIdx = Random.Range(0, itemToCollect.flavourText.Count);
+        if (itemToCollect.flavourText.Count == 0)
         {
-            Debug.LogError($"{items[indexToCollect].name} has no flavour text");
+            Debug.LogError($"{itemToCollect.name} has no flavour text");
             return;
         }
-        UIManager.Instance.SetFirstItem(items[indexToCollect].sprite, items[indexToCollect].flavourText[textIdx]);
+        UIManager.Instance.SetFirstItem(itemToCollect.sprite, itemToCollect.flavourText[textIdx]);
         UIManager.Instance.DialogueBox.ResetAnimation();
     }
 
@@ -335,9 +342,9 @@ public class Game : MonoBehaviour
         // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
         StopAllCoroutines();
         SpawnPerRoundObjects(false);
-        DayManager.Instance.ResetDay();
-        StartCoroutine(MoveSnake(currentLevelSpawn, false));
-        StartCoroutine(DayManager.Instance.StartDay());
+        DayManager.Instance.EndDay(currentDayScore,bonus,coins,itemsSold,true);
+        //StartCoroutine(MoveSnake(currentLevelSpawn, false));
+        //StartCoroutine(DayManager.Instance.StartDay());
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
@@ -401,7 +408,7 @@ public class Game : MonoBehaviour
 
         if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
         {
-            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold);
+            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold, false);
             return;
         }
 

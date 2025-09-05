@@ -93,7 +93,7 @@ public class EconomyManager : MonoBehaviour
             return false;
         }
         //Uncomment when warehouses have prices
-        if (SpendCoins(warehouses[warehouseLevel+1].Cost))
+        if (SpendCoins(warehouses[warehouseLevel+1].Cost, true))
         {
             warehouseLevel++;
             UIManager.Instance.SetWarehouseUpgradePrice($"{GetCurrentWarehouseUpgradePrice()}<sprite=0>");
@@ -120,7 +120,7 @@ public class EconomyManager : MonoBehaviour
             Debug.LogError("Snake speed maxxed out");
             return false;
         }
-        if (SpendCoins(snakeSpeedPrices[snakeSpeedLevel]))
+        if (SpendCoins(snakeSpeedPrices[snakeSpeedLevel], false))
         {
             snakeSpeedLevel++;
             UIManager.Instance.SetSpeedLevelText(snakeSpeedLevel.ToString());
@@ -146,12 +146,11 @@ public class EconomyManager : MonoBehaviour
             return false;
         }
         int spending = singleUpgradePrice ? currentUpgradePrice : snakeLengthPrices[snakeLengthLevel];
-        if (SpendCoins(spending))
+        if (SpendCoins(spending, false))
         {
             snakeLengthLevel++;
             if (singleUpgradePrice)
             {
-                UpdateSingleUpgradePrice();
                 UIManager.Instance.SetLengthLevelText($"{snakeLengthLevel}");
                 UIManager.Instance.SetUpgradePriceText($"{currentUpgradePrice}<sprite=0>");
             }
@@ -187,12 +186,8 @@ public class EconomyManager : MonoBehaviour
             return false;
         }
         int spending = singleUpgradePrice ? currentUpgradePrice : lifePrice;
-        if (SpendCoins(spending))
+        if (SpendCoins(spending, false))
         {
-            if (singleUpgradePrice)
-            {
-                UpdateSingleUpgradePrice();
-            }
             AddLife();
             if(!LivesUpgradeAvailable())
             {
@@ -234,7 +229,7 @@ public class EconomyManager : MonoBehaviour
     }
     public bool HasCoinsForUpgrades()
     {
-        return currentUpgradePrice < totalCoins;
+        return currentUpgradePrice <= totalCoins;
     }
     #endregion
 
@@ -268,7 +263,7 @@ public class EconomyManager : MonoBehaviour
         totalCoins = manyCoins ? 999 : 0;
         warehouseLevel = 0;
         snakeSpeedLevel = 0;
-        snakeLengthLevel = 0;
+        snakeLengthLevel = 1;
         lives = 1;
     }
 
@@ -276,10 +271,10 @@ public class EconomyManager : MonoBehaviour
     {
         if (ObstacleUpgradeAvailable())
         {
-            numOfObstacles--;
-            SpendCoins(currentUpgradePrice);
-            UpdateSingleUpgradePrice();
-            if(!ObstacleUpgradeAvailable())
+            if(SpendCoins(currentUpgradePrice, false))
+                numOfObstacles--;
+            Debug.Log($"Obstacles:{numOfObstacles}");
+            if (!ObstacleUpgradeAvailable())
                 UIManager.Instance.SetEnableObstacleUpgrade(false);
         }
     }
@@ -288,7 +283,7 @@ public class EconomyManager : MonoBehaviour
         this.totalCoins += coins;
         UIManager.Instance.SetTotalCoinText($"<sprite=0> <color=yellow>{totalCoins}");
     }
-    public bool SpendCoins(int value)
+    public bool SpendCoins(int value, bool isWarehouseUpgrade)
     {
         if (value > totalCoins)
         {
@@ -296,7 +291,10 @@ public class EconomyManager : MonoBehaviour
         }
         totalCoins -= value;
         UIManager.Instance.SetTotalCoinText($"<sprite=0> <color=yellow>{totalCoins}");
-        if(!HasCoinsForUpgrades())
+        if(!isWarehouseUpgrade)
+            UpdateSingleUpgradePrice();
+       
+        if (!HasCoinsForUpgrades())
             UIManager.Instance.SetAllUpgrades(false);
         if(WarehouseUpgradeAvailable() && totalCoins < GetCurrentWarehouseUpgradePrice())
             UIManager.Instance.SetEnableWarehouseUpgrade(false);
@@ -334,6 +332,7 @@ public class EconomyManager : MonoBehaviour
     public void AddObstacles(int obstaclesToAdd)
     {
         numOfObstacles += obstaclesToAdd;
+        UIManager.Instance.SetObstaclesText(obstaclesToAdd.ToString());
     }
 
 }

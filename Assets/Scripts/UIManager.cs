@@ -40,8 +40,12 @@ public class UIManager : MonoBehaviour
     private Button nextPanelButton;
     [SerializeField]
     private Button nextDayButton;
+    [SerializeField]
+    private Button resetGameButton;
 
     [Header("OverviewTextUI")]
+    [SerializeField]
+    private TextMeshProUGUI targetReachedText;
     [SerializeField]
     private TextMeshProUGUI timeLeftText;
     [SerializeField]
@@ -276,6 +280,7 @@ public class UIManager : MonoBehaviour
     {
         PlayUpgradeSFX();
         EconomyManager.Instance.BuyObstacleRemoval();
+        Debug.Log("Change Damn it!!!");
         SetObstaclesText(EconomyManager.Instance.NumOfObstacles.ToString());
     }
     public void BuyWarehouseUpgrade()
@@ -336,14 +341,27 @@ public class UIManager : MonoBehaviour
         SetEnableObstacleUpgrade(active);
     }
     #endregion
-    public void EndDay()
+    public void EndDay(bool dead)
     {
         SetEndDayPanelActive(true);
         overviewHolder.gameObject.SetActive(true);
         upgradesHolder.gameObject.SetActive(false);
-        nextPanelButton.gameObject.SetActive(true);
-        nextDayButton.gameObject.SetActive(false);
-        if(EconomyManager.Instance.HasCoinsForUpgrades())
+        if(dead)
+        {
+            targetReachedText.text = $"Target <color=red>Failed";
+            nextPanelButton.gameObject.SetActive(false);
+            nextDayButton.gameObject.SetActive(false);
+            resetGameButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            targetReachedText.text = $"Target <color=orange>Reached";
+            nextPanelButton.gameObject.SetActive(false);
+            nextDayButton.gameObject.SetActive(true);
+            resetGameButton.gameObject.SetActive(false);
+        }
+
+        if (EconomyManager.Instance.HasCoinsForUpgrades())
         {
             SetAllUpgrades(true);
         }
@@ -351,6 +369,10 @@ public class UIManager : MonoBehaviour
         {
             SetEnableWarehouseUpgrade(true);
         }
+    }
+    public void RestartGame()
+    {
+        DayManager.Instance.Reset();
     }
 
     public void OpenUpgradesPanel()
@@ -385,7 +407,5 @@ public class UIManager : MonoBehaviour
         AudioManager.StartEvent(SFX.Instance.Upgrade, out var _, ("UpgradeCount", upgradeCountThisDay));
         upgradeCountThisDay++;
     }
-
-
 
 }
