@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f00d66c4e8164a05982a9b3fc7b7a4c, type: 3}
   m_Name: Level 9
   m_EditorClassIdentifier: 
-  Width: 10
-  Height: 10
-  Cost: 80
+  Width: 16
+  Height: 16
+  Cost: 63
   NumCoins: 9
   NumItems: 9
   NumRandomObstacles: 0
@@ -22,30 +22,4 @@ MonoBehaviour:
   Mushrooms: 0
   Items: {fileID: 11400000, guid: 75ca13533fac6be4ab3105012e5e2da1, type: 2}
   RandomObstacles: {fileID: 11400000, guid: 143db1772930c49178a3808a6db1a2b1, type: 2}
-  layout: '_ _ _ _ _ _ _ _ _ _ _ _
-
-    _ _ _ _ _ _ _ _ _ _ _ _
-
-    _ _ _ _ _ _
-    _ _ _ _ _ _
-
-    _ _ _ _ _ _ _ _ _ _ _ _
-
-    _ _ _ _ _ _ _ _ _ _ _ _
-
-    _
-    _ _ _ _ _ _ _ _ _ _ _
-
-    _ _ _ _ _ _ _ _ _ _ _ _
-
-    _ _ _ _ _ _ _ _ _ _ _
-    _
-
-    _ _ _ _ _ _ _ _ _ _ _ _
-
-    _ _ _ _ _ _ _ _ _ _ _ _
-
-    _ _ _ _ _ _
-    _ _ _ _ _ _
-
-    _ _ _ _ _ _ _ _ _ _ _ _'
+  layout: 

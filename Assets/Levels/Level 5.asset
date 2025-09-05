@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f00d66c4e8164a05982a9b3fc7b7a4c, type: 3}
   m_Name: Level 5
   m_EditorClassIdentifier: 
-  Width: 14
-  Height: 14
-  Cost: 40
+  Width: 12
+  Height: 12
+  Cost: 29
   NumCoins: 5
   NumItems: 5
   NumRandomObstacles: 0
