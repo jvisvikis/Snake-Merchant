@@ -365,8 +365,8 @@ public class UIManager : MonoBehaviour
         else
         {
             targetReachedText.text = $"Target <color=orange>Reached";
-            nextPanelButton.gameObject.SetActive(false);
-            nextDayButton.gameObject.SetActive(true);
+            nextPanelButton.gameObject.SetActive(true);
+            nextDayButton.gameObject.SetActive(false);
             resetGameButton.gameObject.SetActive(false);
             medusa.ChooseSayingsPass();
         }
