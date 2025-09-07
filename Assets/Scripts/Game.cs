@@ -64,6 +64,19 @@ public class Game : MonoBehaviour
     [SerializeField]
     private GridSquare.TypeSprites[] gridTypeSprites;
 
+    [Header("Bonus")]
+    [SerializeField, Min(0f)]
+    private float itemBonusMult = 1f;
+
+    [SerializeField, Min(0f)]
+    private float timeLeftBonusMult = 1f;
+
+    [SerializeField, Min(0f)]
+    private float snakeLengthBonusMult = 1f;
+
+    [SerializeField, Min(0f)]
+    private float dayReachedBonusMult = 1f;
+
     public CameraController.FocusOptions focusSpawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusRespawn = CameraController.DefaultFocusOptions;
     public CameraController.FocusOptions focusItem = CameraController.DefaultFocusOptions;
@@ -71,6 +84,7 @@ public class Game : MonoBehaviour
 
     public Grid Grid => grid;
     public Snake Snake => snake;
+    public bool SnakeIsMoving => snakeIsMoving;
     public ItemsManager ItemsManager => itemsManager;
     public int Coins => coins;
     public int CoinSpawnCountdown => coinSpawnCountdown;
@@ -78,24 +92,26 @@ public class Game : MonoBehaviour
     public Vector2Int CurrentLevelSpawn => currentLevelSpawn;
     public Dictionary<Vector2Int, GridSquare> GridSquares => gridSquares;
     public int CurrentNumParts => currentNumParts;
-    public List<ItemData> Items => items;
+    public List<ItemData> Items => levelItems;
     public ItemData CurrentItem => itemToCollect;
+    public int ItemsSold => itemsSold;
 
     private Snake snake;
     private Grid grid;
     private Dictionary<Vector2Int, GridSquare> gridSquares = new();
     private ItemsManager itemsManager;
     private float timeToMove;
+    private bool snakeIsMoving;
 
     // private ItemController specificItem;
-    private int bonus = 0;
+    private int currentItemBonus = 0;
     private int coins = 0;
     private int itemsSold = 0;
     private int coinSpawnCountdown;
     private int currentDayScore;
     private Vector2Int currentLevelSpawn = Vector2Int.zero;
     private int currentNumParts;
-    public List<ItemData> items = new();
+    public List<ItemData> levelItems = new();
     public ItemData itemToCollect;
     public string whyLastItemNotCollected = "";
     public FitToScreen fitToScreen;
@@ -103,6 +119,11 @@ public class Game : MonoBehaviour
     public void SnakeDidEatApple()
     {
         currentNumParts++;
+    }
+
+    void Awake()
+    {
+        DayManager.Instance.SetGame(this);
     }
 
     void Start()
@@ -113,7 +134,7 @@ public class Game : MonoBehaviour
         grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, orig);
         currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;
         timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
-        SetItemList();
+        GenerateLevelItemList();
         SpawnPerRoundObjects(true);
         SetFirstItem();
         StartCoroutine(MoveSnake(currentLevelSpawn, true));
@@ -250,6 +271,8 @@ public class Game : MonoBehaviour
 
     public IEnumerator MoveSnake(Vector2Int spawn, bool isStart)
     {
+        snakeIsMoving = false;
+
         yield return CameraController.Instance.SetFocus(isStart ? focusSpawn : focusRespawn, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
         // if (isStart)
         //     yield return new WaitForSeconds(spawnPause);
@@ -259,6 +282,7 @@ public class Game : MonoBehaviour
         snake.ApplyQueuedDirection();
 
         int didSellPreviousIteration = 0;
+        snakeIsMoving = true;
 
         while (DayManager.Instance.IsPlaying)
         {
@@ -272,16 +296,20 @@ public class Game : MonoBehaviour
 
             if (didSellPreviousIteration > 0)
             {
+                snakeIsMoving = false;
+
                 yield return CameraController.Instance.SetFocus(focusSell, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
                 var moreBonus = 0;
                 while (snake.DespawnNextCarryingItem())
                 {
                     if (moreBonus > 0)
-                        AddBonus(moreBonus);
+                        AddBonus(moreBonus, !snake.IsCarryingItems());
                     moreBonus += bonusPointStack;
                     yield return new WaitForSeconds(sellPause);
                 }
                 yield return CameraController.Instance.ClearFocus(focusSell);
+
+                snakeIsMoving = true;
             }
 
             string whyFail;
@@ -297,6 +325,7 @@ public class Game : MonoBehaviour
 
             if (!didMove)
             {
+                snakeIsMoving = false;
                 yield return CameraController.Instance.SetFocus(focusRespawn, grid.GetWorldPos(snake.Head) + grid.CellCenterOffset());
                 if (blockedByItemOnLastMove != null)
                     blockedByItemOnLastMove.Shake();
@@ -318,25 +347,38 @@ public class Game : MonoBehaviour
         }
     }
 
-    public void SetItemList()
+    public void GenerateLevelItemList()
     {
-        items = new();
-        int currentValue = 0;
-        int fluff = 100;
-        while (currentValue - fluff < DayManager.Instance.CurrentTargetScore)
+        levelItems = new();
+
+        while (levelItems.Count < 100)
         {
-            int index = 2 + Random.Range(0, CurrentLevel.Items.Items.Count - 2);
-            items.Add(CurrentLevel.Items.Items[index]);
-            currentValue += CurrentLevel.Items.Items[index].Value;
+            // generate 100 items, should be enough for this level though code will generate more
+            // just in case. add in blocks of shuffled lists for the current level, but shuffle in 2
+            // of each item type to give the opportunity to have the same item twice in a row.
+            var block = new List<ItemData>();
+            block.AddRange(CurrentLevel.Items.Items);
+            block.AddRange(CurrentLevel.Items.Items);
+            ListUtil.Shuffle(block);
+            levelItems.AddRange(block);
         }
     }
 
     public void SetFirstItem()
     {
-        itemToCollect = itemsManager.Items[Random.Range(0, itemsManager.Items.Count)].RItemData.ItemData;
+        var collectibleItems = itemsManager.CollectibleItems;
+
+        if (collectibleItems.Count == 0)
+        {
+            Debug.Log("uhoh there are no items to collect");
+            return;
+        }
+
+        itemToCollect = ListUtil.Random(collectibleItems).RItemData.ItemData;
+
         string text = "";
         if (itemToCollect.flavourText.Count >= 1)
-            text = itemToCollect.flavourText[Random.Range(0, itemToCollect.flavourText.Count)];
+            text = ListUtil.Random(itemToCollect.flavourText);
 
         UIManager.Instance.SetFirstItem(itemToCollect.sprite, text);
     }
@@ -351,11 +393,13 @@ public class Game : MonoBehaviour
         }
 
         ItemsManager.SpawnCollectibles(false);
-        items.Remove(itemConsumed);
-        if (items.Count == 0)
-            return;
+        levelItems.Remove(itemConsumed);
+
+        if (levelItems.Count == 0)
+            GenerateLevelItemList();
+
         SetFirstItem();
-        Debug.Log(items.Count);
+        Debug.Log(levelItems.Count);
         //indexToCollect++;
 
         int textIdx = Random.Range(0, itemToCollect.flavourText.Count);
@@ -377,19 +421,20 @@ public class Game : MonoBehaviour
         // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
         StopAllCoroutines();
         SpawnPerRoundObjects(false);
-        DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold, true);
+        // don't add bonus to current day score
+        DayManager.Instance.EndDay(currentDayScore, CalculateDayEndBonus(false), true);
         //StartCoroutine(MoveSnake(currentLevelSpawn, false));
         //StartCoroutine(DayManager.Instance.StartDay());
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
     {
-        snake.QueueDirection(new Vector2Int(0, RoundIntValue(callbackContext)));
+        snake.QueueDirection(new Vector2Int(0, RoundIntValue(callbackContext)), !snakeIsMoving);
     }
 
     private void MoveHorizontal(InputAction.CallbackContext callbackContext)
     {
-        snake.QueueDirection(new Vector2Int(RoundIntValue(callbackContext), 0));
+        snake.QueueDirection(new Vector2Int(RoundIntValue(callbackContext), 0), !snakeIsMoving);
     }
 
     private void OnReset(InputAction.CallbackContext callbackContext)
@@ -423,15 +468,15 @@ public class Game : MonoBehaviour
             collectionSold += item.Value;
         }
 
+        DayManager.Instance.OnItemsSold(1);
+
         RuntimeManager.PlayOneShotAttached(SFX.Instance.Sell, snake.gameObject);
 
         ShowCollectionUI(collectionSold);
 
-        if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
-        {
-            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold, false);
+        // if items.Count > 1 then CheckDaySuccess will happen at the end of the AddBonus calls.
+        if (items.Count == 1 && CheckDaySuccess())
             return;
-        }
 
         ItemsManager.SpawnCollectibles(true);
 
@@ -453,17 +498,45 @@ public class Game : MonoBehaviour
         UIManager.Instance.SetCurrentScoreText($"Current: {currentDayScore}");
     }
 
-    private void AddBonus(int addBonus)
+    private void AddBonus(int addBonus, bool checkSuccess)
     {
-        bonus += addBonus;
+        currentItemBonus += addBonus;
         currentDayScore += addBonus;
+
+        DayManager.Instance.OnItemsSold(1);
 
         ShowCollectionUI(addBonus);
 
-        if (DayManager.Instance.CurrentTargetScore <= currentDayScore)
-        {
-            DayManager.Instance.EndDay(currentDayScore, bonus, coins, itemsSold, false);
-            return;
-        }
+        if (checkSuccess)
+            CheckDaySuccess();
+    }
+
+    private bool CheckDaySuccess()
+    {
+        if (DayManager.Instance.CurrentTargetScore > currentDayScore)
+            return false;
+
+        var totalBonus = CalculateDayEndBonus(true);
+        currentDayScore += totalBonus;
+        DayManager.Instance.EndDay(currentDayScore, totalBonus, false);
+        return true;
+    }
+
+    private int CalculateDayEndBonus(bool includeTime)
+    {
+        var totalItemBonus = (int)Mathf.Floor(currentItemBonus * itemBonusMult);
+        var timeBonus = (int)Mathf.Floor(timeLeftBonusMult * DayManager.Instance.TimeLeft);
+        var snakeLengthBonus = (int)Mathf.Floor(snakeLengthBonusMult * (snake.Length - 1));
+        var dayReachedBonus = (int)Mathf.Floor(dayReachedBonusMult * DayManager.Instance.CurrentDay);
+
+        // yes add the item bonus back to the current day score again - make it mean something to
+        // total score otherwise all it does is count towards ending day faster.
+        var totalBonus = totalItemBonus + snakeLengthBonus + dayReachedBonus;
+
+        if (includeTime)
+            totalBonus += timeBonus;
+
+        Debug.Log($"BONUS: sell {totalItemBonus} + time {timeBonus} + snake {snakeLengthBonus} + day {dayReachedBonus} = {totalBonus}");
+        return totalBonus;
     }
 }

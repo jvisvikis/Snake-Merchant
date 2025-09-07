@@ -14,6 +14,7 @@ public class DayManager : MonoBehaviour
     public float minTimeLimit;
     public float maxTimeLimit;
     public float timeLimitModifier;
+    public int addTimePerItemSold = 5;
 
     [Header("Score Modifiers")]
     public int minScore;
@@ -34,11 +35,24 @@ public class DayManager : MonoBehaviour
     private int currentTargetScore;
     private int currentTotalScore;
     private float dayTimeLimit;
-    private float timeLeft;
+    private float currentTime;
+    private Game game;
+
+    public float TimeLeft => Mathf.Max(0, dayTimeLimit - currentTime);
+
+    public void SetGame(Game game)
+    {
+        this.game = game;
+    }
+
+    public void OnItemsSold(int numItemsSold)
+    {
+        currentTime = Mathf.Max(0f, currentTime - numItemsSold * addTimePerItemSold);
+    }
 
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
@@ -58,48 +72,49 @@ public class DayManager : MonoBehaviour
     public IEnumerator StartDay()
     {
         isPlaying = true;
-        float currentTime = 0;
+        currentTime = 0;
         UIManager.Instance.SetTimeSliderValue(1f);
-        UIManager.Instance.SetCurrentDayText($"Day: {currentDay}");
+        UIManager.Instance.SetCurrentDayText($"Day: {currentDay + 1}");
         UIManager.Instance.SetTargetText($"Target: {currentTargetScore}");
         UIManager.Instance.SetCurrentScoreText($"Current: {0}");
         if (instantWin)
         {
-            EndDay(Int32.MaxValue);
+            EndDay(0, 0, false);
         }
         while (isPlaying && currentTime < dayTimeLimit)
         {
-            currentTime += Time.deltaTime;
+            if (game.SnakeIsMoving)
+                currentTime += Time.deltaTime;
             UIManager.Instance.SetTimeSliderValue(1 - currentTime / dayTimeLimit);
             UIManager.Instance.SetTimerText($"{(int)(dayTimeLimit - currentTime)}");
-            timeLeft = currentTime;
             yield return null;
         }
         if(currentTime > dayTimeLimit)
-            EndDay(0);
+            EndDay(0, 0, true);
     }
 
-    public void EndDay(int currentDayScore)
+    public void EndDay(int currentDayScore, int totalBonus, bool dead)
     {
         currentTotalScore += currentDayScore;
-        isPlaying = false;
-        EconomyManager.Instance.AddObstacles(1);
-        UIManager.Instance.SetTimeLeftText($"Time Left: {Mathf.RoundToInt(timeLeft)}s");
-        UIManager.Instance.SetBonusText($"Total Bonus: 0");
-        UIManager.Instance.SetCoinsCollectedText($"Coins Collected: 0");
-        UIManager.Instance.SetItemsCollectedText($"Items Collected: 0");
-        UIManager.Instance.EndDay(false);
-    }
 
-    public void EndDay(int currentDayScore, int bonusScore, int coins, int itemsCollected,bool dead)
-    {
-        currentTotalScore += currentDayScore;
+        string bonusPrefix = "";
+        if (dead)
+            bonusPrefix = "<s>";
+        else
+            EconomyManager.Instance.AddObstacles(1);
+
+        string totalScoreTitle = "Current";
+        if (dead && EconomyManager.Instance.Lives == 1)
+            totalScoreTitle = "Final";
+
         isPlaying = false;
-        EconomyManager.Instance.AddObstacles(1);
-        UIManager.Instance.SetTimeLeftText($"<color=grey>Time Left: <color=white>{Mathf.RoundToInt(maxTimeLimit - timeLeft)}s");
-        UIManager.Instance.SetBonusText($"<color=grey>Total Bonus: <color=white>{bonusScore}");
-        UIManager.Instance.SetCoinsCollectedText($"<color=grey>Coins Collected: <color=white>{coins}");
-        UIManager.Instance.SetItemsCollectedText($"<color=grey>Items Collected: <color=white>{itemsCollected}");
+        string titleColor = "#aaa";
+        Debug.Log($"end day with lives: {EconomyManager.Instance.Lives}");
+        UIManager.Instance.SetTotalScoreText($"<color={titleColor}>{totalScoreTitle} Score: <color=white>{currentTotalScore}");
+        UIManager.Instance.SetTimeLeftText($"<color={titleColor}>Time Left: <color=white>{Mathf.RoundToInt(maxTimeLimit - currentTime)}s");
+        UIManager.Instance.SetBonusText($"{bonusPrefix}<color={titleColor}>Day Bonus: <color=white>{totalBonus}");
+        UIManager.Instance.SetCoinsCollectedText($"<color={titleColor}>Coins Collected: <color=white>{game.Coins}");
+        UIManager.Instance.SetItemsCollectedText($"<color={titleColor}>Items Collected: <color=white>{game.ItemsSold}");
         UIManager.Instance.EndDay(dead);
     }
 
@@ -110,10 +125,12 @@ public class DayManager : MonoBehaviour
         ModifyDayScore();
         ReloadScene();
     }
-    public void ResetDay()
+
+    public void RetryDay()
     {
-        EconomyManager.Instance.RemoveLife();
+        ReloadScene();
     }
+
     public void Reset()
     {
         isPlaying = false;

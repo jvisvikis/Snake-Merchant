@@ -29,6 +29,8 @@ public class EconomyManager : MonoBehaviour
     private int maxLives;
     [SerializeField]
     private int lifePrice;
+    [SerializeField]
+    private int startLives = 1;
 
     public int TotalCoins => totalCoins;
     public int WarehouseLevel => warehouseLevel;
@@ -36,7 +38,6 @@ public class EconomyManager : MonoBehaviour
     public int SnakeLengthLevel => snakeLengthLevel;
     public int CurrentUpgradePrice => currentUpgradePrice;
     public int Lives => lives;
-    public bool IsAlive => lives <= 0;
     public int NumOfObstacles => numOfObstacles;
 
     private int totalCoins = 0;
@@ -56,6 +57,7 @@ public class EconomyManager : MonoBehaviour
             if (manyCoins)
                 totalCoins = 999;
             currentUpgradePrice = defaultSinglePrice;
+            lives = startLives;
         }
         else
         {
@@ -265,7 +267,8 @@ public class EconomyManager : MonoBehaviour
         snakeSpeedLevel = 0;
         snakeLengthLevel = 1;
         numOfObstacles = 0;
-        lives = 1;
+        lives = startLives;
+        AudioManager.Instance.StopMusic();
     }
 
     public void BuyObstacleRemoval()
@@ -318,11 +321,6 @@ public class EconomyManager : MonoBehaviour
     public void RemoveLife()
     {
         lives--;
-        if (lives <= 0)
-        {
-            DayManager.Instance.Reset();
-            Reset();
-        }
     }
 
     public void UpdateSingleUpgradePrice()

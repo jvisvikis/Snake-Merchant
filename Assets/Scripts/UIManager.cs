@@ -31,6 +31,8 @@ public class UIManager : MonoBehaviour
 
     [Header("EndDayUI")]
     [SerializeField]
+    private TextMeshProUGUI dayCompleteText;
+    [SerializeField]
     private GameObject endDayPanel;
     [SerializeField]
     private GameObject overviewHolder;
@@ -43,11 +45,13 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button resetGameButton;
     [SerializeField]
+    private Button retryDayButton;
+    [SerializeField]
     private Medusa medusa;
 
     [Header("OverviewTextUI")]
     [SerializeField]
-    private TextMeshProUGUI targetReachedText;
+    private TextMeshProUGUI totalScoreText;
     [SerializeField]
     private TextMeshProUGUI timeLeftText;
     [SerializeField]
@@ -246,7 +250,10 @@ public class UIManager : MonoBehaviour
             text = "";
         livesUpgradePriceText.text = text;
     }
-
+    public void SetTotalScoreText(string text)
+    {
+        totalScoreText.text = text;
+    }
     public void SetUpgradePriceText(string text)
     {
         upgradePriceText.text = text;
@@ -364,20 +371,30 @@ public class UIManager : MonoBehaviour
         overviewHolder.gameObject.SetActive(true);
         upgradesHolder.gameObject.SetActive(false);
         SetObstaclesText(EconomyManager.Instance.NumOfObstacles.ToString());
-        if(dead)
+        DisableButtons();
+        if (dead)
         {
-            targetReachedText.text = $"Target <color=red>Failed";
             nextPanelButton.gameObject.SetActive(false);
-            nextDayButton.gameObject.SetActive(false);
-            resetGameButton.gameObject.SetActive(true);
+            EconomyManager.Instance.RemoveLife();
+            bool timeUp = DayManager.Instance.TimeLeft == 0;
+            if (EconomyManager.Instance.Lives == 0)
+            {
+                dayCompleteText.text = "<color=red>Game ";
+                dayCompleteText.text += timeUp ? "Time Up" : "Over";
+                resetGameButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                dayCompleteText.text = "Day <color=red>";
+                dayCompleteText.text += timeUp ? "Time Up" : "Failed";
+                retryDayButton.gameObject.SetActive(true);
+            }
             medusa.ChooseSayingsFail();
         }
         else
         {
-            targetReachedText.text = $"Target <color=orange>Reached";
+            dayCompleteText.text = "Day <color=green>Finished";
             nextPanelButton.gameObject.SetActive(true);
-            nextDayButton.gameObject.SetActive(false);
-            resetGameButton.gameObject.SetActive(false);
             medusa.ChooseSayingsPass();
         }
 
@@ -390,9 +407,29 @@ public class UIManager : MonoBehaviour
             SetEnableWarehouseUpgrade(true);
         }
     }
+
+    private void DisableButtons()
+    {
+        nextPanelButton.gameObject.SetActive(false);
+        nextDayButton.gameObject.SetActive(false);
+        resetGameButton.gameObject.SetActive(false);
+    }
+
     public void RestartGame()
     {
         DayManager.Instance.Reset();
+    }
+
+    public void RetryDay()
+    {
+        if (EconomyManager.Instance.Lives == 0)
+        {
+            Debug.Assert(false);
+            RestartGame();
+        }
+        upgradeCountThisDay = 0;
+        RuntimeManager.PlayOneShot(SFX.Instance.NextDay);
+        DayManager.Instance.RetryDay();
     }
 
     public void OpenUpgradesPanel()
@@ -449,7 +486,7 @@ public class UIManager : MonoBehaviour
             int idx = EconomyManager.Instance.WarehouseLevel;
             SetWarehouseInfo(EconomyManager.Instance.warehouses[idx]);
         }
-        
+
     }
     private void PlayUpgradeSFX()
     {

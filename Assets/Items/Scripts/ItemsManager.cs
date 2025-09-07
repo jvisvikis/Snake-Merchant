@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemsManager : MonoBehaviour
@@ -22,8 +21,9 @@ public class ItemsManager : MonoBehaviour
     private Game game;
 
     private List<ItemController> items = new();
-    public List<ItemController> Items 
-    { get 
+    public List<ItemController> CollectibleItems
+    {
+        get
         {
             List<ItemController> collectables = new();
             foreach (ItemController item in items)
@@ -34,8 +34,6 @@ public class ItemsManager : MonoBehaviour
             return collectables;
         }
     }
-        
-        
 
     public void LoadLevel(Game game)
     {
@@ -408,20 +406,5 @@ public class ItemsManager : MonoBehaviour
         SpawnItem(appleItemData, true);
         if (game.CurrentLevel.Mushrooms)
             SpawnItem(mushroomItemData, true);
-    }
-
-    private void DespawnMunchies()
-    {
-        for (int i = 0; i < items.Count; i++)
-        {
-            var item = items[i];
-            if (item.RItemData.IsApple || item.RItemData.IsMushroom)
-            {
-                DestroyImmediate(item.gameObject);
-                items[i] = items[^1];
-                items.RemoveAt(items.Count - 1);
-                i--;
-            }
-        }
     }
 }

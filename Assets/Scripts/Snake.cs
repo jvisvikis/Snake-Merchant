@@ -176,8 +176,15 @@ public class Snake : MonoBehaviour
         }
     }
 
-    public void QueueDirection(Vector2Int dir)
+    public void QueueDirection(Vector2Int dir, bool force)
     {
+        if (force)
+        {
+            newDirOnNextMove = dir;
+            queuedDir = Vector2Int.zero;
+            return;
+        }
+
         if (newDirOnNextMove == Vector2Int.zero)
         {
             newDirOnNextMove = dir;
@@ -289,8 +296,6 @@ public class Snake : MonoBehaviour
             }
             SetInsideItem(moveInsideItem, true);
             CameraController.Instance.SetFocus(game.focusItem, game.Grid.GetWorldPos(newPos));
-            foreach (var gridSq in game.GridSquares.Values)
-                gridSq.SetInvertItemColor(true);
         }
         else if (insideItem != null && moveInsideItem == null)
         {
@@ -396,6 +401,11 @@ public class Snake : MonoBehaviour
         return true;
     }
 
+    public bool IsCarryingItems()
+    {
+        return carryingItems.Count > 0;
+    }
+
     private IEnumerator BloopOutItemThenDestroy(CarryingItem item)
     {
         yield return item.Renderer.BloopOut(1f, game.itemBloopTime);
@@ -459,13 +469,14 @@ public class Snake : MonoBehaviour
             }
 
             CameraController.Instance.ClearFocus(game.focusItem);
-            foreach (var gridSq in game.GridSquares.Values)
-                gridSq.SetInvertItemColor(false);
         }
         else if (insideItem == null)
         {
             AudioManager.StartEvent(SFX.Instance.InsideItem, this, out insideItemInstance);
         }
+
+        foreach (var gridSq in game.GridSquares.Values)
+            gridSq.SetInvertItemColor(newInsideItem);
 
         insideItem = newInsideItem;
     }

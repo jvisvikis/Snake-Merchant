@@ -51,7 +51,13 @@ public class AudioManager : MonoBehaviour
         {
             musicEventInstance = RuntimeManager.CreateInstance(musicEvent);
             musicEventInstance.start();
+            musicEventInstance.release();
         }
+    }
+
+    public void StopMusic()
+    {
+        StopEvent(ref musicEventInstance);
     }
 
     private void StartAmbience()
@@ -60,6 +66,7 @@ public class AudioManager : MonoBehaviour
         {
             ambEventInstance = RuntimeManager.CreateInstance(ambEvent);
             ambEventInstance.start();
+            musicEventInstance.release();
         }
     }
 
