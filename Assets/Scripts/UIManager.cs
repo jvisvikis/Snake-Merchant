@@ -318,12 +318,6 @@ public class UIManager : MonoBehaviour
         EconomyManager.Instance.UpgradeSnakeLength();
     }
 
-    public void BuySpeedUpgrade()
-    {
-        PlayUpgradeSFX();
-        EconomyManager.Instance.UpgradeSpeedLevel();
-    }
-
     public void BuyRemoveObstacle()
     {
         PlayUpgradeSFX();

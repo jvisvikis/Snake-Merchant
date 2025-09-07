@@ -33,6 +33,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Next Day",
+                    "type": "Button",
+                    "id": "2fd03a71-c5f3-4fc3-a46c-a3c33728dfdb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Pause",
                     "type": "Button",
                     "id": "413ab706-3432-4bcd-aadc-5c7e1bedf447",
@@ -172,6 +181,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4a246fde-8b2c-450f-83bc-2960ee16f468",
+                    "path": "<Keyboard>/n",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next Day",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

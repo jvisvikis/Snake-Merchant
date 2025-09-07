@@ -14,7 +14,6 @@ public class EconomyManager : MonoBehaviour
     [Header("Upgrade Settings")]
     public LevelData[] warehouses;
     public List<int> snakeLengthPrices = new();
-    public List<int> snakeSpeedPrices = new();
     [SerializeField]
     private bool singleUpgradePrice;
     [SerializeField]
@@ -34,7 +33,6 @@ public class EconomyManager : MonoBehaviour
 
     public int TotalCoins => totalCoins;
     public int WarehouseLevel => warehouseLevel;
-    public int SnakeSpeedLevel => snakeSpeedLevel;
     public int SnakeLengthLevel => snakeLengthLevel;
     public int CurrentUpgradePrice => currentUpgradePrice;
     public int Lives => lives;
@@ -42,7 +40,6 @@ public class EconomyManager : MonoBehaviour
 
     private int totalCoins = 0;
     private int warehouseLevel = 0;
-    private int snakeSpeedLevel = 0;
     private int snakeLengthLevel = 1;
     private int lives = 1;
     private int currentUpgradePrice;
@@ -106,31 +103,6 @@ public class EconomyManager : MonoBehaviour
 
             UIManager.Instance.SetWarehouseInfo(warehouses[warehouseLevel]);
 
-            return true;
-        }
-        else
-        {
-            Debug.Log("Not enough Coins");
-            return false;
-        }
-    }
-
-    public bool UpgradeSpeedLevel()
-    {
-        if(!SnakeSpeedUpgradeAvailable())
-        {
-            Debug.LogError("Snake speed maxxed out");
-            return false;
-        }
-        if (SpendCoins(snakeSpeedPrices[snakeSpeedLevel], false))
-        {
-            snakeSpeedLevel++;
-            UIManager.Instance.SetSpeedLevelText(snakeSpeedLevel.ToString());
-            UIManager.Instance.SetSpeedUpgradePrice(GetCurrentSpeedUpgradePrice().ToString());
-            if (!SnakeSpeedUpgradeAvailable())
-            {
-                UIManager.Instance.SetEnableSpeedUpgrade(false);
-            }
             return true;
         }
         else
@@ -217,10 +189,6 @@ public class EconomyManager : MonoBehaviour
             return snakeLengthLevel < maxLengthLevel;
         return snakeLengthLevel < snakeLengthPrices.Count - 1;
     }
-    public bool SnakeSpeedUpgradeAvailable()
-    {
-        return snakeSpeedLevel < snakeSpeedPrices.Count - 1;
-    }
     public bool LivesUpgradeAvailable()
     {
         return lives < maxLives;
@@ -248,12 +216,6 @@ public class EconomyManager : MonoBehaviour
             return -1;
         return snakeLengthPrices[snakeLengthLevel+1];
     }
-    public int GetCurrentSpeedUpgradePrice()
-    {
-        if (!SnakeSpeedUpgradeAvailable())
-            return -1;
-        return snakeSpeedPrices[snakeSpeedLevel+1];
-    }
     public int GetLifeUpgradePrice()
     {
         return lifePrice;
@@ -264,7 +226,6 @@ public class EconomyManager : MonoBehaviour
     {
         totalCoins = manyCoins ? 999 : 0;
         warehouseLevel = 0;
-        snakeSpeedLevel = 0;
         snakeLengthLevel = 1;
         numOfObstacles = 0;
         lives = startLives;

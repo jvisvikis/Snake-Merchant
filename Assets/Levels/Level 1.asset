@@ -21,5 +21,5 @@ MonoBehaviour:
   MaxObstacles: 3
   Mushrooms: 0
   Items: {fileID: 11400000, guid: c7a825324a0e6ba468ca670fe1df2c8a, type: 2}
-  RandomObstacles: {fileID: 11400000, guid: 143db1772930c49178a3808a6db1a2b1, type: 2}
+  RandomObstacles: {fileID: 11400000, guid: eaaedefe6a4b14268beac60cdd523bb5, type: 2}
   layout: 

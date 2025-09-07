@@ -36,10 +36,11 @@ public class Game : MonoBehaviour
     [Header("Game feel/settings")]
     public float initTimeToMove = 0.5f;
     public float minTimeToMove = 0.1f;
-    public float timeToMoveReduction = 0.01f;
+    public float timeToMoveReductionPerApple = 0.01f;
     public float timeToDieGrace = 0.1f;
     public int collectionWalkDelay = 3;
     public int bonusPointStack = 5;
+    public float timeToMoveReductionPerDay = 0.1f;
 
     [Header("Coins")]
     public int coinsSpawnTurns = 15;
@@ -126,6 +127,16 @@ public class Game : MonoBehaviour
         DayManager.Instance.SetGame(this);
     }
 
+    private float MoveTimeScaleForCurrentDay()
+    {
+        return Mathf.Pow(1f - timeToMoveReductionPerDay, DayManager.Instance.CurrentDay);
+    }
+
+    private float MoveTimeScaleForSnakeLength()
+    {
+        return Mathf.Pow(1 - timeToMoveReductionPerApple, currentNumParts - 1);
+    }
+
     void Start()
     {
         EconomyManager.Instance.SetupWarehouses(levels);
@@ -133,10 +144,11 @@ public class Game : MonoBehaviour
         var orig = new Vector2(CurrentLevel.Width, CurrentLevel.Height) / -2f;
         grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, orig);
         currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;
-        timeToMove = initTimeToMove - timeToMoveReduction * EconomyManager.Instance.SnakeSpeedLevel;
         GenerateLevelItemList();
         SpawnPerRoundObjects(true);
         SetFirstItem();
+        timeToMove = initTimeToMove * MoveTimeScaleForCurrentDay() * MoveTimeScaleForSnakeLength();
+        Debug.Log($"Start time to move: {timeToMove}");
         StartCoroutine(MoveSnake(currentLevelSpawn, true));
         StartCoroutine(DayManager.Instance.StartDay());
     }
@@ -257,6 +269,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.MoveHorizontal.performed += MoveHorizontal;
         controls.PlayerInput.Reset.performed += OnReset;
         controls.PlayerInput.Pause.performed += OnPause;
+        controls.PlayerInput.NextDay.performed += OnNextDay;
         controls.Enable();
     }
 
@@ -267,6 +280,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.MoveHorizontal.performed -= MoveHorizontal;
         controls.PlayerInput.Reset.performed -= OnReset;
         controls.PlayerInput.Pause.performed -= OnPause;
+        controls.PlayerInput.NextDay.performed -= OnNextDay;
     }
 
     public IEnumerator MoveSnake(Vector2Int spawn, bool isStart)
@@ -302,6 +316,7 @@ public class Game : MonoBehaviour
                 var moreBonus = 0;
                 while (snake.DespawnNextCarryingItem())
                 {
+                    DayManager.Instance.OnItemsSold(1);
                     if (moreBonus > 0)
                         AddBonus(moreBonus, !snake.IsCarryingItems());
                     moreBonus += bonusPointStack;
@@ -439,7 +454,17 @@ public class Game : MonoBehaviour
 
     private void OnReset(InputAction.CallbackContext callbackContext)
     {
-        Die("manual reset");
+        if (Application.isEditor)
+            Die("manual reset");
+    }
+
+    private void OnNextDay(InputAction.CallbackContext callbackContext)
+    {
+        if (Application.isEditor)
+        {
+            currentDayScore = DayManager.Instance.CurrentTargetScore;
+            CheckDaySuccess();
+        }
     }
 
     private void OnPause(InputAction.CallbackContext callbackContext)
@@ -468,13 +493,12 @@ public class Game : MonoBehaviour
             collectionSold += item.Value;
         }
 
-        DayManager.Instance.OnItemsSold(1);
-
         RuntimeManager.PlayOneShotAttached(SFX.Instance.Sell, snake.gameObject);
 
         ShowCollectionUI(collectionSold);
 
-        // if items.Count > 1 then CheckDaySuccess will happen at the end of the AddBonus calls.
+        // If there is only a single item then CheckDaySuccess happens at the end of the AddBonus calls.
+        // Otherwise there will be no AddBonus calls so succeed right now.
         if (items.Count == 1 && CheckDaySuccess())
             return;
 
@@ -486,7 +510,7 @@ public class Game : MonoBehaviour
 
     public void IncreaseSpeed()
     {
-        timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReduction);
+        timeToMove = Mathf.Max(minTimeToMove, timeToMove - timeToMoveReductionPerApple);
     }
 
     private void ShowCollectionUI(int sold)
@@ -502,8 +526,6 @@ public class Game : MonoBehaviour
     {
         currentItemBonus += addBonus;
         currentDayScore += addBonus;
-
-        DayManager.Instance.OnItemsSold(1);
 
         ShowCollectionUI(addBonus);
 

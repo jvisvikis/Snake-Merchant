@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bdf8b59c49224137beca2d0c727ecc9, type: 3}
   m_Name: Item_BattleAxe
   m_EditorClassIdentifier: 
-  Value: 50
+  Value: 40
   Width: 3
   Height: 3
   flavourText:

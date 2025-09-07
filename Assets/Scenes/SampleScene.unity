@@ -1359,12 +1359,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minTimeLimit: 30
-  maxTimeLimit: 60
-  timeLimitModifier: 0.05
+  maxTimeLimit: 90
+  timeLimitModifier: 0.1
   addTimePerItemSold: 5
   minScore: 100
   maxScore: 9999
-  scoreModifier: 1.1
+  scoreModifier: 1.2
   instantWin: 0
 --- !u!4 &196152557
 Transform:
@@ -11121,17 +11121,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8912feaee6c4cce47b9b3d814aaf440b, type: 2}
   - {fileID: 11400000, guid: 142e0f82fad1479438d34bb683067a83, type: 2}
   - {fileID: 11400000, guid: d093b64e46b47ae4580d868184d38b87, type: 2}
-  gridAutoSizeScale: 0.75
+  gridAutoSizeScale: 0.7
   onlyCollectSpecificItem: 0
   canExitAtAnyCell: 1
   canEnterAtAnyCell: 1
   mustCompleteItemAfterEntering: 0
-  initTimeToMove: 0.35
-  minTimeToMove: 0.15
-  timeToMoveReduction: 0.01
+  initTimeToMove: 0.45
+  minTimeToMove: 0.05
+  timeToMoveReductionPerApple: 0.02
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   bonusPointStack: 5
+  timeToMoveReductionPerDay: 0.1
   coinsSpawnTurns: 20
   coinsFirstSpawnTurns: 5
   startNumParts: 1
@@ -11275,6 +11276,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 413ab706-3432-4bcd-aadc-5c7e1bedf447
     m_ActionName: PlayerInput/Pause[/Keyboard/p]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2fd03a71-c5f3-4fc3-a46c-a3c33728dfdb
+    m_ActionName: PlayerInput/Next Day[/Keyboard/n]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: PlayerInput
@@ -12040,7 +12045,6 @@ MonoBehaviour:
   manyCoins: 0
   warehouses: []
   snakeLengthPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000
-  snakeSpeedPrices: 0000000005000000080000000b0000000f00000014000000190000001e00000028000000320000003c000000
   singleUpgradePrice: 1
   defaultSinglePrice: 3
   upgradePriceModifier: 1.5

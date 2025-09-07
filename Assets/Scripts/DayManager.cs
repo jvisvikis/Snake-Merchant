@@ -47,7 +47,7 @@ public class DayManager : MonoBehaviour
 
     public void OnItemsSold(int numItemsSold)
     {
-        currentTime = Mathf.Max(0f, currentTime - numItemsSold * addTimePerItemSold);
+        currentTime = Mathf.Max(0f, currentTime - numItemsSold * addTimePerItemSold * TimeLimitModifierForCurrentDay());
     }
 
     private void Awake()
@@ -148,6 +148,11 @@ public class DayManager : MonoBehaviour
         {
             dayTimeLimit = minTimeLimit;
         }
+    }
+
+    private float TimeLimitModifierForCurrentDay()
+    {
+        return Mathf.Pow(1f - timeLimitModifier, CurrentDay);
     }
 
     private void ModifyDayScore()
