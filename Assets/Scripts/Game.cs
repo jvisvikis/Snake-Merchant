@@ -116,6 +116,7 @@ public class Game : MonoBehaviour
     public ItemData itemToCollect;
     public string whyLastItemNotCollected = "";
     public FitToScreen fitToScreen;
+    private Coroutine moveSnakeCoroutine;
 
     public void SnakeDidEatApple()
     {
@@ -149,7 +150,7 @@ public class Game : MonoBehaviour
         SetFirstItem();
         timeToMove = initTimeToMove * MoveTimeScaleForCurrentDay() * MoveTimeScaleForSnakeLength();
         Debug.Log($"Start time to move: {timeToMove}");
-        StartCoroutine(MoveSnake(currentLevelSpawn, true));
+        moveSnakeCoroutine = StartCoroutine(MoveSnake(currentLevelSpawn, true));
         StartCoroutine(DayManager.Instance.StartDay());
     }
 
@@ -283,7 +284,7 @@ public class Game : MonoBehaviour
         controls.PlayerInput.NextDay.performed -= OnNextDay;
     }
 
-    public IEnumerator MoveSnake(Vector2Int spawn, bool isStart)
+    private IEnumerator MoveSnake(Vector2Int spawn, bool isStart)
     {
         snakeIsMoving = false;
 
@@ -438,8 +439,6 @@ public class Game : MonoBehaviour
         SpawnPerRoundObjects(false);
         // don't add bonus to current day score
         DayManager.Instance.EndDay(currentDayScore, CalculateDayEndBonus(false), true);
-        //StartCoroutine(MoveSnake(currentLevelSpawn, false));
-        //StartCoroutine(DayManager.Instance.StartDay());
     }
 
     private void MoveVertical(InputAction.CallbackContext callbackContext)
@@ -535,11 +534,17 @@ public class Game : MonoBehaviour
 
     private bool CheckDaySuccess()
     {
-        if (DayManager.Instance.CurrentTargetScore > currentDayScore)
+        if (currentDayScore < DayManager.Instance.CurrentTargetScore)
+        {
+            Debug.Log($"check success = false ({currentDayScore} < {DayManager.Instance.CurrentTargetScore}");
             return false;
+        }
 
+        Debug.Log("Check success: true!");
         var totalBonus = CalculateDayEndBonus(true);
         currentDayScore += totalBonus;
+        Debug.Assert(moveSnakeCoroutine != null);
+        StopCoroutine(moveSnakeCoroutine);
         DayManager.Instance.EndDay(currentDayScore, totalBonus, false);
         return true;
     }

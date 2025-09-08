@@ -9,14 +9,8 @@ public class SnakeLineRenderer : MonoBehaviour
     [SerializeField, Min(1)]
     private int cornerVertices = 3;
 
-    [SerializeField, Min(1)]
-    private int straightVertices = 3;
-
     [SerializeField]
     private LineRenderer lineRenderer;
-
-    [SerializeField]
-    private bool drawGizmos = false;
 
     private Grid grid;
     private List<Vector2Int> cells = new();
@@ -26,11 +20,6 @@ public class SnakeLineRenderer : MonoBehaviour
     // private float renderProgress;
     private bool hasExtraTail = false;
     private Vector2Int behindExtraTailCell;
-    private float opacity = 1;
-
-    private Vector3 gPivotCenter;
-    private Vector3 gCellOnTurnVsBeforeDirection;
-    private Vector3 gCellVsOnTurnDirection;
 
     public float RenderOffset => renderOffset;
     public Vector2Int BehindExtraTailCell => behindExtraTailCell;
@@ -210,9 +199,6 @@ public class SnakeLineRenderer : MonoBehaviour
                 {
                     startVertices += cornerVertices / 2;
                     tailIsTurn = true;
-                    gPivotCenter = pivotCenter;
-                    gCellOnTurnVsBeforeDirection = cellOnTurnVsBeforeDirection;
-                    gCellVsOnTurnDirection = cellVsOnTurnDirection;
                 }
 
                 if (i == cells.Count - 3)

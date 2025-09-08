@@ -11127,8 +11127,8 @@ MonoBehaviour:
   canEnterAtAnyCell: 1
   mustCompleteItemAfterEntering: 0
   initTimeToMove: 0.45
-  minTimeToMove: 0.05
-  timeToMoveReductionPerApple: 0.02
+  minTimeToMove: 0.07
+  timeToMoveReductionPerApple: 0.01
   timeToDieGrace: 0.2
   collectionWalkDelay: 3
   bonusPointStack: 5

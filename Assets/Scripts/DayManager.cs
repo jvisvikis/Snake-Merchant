@@ -103,14 +103,15 @@ public class DayManager : MonoBehaviour
         else
             EconomyManager.Instance.AddObstacles(1);
 
-        string totalScoreTitle = "Current";
+        string titleColor = "#aaa";
+
+        string totalScoreTitle = $"<color={titleColor}>Current";
         if (dead && EconomyManager.Instance.Lives == 1)
-            totalScoreTitle = "Final";
+            totalScoreTitle = "<color=green>Final";
 
         isPlaying = false;
-        string titleColor = "#aaa";
-        Debug.Log($"end day with lives: {EconomyManager.Instance.Lives}");
-        UIManager.Instance.SetTotalScoreText($"<color={titleColor}>{totalScoreTitle} Score: <color=white>{currentTotalScore}");
+        Debug.Log($"end day with lives: {EconomyManager.Instance.Lives}, dead = {dead}");
+        UIManager.Instance.SetTotalScoreText($"{totalScoreTitle} Score: <color=white>{currentTotalScore}");
         UIManager.Instance.SetTimeLeftText($"<color={titleColor}>Time Left: <color=white>{Mathf.RoundToInt(maxTimeLimit - currentTime)}s");
         UIManager.Instance.SetBonusText($"{bonusPrefix}<color={titleColor}>Day Bonus: <color=white>{totalBonus}");
         UIManager.Instance.SetCoinsCollectedText($"<color={titleColor}>Coins Collected: <color=white>{game.Coins}");

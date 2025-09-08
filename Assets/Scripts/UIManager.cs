@@ -332,7 +332,6 @@ public class UIManager : MonoBehaviour
     #region Enable/Disable Buttons
     public void SetEnableWarehouseUpgrade(bool active)
     {
-        Debug.Log(active);
         warehouseUpgradeButton.interactable = active;
     }
     public void SetEnableLengthUpgrade(bool active)
