@@ -23,7 +23,7 @@ MonoBehaviour:
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 0
-  cells: '_ L _
+  cells: '_ U _
 
     # # #
 

@@ -61,9 +61,10 @@ public class CameraController : MonoBehaviour
             instance = null;
     }
 
-    public void Init(float orthoSize)
+    public void Init(float orthoSize, float verticalOffset)
     {
         defaultOrthoSize = orthoSize;
+        defaultPosition += new Vector3(0, verticalOffset);
         transform.position = defaultPosition;
         cam.orthographicSize = defaultOrthoSize;
     }

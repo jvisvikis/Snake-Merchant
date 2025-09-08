@@ -25,7 +25,7 @@ MonoBehaviour:
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 0
-  cells: 'R _
+  cells: 'U _
 
     # #'
   sprite: {fileID: 21300000, guid: ebc8f7f8f3aab4974bb849da561fcc70, type: 3}

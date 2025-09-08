@@ -16,10 +16,12 @@ MonoBehaviour:
   Width: 1
   Height: 1
   flavourText: []
+  itemType: 0
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 1
-  cells: '#'
+  cells: R
   sprite: {fileID: 42146520, guid: 1b6b1d8870a748a46b9209f1cdfd7d9f, type: 3}
+  SpriteScale: 1
   debugColor: {r: 0, g: 0, b: 0, a: 1}

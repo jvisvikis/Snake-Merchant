@@ -25,7 +25,7 @@ MonoBehaviour:
   IsObstacle: 0
   cells: '# #
 
-    R _'
+    D _'
   sprite: {fileID: -1635275815, guid: 1a591f91127d347c6897b4755985161b, type: 3}
   SpriteScale: 1
   debugColor: {r: 1, g: 0.5481836, b: 0, a: 1}

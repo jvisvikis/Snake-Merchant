@@ -22,9 +22,6 @@ public class Game : MonoBehaviour
     [SerializeField]
     private LevelData[] levels;
 
-    [Range(0f, 1f)]
-    public float gridAutoSizeScale = 1f;
-
     // public Vector3 orig;
 
     [Header("Game variation")]
@@ -56,6 +53,11 @@ public class Game : MonoBehaviour
 
     [Min(0f)]
     public float sellPause;
+
+    [Range(0.5f, 2f)]
+    public float gridAutoSizeScale = 1f;
+
+    public float gridCameraVerticalOffset = 0;
 
     [Header("Animations")]
     [Min(0f)]
@@ -94,7 +96,7 @@ public class Game : MonoBehaviour
     public Dictionary<Vector2Int, GridSquare> GridSquares => gridSquares;
     public int CurrentNumParts => currentNumParts;
     public List<ItemData> Items => levelItems;
-    public ItemData CurrentItem => itemToCollect;
+    // public ItemData CurrentItem => itemToCollect;
     public int ItemsSold => itemsSold;
 
     private Snake snake;
@@ -146,40 +148,21 @@ public class Game : MonoBehaviour
         grid = new Grid(CurrentLevel.Width, CurrentLevel.Height, orig);
         currentNumParts = startNumParts + EconomyManager.Instance.SnakeLengthLevel;
         GenerateLevelItemList();
-        SpawnPerRoundObjects(true);
-        SetFirstItem();
-        timeToMove = initTimeToMove * MoveTimeScaleForCurrentDay() * MoveTimeScaleForSnakeLength();
-        Debug.Log($"Start time to move: {timeToMove}");
-        moveSnakeCoroutine = StartCoroutine(MoveSnake(currentLevelSpawn, true));
-        StartCoroutine(DayManager.Instance.StartDay());
-    }
 
-    private void SpawnItemsManager()
-    {
-        itemsManager = Instantiate(itemsManagerPrefab, transform);
-    }
-
-    private void SpawnPerRoundObjects(bool isStart)
-    {
-        if (isStart)
-        {
-            CameraController.Instance.Init(grid.Height / 2f / gridAutoSizeScale);
-        }
-        else
-        {
-            DestroyImmediate(snake.gameObject);
-            DestroyImmediate(itemsManager.gameObject);
-            foreach (var gridSquare in gridSquares.Values)
-                DestroyImmediate(gridSquare.gameObject);
-            gridSquares.Clear();
-        }
+        float visualGridHeight = grid.Height + 2; // +2 for the border
+        CameraController.Instance.Init(visualGridHeight / 2f * gridAutoSizeScale, gridCameraVerticalOffset * visualGridHeight);
 
         currentLevelSpawn = GetSpawnPoint(CurrentLevel);
         SpawnGrid();
         coinSpawnCountdown = coinsFirstSpawnTurns;
         SpawnSnake();
-        SpawnItemsManager();
+        itemsManager = Instantiate(itemsManagerPrefab, transform);
         itemsManager.LoadLevel(this);
+        SetFirstItem();
+        timeToMove = Mathf.Max(minTimeToMove, initTimeToMove * MoveTimeScaleForCurrentDay() * MoveTimeScaleForSnakeLength());
+        Debug.Log($"Start time to move: {timeToMove}");
+        moveSnakeCoroutine = StartCoroutine(MoveSnake(currentLevelSpawn, true));
+        StartCoroutine(DayManager.Instance.StartDay());
     }
 
     private Vector2Int GetSpawnPoint(LevelData levelData)
@@ -231,6 +214,7 @@ public class Game : MonoBehaviour
                 var typeSprites = FindTypeSprites(gridSquareType);
 
                 gridSquare.Init(
+                    this,
                     cell,
                     new GridSquare.TypeSprite
                     {
@@ -289,9 +273,9 @@ public class Game : MonoBehaviour
         snakeIsMoving = false;
 
         yield return CameraController.Instance.SetFocus(isStart ? focusSpawn : focusRespawn, grid.GetWorldPos(spawn) + grid.CellCenterOffset());
-        // if (isStart)
-        //     yield return new WaitForSeconds(spawnPause);
         AudioManager.Instance.StartMusic();
+        foreach (var pulser in FindObjectsOfType<Pulser>())
+            pulser.StartPulse();
         yield return CameraController.Instance.ClearFocus(isStart ? focusSpawn : focusRespawn);
         fitToScreen.SetFittingOff();
         snake.ApplyQueuedDirection();
@@ -383,20 +367,25 @@ public class Game : MonoBehaviour
     public void SetFirstItem()
     {
         var collectibleItems = itemsManager.CollectibleItems;
+        string text = "";
+        Sprite sprite = null;
 
         if (collectibleItems.Count == 0)
         {
             Debug.Log("uhoh there are no items to collect");
-            return;
+            itemToCollect = null;
+        }
+        else
+        {
+            itemToCollect = ListUtil.Random(collectibleItems).RItemData.ItemData;
+            sprite = itemToCollect.sprite;
+            if (itemToCollect.flavourText.Count >= 1)
+                text = ListUtil.Random(itemToCollect.flavourText);
         }
 
-        itemToCollect = ListUtil.Random(collectibleItems).RItemData.ItemData;
-
-        string text = "";
-        if (itemToCollect.flavourText.Count >= 1)
-            text = ListUtil.Random(itemToCollect.flavourText);
-
-        UIManager.Instance.SetFirstItem(itemToCollect.sprite, text);
+        UIManager.Instance.SetFirstItem(sprite, text);
+        UIManager.Instance.DialogueBox.ResetAnimation();
+        itemsManager.ReRenderItems();
     }
 
     public void ConsumeItem(ItemData itemConsumed)
@@ -408,35 +397,23 @@ public class Game : MonoBehaviour
             return;
         }
 
-        ItemsManager.SpawnCollectibles(false);
+        ItemsManager.SpawnCollectibles();
         levelItems.Remove(itemConsumed);
 
         if (levelItems.Count == 0)
+        {
+            Debug.LogWarning("Ran out of items to spawn! weird!");
             GenerateLevelItemList();
+        }
 
         SetFirstItem();
-        Debug.Log(levelItems.Count);
-        //indexToCollect++;
-
-        int textIdx = Random.Range(0, itemToCollect.flavourText.Count);
-        if (itemToCollect.flavourText.Count == 0)
-        {
-            Debug.LogError($"{itemToCollect.name} has no flavour text");
-            return;
-        }
-        UIManager.Instance.SetFirstItem(itemToCollect.sprite, itemToCollect.flavourText[textIdx]);
-        UIManager.Instance.DialogueBox.ResetAnimation();
     }
 
     public void Die(string whyDie)
     {
         Debug.Log($"DYING: {whyDie}");
         RuntimeManager.PlayOneShotAttached(SFX.Instance.Death, snake.gameObject);
-        //This will need a revist
-        // TODO and when it does, i.e. because snake has more lives, move the camera slowly back to the spawn point.
-        // Add a new CameraController.FocusOptions like "focusRespawn" and use that.
         StopAllCoroutines();
-        SpawnPerRoundObjects(false);
         // don't add bonus to current day score
         DayManager.Instance.EndDay(currentDayScore, CalculateDayEndBonus(false), true);
     }
@@ -501,7 +478,7 @@ public class Game : MonoBehaviour
         if (items.Count == 1 && CheckDaySuccess())
             return;
 
-        ItemsManager.SpawnCollectibles(true);
+        ItemsManager.SpawnCollectibles();
 
         snake.SetSpeedFactor(timeToMove / initTimeToMove);
         CameraController.Instance.SetFocusSpeedScale(timeToMove / initTimeToMove);

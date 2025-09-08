@@ -14,8 +14,7 @@ public class RotatedItemData
 
     public string Name => ItemData.name;
     public int Value => ItemData.Value;
-    public int Width => GetWidth();
-    public int Height => GetHeight();
+    public BoundsInt LocalBounds => GetLocalBounds();
     public Sprite Sprite => ItemData.sprite;
     public float SpriteScale => ItemData.SpriteScale;
     public bool IsApple => ItemData.IsApple;
@@ -35,6 +34,7 @@ public class RotatedItemData
     public ItemData.ItemType ItemType => ItemData.itemType;
 
     private ItemData.CellType[][] cellStructure;
+    private BoundsInt localBounds;
 
     public RotatedItemData(ItemData itemData, ItemRotation rotation)
     {
@@ -73,10 +73,12 @@ public class RotatedItemData
         var originalWidth = ItemData.Width;
         var originalHeight = ItemData.Height;
 
-        cellStructure = new ItemData.CellType[Width][];
+        var gridWidth = IsLeftOrRight() ? ItemData.Height : ItemData.Width;
+        var gridHeight = IsLeftOrRight() ? ItemData.Width : ItemData.Height;
+        cellStructure = new ItemData.CellType[gridWidth][];
 
-        for (int i = 0; i < Width; i++)
-            cellStructure[i] = new ItemData.CellType[Height];
+        for (int i = 0; i < gridWidth; i++)
+            cellStructure[i] = new ItemData.CellType[gridHeight];
 
         for (int originalY = 0; originalY < originalHeight; originalY++)
         {
@@ -111,16 +113,6 @@ public class RotatedItemData
         }
 
         return cellStructure;
-    }
-
-    private int GetWidth()
-    {
-        return IsLeftOrRight() ? ItemData.Height : ItemData.Width;
-    }
-
-    private int GetHeight()
-    {
-        return IsLeftOrRight() ? ItemData.Width : ItemData.Height;
     }
 
     private bool IsLeftOrRight()
@@ -232,5 +224,42 @@ public class RotatedItemData
     public override string ToString()
     {
         return $"RotatedItemData({Name} #{CellCount} @ {Rotation})";
+    }
+
+    private BoundsInt GetLocalBounds()
+    {
+        if (localBounds != default)
+            return localBounds;
+
+        GetCellStructure();
+
+        var gridWidth = IsLeftOrRight() ? ItemData.Height : ItemData.Width;
+        var gridHeight = IsLeftOrRight() ? ItemData.Width : ItemData.Height;
+        int minX = 0;
+        int maxX = 0;
+        int minY = 0;
+        int maxY = 0;
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                if (cellStructure[x][y] != ItemData.CellType.Empty)
+                {
+                    if (minX == -1)
+                    {
+                        Debug.Assert(minY == -1);
+                        minX = x;
+                        minY = y;
+                    }
+
+                    maxX = Mathf.Max(maxX, x);
+                    maxY = Mathf.Max(maxY, y);
+                }
+            }
+        }
+
+        localBounds = new BoundsInt(minX, minY, 0, maxX - minX + 1, maxY - minY + 1, 0);
+        return localBounds;
     }
 }

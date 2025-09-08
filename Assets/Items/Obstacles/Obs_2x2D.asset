@@ -16,11 +16,12 @@ MonoBehaviour:
   Width: 2
   Height: 2
   flavourText: []
+  itemType: 0
   IsApple: 0
   IsMushroom: 0
   IsCoin: 0
   IsObstacle: 1
-  cells: '# #
+  cells: '# R
 
     # #'
   sprite: {fileID: -1938722549, guid: 1b6b1d8870a748a46b9209f1cdfd7d9f, type: 3}

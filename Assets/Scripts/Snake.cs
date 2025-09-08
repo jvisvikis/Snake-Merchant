@@ -451,6 +451,8 @@ public class Snake : MonoBehaviour
             CameraController.Instance.LittleShake();
         }
 
+        game.ItemsManager.SpawnCollectibles();
+
         SetInsideItem(null, true);
     }
 

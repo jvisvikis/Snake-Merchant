@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -109,6 +108,15 @@ public class ItemController : MonoBehaviour
         // );
     }
 
+    public void ReRender()
+    {
+        for (int i = 0; i < itemGridCells.Count; i++)
+        {
+            var itemCell = itemGridCells[i];
+            game.GridSquares[itemCell].Render(true);
+        }
+    }
+
     private void OnDestroy()
     {
         SetGridSquares(true);
@@ -118,7 +126,7 @@ public class ItemController : MonoBehaviour
 
     public void SetFloating()
     {
-        itemBounds = new BoundsInt(Vector3Int.zero, new Vector3Int(itemData.Width, itemData.Height));
+        itemBounds = itemData.LocalBounds;
         itemGridCells = CalcItemGridCells(out itemGridCellTypes);
     }
 
@@ -156,6 +164,22 @@ public class ItemController : MonoBehaviour
             return false;
 
         if (relativeBorderPosition.y < 0 || relativeBorderPosition.y >= borderBounds.size.y)
+            return false;
+
+        return true;
+    }
+
+    public bool ItemRealContainsCell(Vector2Int gridCell)
+    {
+        if (!attachedToGrid)
+            return false;
+
+        var relativeBorderPosition = gridCell - (Vector2Int)itemBounds.min;
+
+        if (relativeBorderPosition.x < 0 || relativeBorderPosition.x >= itemBounds.size.x)
+            return false;
+
+        if (relativeBorderPosition.y < 0 || relativeBorderPosition.y >= itemBounds.size.y)
             return false;
 
         return true;
@@ -210,6 +234,7 @@ public class ItemController : MonoBehaviour
         {
             var itemCell = itemGridCells[i];
             game.GridSquares[itemCell].SetItemData(clear ? null : itemData);
+
             // var relativeItemCell = itemCell - (Vector2Int)borderBounds.position;
             // var cellPosition = transform.position + new Vector3(relativeItemCell.x * cellSize, relativeItemCell.y * cellSize);
 
