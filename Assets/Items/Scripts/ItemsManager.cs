@@ -337,18 +337,18 @@ public class ItemsManager : MonoBehaviour
                 if (game.Snake.ContainsCell(checkCell, out var _))
                     return false;
 
-                if (!okInFrontOfSnake)
-                {
-                    var dir = game.Snake.Dir;
-                    if (dir.x == 1 && dir.y == checkCell.y && game.Snake.Head.x < checkCell.x)
-                        return false;
-                    else if (dir.x == -1 && dir.y == checkCell.y && game.Snake.Head.x > checkCell.x)
-                        return false;
-                    else if (dir.y == 1 && dir.x == checkCell.x && game.Snake.Head.y < checkCell.y)
-                        return false;
-                    else if (dir.y == -1 && dir.x == checkCell.x && game.Snake.Head.y > checkCell.y)
-                        return false;
-                }
+                // if (!okInFrontOfSnake)
+                // {
+                var dir = game.Snake.Dir;
+                if (dir.x == 1 && dir.y == checkCell.y && game.Snake.Head.x < checkCell.x)
+                    return false;
+                else if (dir.x == -1 && dir.y == checkCell.y && game.Snake.Head.x > checkCell.x)
+                    return false;
+                else if (dir.y == 1 && dir.x == checkCell.x && game.Snake.Head.y < checkCell.y)
+                    return false;
+                else if (dir.y == -1 && dir.x == checkCell.x && game.Snake.Head.y > checkCell.y)
+                    return false;
+                // }
             }
         }
 

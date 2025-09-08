@@ -11216,7 +11216,7 @@ MonoBehaviour:
     Sprites:
     - {fileID: 721947936, guid: 1b6b1d8870a748a46b9209f1cdfd7d9f, type: 3}
     Offset: {x: 0, y: 0}
-  itemBonusMult: 5
+  itemBonusMult: 3
   timeLeftBonusMult: 5
   snakeLengthBonusMult: 10
   dayReachedBonusMult: 100
